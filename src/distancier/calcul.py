@@ -28,10 +28,14 @@ def charger_corrections(cfg: dict) -> dict:
     p = config.chemin(cfg, "corrections")
     c = (yaml.safe_load(p.read_text(encoding="utf-8")) if p.exists() else None) or {}
     racc = {"sncf": [], "rinf": []}
+    valides = {}
     for r in c.get("raccordements") or []:
         racc[r.get("source", "sncf")].append(
             Raccordement(r["nom"], tuple(r["de"]), tuple(r["a"]), r.get("v_max"), r.get("note", "")))
-    return {"raccordements": racc, "lignes_exclues": {str(x) for x in c.get("lignes_exclues") or []}}
+        if r.get("valide"):  # raccord vérifié sur une carte : ne suffit plus à rendre la relation « à vérifier »
+            valides[r["nom"]] = str(r["valide"])
+    return {"raccordements": racc, "valides": valides,
+            "lignes_exclues": {str(x) for x in c.get("lignes_exclues") or []}}
 
 
 # --- moteurs -----------------------------------------------------------------------
@@ -156,13 +160,13 @@ def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = No
     rt = cfg["routage"]
     lignes = []
     for rel in lire_csv(config.chemin(cfg, "relations")):
-        lignes.append(_relation(rel, gares, moteurs, cfg, rt))
+        lignes.append(_relation(rel, gares, moteurs, cfg, rt, corrections["valides"]))
     vitesses = sorted({v for m in moteurs.values() for v in m.vitesses}, reverse=True)
     return {"relations": lignes, "vitesses": vitesses,
             "sources": {n: {"description": m.source, "date_consultation": m.date} for n, m in moteurs.items()}}
 
 
-def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dict:
+def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None) -> dict:
     go, gd = gares.get(rel["uic_origine"]), gares.get(rel["uic_destination"])
     ligne = {"id": rel["id"], "itineraire_retenu": rel["itineraire"], "remarques": []}
     if rel.get("remarque"):
@@ -246,11 +250,16 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
             if abs(ecart) <= rt["seuil_verification_pct"]:
                 verifie.append("vérifié (PK SNCF)")
 
-    if res.manuels:
-        ligne["remarques"].append("emprunte un raccordement ajouté à la main : " + ", ".join(res.manuels))
+    valides = valides or {}
+    non_valides = [m for m in res.manuels if m not in valides]
+    if non_valides:
+        ligne["remarques"].append("emprunte un raccordement ajouté à la main : " + ", ".join(non_valides))
+    for m in res.manuels:
+        if m in valides:
+            ligne["remarques"].append(f"emprunte un raccordement ajouté à la main, validé ({valides[m]}) : {m}")
     if rel.get("statut_force"):
         ligne["statut"] = rel["statut_force"]
-    elif res.manuels or repli or alerte:
+    elif non_valides or repli or alerte:
         ligne["statut"] = "à vérifier"
     elif verifie:
         ligne["statut"] = verifie[0]

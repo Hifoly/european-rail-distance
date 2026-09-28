@@ -51,7 +51,7 @@ nouvelles à grande vitesse) : LGV au-delà de 95 %, classique sous 5 %, mixte e
 |---|---|
 | `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près |
 | `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près |
-| `à vérifier` | raccordement manuel emprunté, repli sur RINF (voir ci-dessous), écart avec le contrôle supérieur à `seuil_alerte_pct` (10 %, trou probable dans un des réseaux), ou statut forcé dans `relations.csv` |
+| `à vérifier` | raccordement manuel emprunté et non validé sur carte (clé `valide` de `corrections.yaml`), repli sur RINF (voir ci-dessous), écart avec le contrôle supérieur à `seuil_alerte_pct` (10 %, trou probable dans un des réseaux), ou statut forcé dans `relations.csv` |
 | `estimé` | aucun contrôle concluant |
 | `erreur : …` | gare inconnue, source absente ou pas d'itinéraire |
 

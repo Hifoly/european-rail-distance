@@ -113,3 +113,18 @@ def test_raccordement_manuel_en_pleine_ligne():
     G = construire_graphe([a, b], [], raccordements=[r])
     assert nx.number_connected_components(G) == 1
     assert sum(1 for *_, d in G.edges(data=True) if d["ligne"] == "A") == 2   # A coupée au raccord
+
+
+@pytest.mark.parametrize("valide,statut", [(None, "à vérifier"), ("OpenRailwayMap, 2026-01-03", "estimé")])
+def test_raccordement_valide_ne_force_plus_a_verifier(cfg, valide, statut):
+    import yaml
+    racc = {"nom": "raccourci P-S", "source": "sncf", "de": list(P), "a": list(S)}
+    if valide:
+        racc["valide"] = valide
+    (cfg["_racine"] / cfg["chemins"]["corrections"]).write_text(
+        yaml.safe_dump({"raccordements": [racc], "lignes_exclues": []}, allow_unicode=True), encoding="utf-8")
+    cfg["routage"]["seuil_alerte_pct"] = 1000.0   # garder SNCF malgré l'écart avec RINF
+    r = par_id(calcul.calculer(cfg))[3]
+    assert r["resultat"].manuels == ["raccourci P-S"]
+    assert r["statut"] == statut
+    assert any("raccourci P-S" in x for x in r["remarques"])
