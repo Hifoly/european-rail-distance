@@ -1,18 +1,24 @@
 # RINF : points d'exploitation (gares, bifurcations, frontières...) d'un pays.
-# La position est lue en WKT (GeoSPARQL) ou, à défaut, en wgs84 lat/long.
+# Position lue sur la référence réseau (era:netReference, wgs84 lat/long).
+# Seule la version valide ce jour est gardée (schéma vérifié le 2026-09-28).
 PREFIX era:  <http://data.europa.eu/949/>
-PREFIX geo:  <http://www.opengis.net/ont/geosparql#>
 PREFIX wgs:  <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX time: <http://www.w3.org/2006/time#>
 
 SELECT ?op ?uopid ?nom ?wkt ?lat ?lon ?type
 WHERE {
   ?op a era:OperationalPoint ;
       era:inCountry <http://publications.europa.eu/resource/authority/country/%%PAYS%%> ;
       era:uopid ?uopid .
+  OPTIONAL {
+    ?op era:validity ?val .
+    ?val time:hasBeginning/time:inXSDDate ?debut ; time:hasEnd/time:inXSDDate ?fin .
+  }
+  BIND(SUBSTR(STR(NOW()), 1, 10) AS ?jour)
+  FILTER(!BOUND(?debut) || (STR(?debut) <= ?jour && STR(?fin) >= ?jour))
   OPTIONAL { ?op era:opName ?nom }
-  OPTIONAL { ?op geo:hasGeometry/geo:asWKT ?wkt }
-  OPTIONAL { ?op wgs:lat ?lat ; wgs:long ?lon }
+  OPTIONAL { ?op era:netReference ?ref . ?ref wgs:lat ?lat ; wgs:long ?lon }
   OPTIONAL { ?op era:opType/skos:prefLabel ?type FILTER(lang(?type) = "en" || lang(?type) = "") }
 }
 ORDER BY ?op

@@ -51,10 +51,10 @@ sources:
 
   rinf:
     nom: ERA RINF (Knowledge Graph)
-    # À CONFIRMER : adresse du point d'accès SPARQL public de l'ERA
-    # (voir data-interop.era.europa.eu, rubrique SPARQL). Surchargeable par la
-    # variable d'environnement RINF_SPARQL_ENDPOINT.
-    endpoint: https://data-interop.era.europa.eu/api/sparql
+    # Point d'accès SPARQL public de l'ERA, vérifié le 2026-09-28 (répond ;
+    # l'ancienne adresse data-interop.era.europa.eu/api/sparql ne répondait pas).
+    # Surchargeable par la variable d'environnement RINF_SPARQL_ENDPOINT.
+    endpoint: https://rinf.data.era.europa.eu/api/v1/sparql/rinf
     taille_page: 10000
     pays:              # code du projet -> code pays du référentiel UE
       FR: FRA

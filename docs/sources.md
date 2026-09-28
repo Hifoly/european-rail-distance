@@ -26,14 +26,18 @@ Constats sur les fichiers du 2026-09-28 :
 ## RINF (Registre de l'infrastructure, ERA)
 
 Le RINF est publié par l'Agence de l'Union européenne pour les chemins de fer sous forme
-de graphe de connaissances interrogeable en SPARQL (https://data-interop.era.europa.eu).
+de graphe de connaissances interrogeable en SPARQL
+(https://rinf.data.era.europa.eu/api/v1/sparql/rinf, vérifié le 2026-09-28).
 Il couvre les 7 pays du projet de façon homogène (la Suisse y contribue).
 
 - `queries/rinf_sections.rq` : sections de ligne (era:SectionOfLine) d'un pays, avec
-  longueur (era:length), points d'exploitation de début et de fin (uopid) et vitesse
-  maximale des voies (max de era:maximumPermittedSpeed).
+  longueur (era:lengthOfSectionOfLine, en km), points d'exploitation de début et de fin
+  (uopid), ligne (era:nationalLine/era:lineId) et vitesse maximale des voies
+  (max de era:maximumPermittedSpeed sur les voies era:hasPart).
 - `queries/rinf_points.rq` : points d'exploitation (era:OperationalPoint) avec nom,
-  position et type.
+  position (era:netReference, wgs84 lat/long) et type.
+- Les objets du graphe sont versionnés (era:validity) : les requêtes ne gardent que la
+  version valide le jour du téléchargement.
 
 Les requêtes sont paginées (`taille_page` dans `settings.yaml`). La longueur est attendue
 en mètres ; si la médiane des longueurs est inférieure à 100, le code considère qu'elles

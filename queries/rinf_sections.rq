@@ -1,20 +1,28 @@
 # RINF (ERA Knowledge Graph) : sections de ligne d'un pays, avec longueur,
 # points d'exploitation de début et de fin, et vitesse maximale des voies.
 # %%PAYS%%, %%LIMIT%% et %%OFFSET%% sont remplacés par distancier (pagination).
-# Noms de propriétés d'après l'ontologie ERA (http://data.europa.eu/949/) : à revalider
-# si l'ERA publie une nouvelle version de l'ontologie.
+# Schéma vérifié le 2026-09-28 sur https://rinf.data.era.europa.eu/api/v1/sparql/rinf :
+# - era:lengthOfSectionOfLine est en km ;
+# - les objets sont versionnés (era:validity) : seule la version valide ce jour est gardée ;
+# - la vitesse est portée par les voies (era:hasPart) de la section.
 PREFIX era:  <http://data.europa.eu/949/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX time: <http://www.w3.org/2006/time#>
 
 SELECT ?sol ?longueur ?ligne ?op_debut ?op_fin (MAX(?v) AS ?v_max)
 WHERE {
   ?sol a era:SectionOfLine ;
        era:inCountry <http://publications.europa.eu/resource/authority/country/%%PAYS%%> ;
-       era:length ?longueur ;
+       era:lengthOfSectionOfLine ?longueur ;
        era:opStart/era:uopid ?op_debut ;
        era:opEnd/era:uopid ?op_fin .
-  OPTIONAL { ?sol era:lineNationalId/rdfs:label ?ligne }
-  OPTIONAL { ?sol era:track/era:maximumPermittedSpeed ?v }
+  OPTIONAL {
+    ?sol era:validity ?val .
+    ?val time:hasBeginning/time:inXSDDate ?debut ; time:hasEnd/time:inXSDDate ?fin .
+  }
+  BIND(SUBSTR(STR(NOW()), 1, 10) AS ?jour)
+  FILTER(!BOUND(?debut) || (STR(?debut) <= ?jour && STR(?fin) >= ?jour))
+  OPTIONAL { ?sol era:nationalLine/era:lineId ?ligne }
+  OPTIONAL { ?sol era:hasPart ?voie . ?voie a era:RunningTrack ; era:maximumPermittedSpeed ?v }
 }
 GROUP BY ?sol ?longueur ?ligne ?op_debut ?op_fin
 ORDER BY ?sol
