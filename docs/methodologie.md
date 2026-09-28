@@ -4,7 +4,9 @@
 
 1. **Graphe.** Les tracés des lignes exploitées sont projetés en mètres (ETRS89-LAEA,
    EPSG:3035). Chaque tracé est coupé là où l'extrémité d'un autre tracé le touche à moins
-   de 50 m (bifurcations en T) ; les extrémités à moins de 50 m sont fusionnées en un nœud.
+   de 150 m (bifurcations en T) ; les extrémités à moins de 150 m sont fusionnées en un nœud.
+   Avec 50 m, des tracés dessinés en décalage restaient déconnectés (ex. ligne 500000 à
+   Saintes, 122 m : Nantes–Bordeaux passait par Tours).
 2. **Longueurs.** La longueur de chaque arête est géodésique (ellipsoïde GRS80), calculée
    sur les coordonnées d'origine : la projection ne sert qu'à la topologie.
 3. **Vitesses.** Tous les 100 m, on lit la vitesse maximale nominale du tronçon de

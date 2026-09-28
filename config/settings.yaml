@@ -14,7 +14,7 @@ chemins:
 crs_metrique: 3035
 
 reseau:
-  tolerance_noeud_m: 50              # deux extrémités à moins de 50 m = même nœud
+  tolerance_noeud_m: 150             # deux extrémités à moins de 150 m = même nœud (50 m laissait des trous, ex. Saintes)
   pas_echantillonnage_vitesse_m: 100 # une vitesse lue tous les 100 m de voie
   tolerance_vitesse_m: 25            # distance max entre tracé et tronçon de vitesse
   distance_max_rattachement_m: 300   # distance max gare -> voie
