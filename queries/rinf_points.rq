@@ -1,0 +1,19 @@
+# RINF : points d'exploitation (gares, bifurcations, frontières...) d'un pays.
+# La position est lue en WKT (GeoSPARQL) ou, à défaut, en wgs84 lat/long.
+PREFIX era:  <http://data.europa.eu/949/>
+PREFIX geo:  <http://www.opengis.net/ont/geosparql#>
+PREFIX wgs:  <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?op ?uopid ?nom ?wkt ?lat ?lon ?type
+WHERE {
+  ?op a era:OperationalPoint ;
+      era:inCountry <http://publications.europa.eu/resource/authority/country/%%PAYS%%> ;
+      era:uopid ?uopid .
+  OPTIONAL { ?op era:opName ?nom }
+  OPTIONAL { ?op geo:hasGeometry/geo:asWKT ?wkt }
+  OPTIONAL { ?op wgs:lat ?lat ; wgs:long ?lon }
+  OPTIONAL { ?op era:opType/skos:prefLabel ?type FILTER(lang(?type) = "en" || lang(?type) = "") }
+}
+ORDER BY ?op
+LIMIT %%LIMIT%% OFFSET %%OFFSET%%

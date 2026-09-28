@@ -1,0 +1,16 @@
+# Corrections manuelles du réseau, à n'utiliser qu'en dernier recours.
+# Chaque relation qui emprunte une de ces corrections est marquée « à vérifier »
+# et la correction est citée dans la colonne remarques.
+
+# Raccordements absents des tracés sources. La longueur retenue est la distance
+# géodésique en ligne droite entre les deux points (donc approximative).
+raccordements: []
+#  - nom: Raccordement de Pasilly (LGV Sud-Est > ligne Paris-Dijon)
+#    source: sncf              # moteur concerné (sncf ou rinf)
+#    de: [lon, lat]
+#    a: [lon, lat]
+#    v_max: 160                # facultatif, sinon vitesse inconnue
+#    note: coordonnées relevées sur OpenRailwayMap le AAAA-MM-JJ
+
+# Lignes SNCF à exclure du graphe (code_ligne), par exemple un tracé erroné.
+lignes_exclues: []

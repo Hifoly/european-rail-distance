@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "distancier-fer"
+version = "0.1.0"
+description = "Distances ferroviaires réelles entre gares européennes, réparties par vitesse maximale"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31",
+    "networkx>=3.2",
+    "shapely>=2.0",
+    "pyproj>=3.6",
+    "pyyaml>=6.0",
+    "openpyxl>=3.1",
+]
+
+[project.optional-dependencies]
+bdd = ["psycopg[binary]>=3.1"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+distancier = "distancier.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

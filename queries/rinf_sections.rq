@@ -1,0 +1,21 @@
+# RINF (ERA Knowledge Graph) : sections de ligne d'un pays, avec longueur,
+# points d'exploitation de début et de fin, et vitesse maximale des voies.
+# %%PAYS%%, %%LIMIT%% et %%OFFSET%% sont remplacés par distancier (pagination).
+# Noms de propriétés d'après l'ontologie ERA (http://data.europa.eu/949/) : à revalider
+# si l'ERA publie une nouvelle version de l'ontologie.
+PREFIX era:  <http://data.europa.eu/949/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?sol ?longueur ?ligne ?op_debut ?op_fin (MAX(?v) AS ?v_max)
+WHERE {
+  ?sol a era:SectionOfLine ;
+       era:inCountry <http://publications.europa.eu/resource/authority/country/%%PAYS%%> ;
+       era:length ?longueur ;
+       era:opStart/era:uopid ?op_debut ;
+       era:opEnd/era:uopid ?op_fin .
+  OPTIONAL { ?sol era:lineNationalId/rdfs:label ?ligne }
+  OPTIONAL { ?sol era:track/era:maximumPermittedSpeed ?v }
+}
+GROUP BY ?sol ?longueur ?ligne ?op_debut ?op_fin
+ORDER BY ?sol
+LIMIT %%LIMIT%% OFFSET %%OFFSET%%

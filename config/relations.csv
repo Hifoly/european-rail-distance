@@ -1,0 +1,21 @@
+id;uic_origine;uic_destination;itineraire;statut_force;remarque
+1;87686006;87723197;grande_vitesse;;
+2;87391003;87581009;grande_vitesse;;
+3;87223263;87751008;grande_vitesse;à vérifier;LGV Interconnexion Est (Roissy-Chessy) absente des tracés SNCF au 2026-09-28
+4;87113001;87212027;grande_vitesse;;
+5;87391003;87471003;grande_vitesse;;
+6;87391003;87481002;grande_vitesse;;
+7;87271007;87286005;grande_vitesse;;
+8;87686006;87751008;grande_vitesse;;
+9;87686006;87773002;grande_vitesse;;
+10;87686006;87756056;grande_vitesse;;
+11;87581009;87611004;plus_court;;
+12;87723197;87751008;grande_vitesse;;
+13;87113001;87192039;grande_vitesse;;
+14;87113001;87141002;grande_vitesse;;
+15;87686006;87713040;grande_vitesse;à vérifier;Raccordement de Pasilly absent des tracés SNCF au 2026-09-28
+16;87547000;87611004;plus_court;;Itinéraire classique POLT (Limoges, Cahors)
+17;87391003;87474007;grande_vitesse;;
+18;87751008;87756056;plus_court;;
+19;87212027;87182063;plus_court;;
+20;87481002;87581009;grande_vitesse;;

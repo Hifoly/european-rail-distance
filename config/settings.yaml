@@ -1,0 +1,67 @@
+# Paramètres du distancier. Les chemins relatifs partent de la racine du dépôt.
+
+chemins:
+  donnees_brutes: data/raw        # téléchargements, un dossier par source et par date
+  intermediaire: data/interim     # graphes pré-calculés (cache)
+  sorties: data/output            # tableaux livrés (CSV, Excel)
+  gares: config/gares.csv
+  relations: config/relations.csv
+  corrections: config/corrections.yaml
+
+# Projection métrique utilisée pour découper et raccorder les tracés
+# (3035 = ETRS89 / LAEA Europe, valable pour les 7 pays).
+# Les longueurs finales sont toujours géodésiques (ellipsoïde GRS80).
+crs_metrique: 3035
+
+reseau:
+  tolerance_noeud_m: 50              # deux extrémités à moins de 50 m = même nœud
+  pas_echantillonnage_vitesse_m: 100 # une vitesse lue tous les 100 m de voie
+  tolerance_vitesse_m: 25            # distance max entre tracé et tronçon de vitesse
+  distance_max_rattachement_m: 300   # distance max gare -> voie
+
+routage:
+  seuil_lgv_kmh: 250           # définition UE des lignes nouvelles à grande vitesse
+  facteur_lgv: 0.75            # itinéraire « grande vitesse » : 1 km de LGV compte 0,75 km
+  part_lgv_type_lgv_pct: 95    # type_ligne = LGV au-delà, classique en dessous de 100 - 95
+  seuil_verification_pct: 1.0  # écart max entre deux sources pour passer « vérifié »
+  part_ligne_controle_pk_pct: 95  # contrôle par PK si >= 95 % du trajet est sur une seule ligne
+
+# Moteur de calcul principal par pays. Une relation dont les deux gares sont dans un
+# pays « sncf » est calculée sur les tracés SNCF Réseau ; toutes les autres (y compris
+# transfrontalières) sur le graphe RINF. Le second moteur, s'il est disponible,
+# sert de contrôle (colonnes distance_controle_km / ecart_controle_pct).
+moteurs:
+  FR: sncf
+  DE: rinf
+  IT: rinf
+  ES: rinf
+  BE: rinf
+  CH: rinf
+  PT: rinf
+
+sources:
+  sncf:
+    nom: SNCF Réseau open data
+    base_url: https://ressources.data.sncf.com/api/explore/v2.1
+    jeux:
+      lignes:   {id: formes-des-lignes-du-rfn, format: geojson}
+      vitesses: {id: vitesse-maximale-nominale-sur-ligne, format: geojson}
+      gares:    {id: liste-des-gares, format: csv}
+    statuts_lignes: [EXPLOITE]   # valeur du champ « mnemo » des tracés
+
+  rinf:
+    nom: ERA RINF (Knowledge Graph)
+    # À CONFIRMER : adresse du point d'accès SPARQL public de l'ERA
+    # (voir data-interop.era.europa.eu, rubrique SPARQL). Surchargeable par la
+    # variable d'environnement RINF_SPARQL_ENDPOINT.
+    endpoint: https://data-interop.era.europa.eu/api/sparql
+    taille_page: 10000
+    pays:              # code du projet -> code pays du référentiel UE
+      FR: FRA
+      DE: DEU
+      IT: ITA
+      ES: ESP
+      BE: BEL
+      CH: CHE
+      PT: PRT
+    rayon_recherche_gare_m: 2000   # rattachement gare -> point d'exploitation RINF
