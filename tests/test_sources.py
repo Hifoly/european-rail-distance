@@ -66,3 +66,23 @@ def test_telechargement_rinf_pagine(cfg, monkeypatch):
     man = json.loads((dossier / "manifest.json").read_text())
     assert man["pays"]["BE"]["sections"] == 3 and man["pays"]["BE"]["points"] == 3
     assert (dossier / "sections_BE.csv").read_text().count("\n") == 4
+
+
+def test_rinf_section_plus_courte_que_la_ligne_droite(cfg):
+    import csv
+    import pytest
+    from pyproj import Geod
+    from distancier import config
+    from distancier.sources import rinf
+    from tests.conftest import S, X
+
+    chemin = config.dossier_source(cfg, "rinf", None) / "sections_FR.csv"
+    lignes = list(csv.DictReader(open(chemin, encoding="utf-8"), delimiter=";"))
+    lignes[2]["longueur"] = "0"                      # s3 (X -> S) déclarée à 0 m
+    with open(chemin, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(lignes[0]), delimiter=";")
+        w.writeheader()
+        w.writerows(lignes)
+    G = rinf.charger(cfg)["graphe"]
+    droite = Geod(ellps="GRS80").inv(*X, *S)[2] / 1000
+    assert min(d["km"] for d in G["FRX"]["FRS"].values()) == pytest.approx(droite)

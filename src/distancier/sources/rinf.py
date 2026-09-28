@@ -108,15 +108,26 @@ def charger(cfg: dict, jour: str | None = None, raccordements=()) -> dict:
     facteur = 1.0 if longueurs and statistics.median(longueurs) < 100 else 0.001
     if facteur == 1.0:
         log.warning("longueurs RINF interprétées en km (médiane %.1f)", statistics.median(longueurs))
-    vues = set()
+    # Longueur déclarée plus courte que la ligne droite entre les deux points : physiquement
+    # impossible (fréquent autour des faisceaux, souvent 0 km). On retient la ligne droite.
+    vues, corrigees = set(), 0
     for r in sections:
         if r["sol"] in vues or not r["longueur"]:
             continue
         vues.add(r["sol"])
         v = int(float(r["v_max"])) if r.get("v_max") else None
         a, b = r["op_debut"], r["op_fin"]
-        G.add_edge(a, b, km=float(r["longueur"]) * facteur, ligne=r.get("ligne") or "", profil=[v],
+        km = float(r["longueur"]) * facteur
+        if a in G and b in G and G.nodes[a]["lon"] is not None and G.nodes[b]["lon"] is not None:
+            droite = GEOD.inv(G.nodes[a]["lon"], G.nodes[a]["lat"], G.nodes[b]["lon"], G.nodes[b]["lat"])[2] / 1000
+            if km < droite:
+                corrigees += droite - km > 0.05
+                km = droite
+        G.add_edge(a, b, km=km, ligne=r.get("ligne") or "", profil=[v],
                    sens=(a, b), manuel=None, sol=r["sol"])
+    if corrigees:
+        log.warning("RINF : %d sections plus courtes de plus de 50 m que la ligne droite entre leurs points, "
+                    "portées à cette distance", corrigees)
 
     for rac in raccordements:
         a, b = point_le_plus_proche(G, *rac.de), point_le_plus_proche(G, *rac.a)

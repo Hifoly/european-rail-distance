@@ -38,6 +38,10 @@ Il couvre les 7 pays du projet de façon homogène (la Suisse y contribue).
   position (era:netReference, wgs84 lat/long) et type.
 - Les objets du graphe sont versionnés (era:validity) : les requêtes ne gardent que la
   version valide le jour du téléchargement.
+- Environ 1 500 sections françaises (souvent autour des faisceaux) ont une longueur déclarée
+  plus courte que la ligne droite entre leurs points d'exploitation, parfois 0 km : le plus court
+  chemin s'y engouffrait et RINF sortait 2 à 8 % trop court. Ces sections prennent la longueur de
+  la ligne droite (constat du 2026-09-28 ; Bordeaux–Toulouse passe de 238,7 à 256,4 km, PK SNCF 256,4).
 
 Les requêtes sont paginées (`taille_page` dans `settings.yaml`). La longueur est attendue
 en mètres ; si la médiane des longueurs est inférieure à 100, le code considère qu'elles

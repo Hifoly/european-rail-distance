@@ -26,7 +26,7 @@ uic;nom;pays;lat;lon;uopid_rinf;note
 87212910;Kehl-Grenze;FR;48.575637;7.801217;;Point frontière FR-DE : extrémité de la ligne RFN 142000 (Strasbourg - Kehl, PK 8+047), jeu SNCF formes-des-lignes-du-rfn consulté le 2026-09-28
 87582668;Arcachon;FR;44.659009;-1.16523;;Absente du jeu SNCF liste-des-gares : coordonnées fournies par Aloïs (2026-09-28)
 87582643;La Teste;FR;44.636924;-1.14295;;Absente du jeu SNCF liste-des-gares : coordonnées fournies par Aloïs (2026-09-28)
-87187930;Bâle-St-Jean;CH;47.567;7.583;;Gare suisse sous code UIC SNCF, coordonnées fournies par Aloïs (2026-09-28)
+87187930;Bâle-St-Jean;CH;47.567;7.583;CH00016;Gare suisse sous code UIC SNCF, coordonnées fournies par Aloïs (2026-09-28)
 87141150;Lunéville;FR;;;;
 87142109;Lorraine-Louvigny-TGV;FR;;;;
 87144006;Épinal;FR;;;;

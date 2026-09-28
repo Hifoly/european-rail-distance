@@ -21,6 +21,11 @@ raccordements:
 #    a: [lon, lat]
 #    v_max: 160                # facultatif, sinon vitesse inconnue
 #    note: coordonnées relevées sur OpenRailwayMap le AAAA-MM-JJ
+  - nom: "Frontière Saint-Louis - Basel St. Johann (RINF)"
+    source: rinf
+    de: [7.567592, 47.577565]
+    a: [7.5725294, 47.5703063]
+    note: "RINF du 2026-09-28 : aucune section entre le point frontière EU00138 et le réseau suisse ; relié à Basel St. Johann (CH00016)"
 
 # Lignes SNCF à exclure du graphe (code_ligne), par exemple un tracé erroné.
 lignes_exclues: []
