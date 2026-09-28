@@ -49,7 +49,7 @@ nouvelles à grande vitesse) : LGV au-delà de 95 %, classique sous 5 %, mixte e
 
 | statut | condition |
 |---|---|
-| `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près |
+| `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près ; pour une relation calculée sur SNCF, le contrôle RINF suit les lignes de l'itinéraire SNCF (plus court chemin, lignes hors itinéraire pénalisées ×5) |
 | `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près |
 | `à vérifier` | raccordement manuel emprunté et non validé sur carte (clé `valide` de `corrections.yaml`), repli sur RINF (voir ci-dessous), écart avec le contrôle supérieur à `seuil_alerte_pct` (10 %, trou probable dans un des réseaux), ou statut forcé dans `relations.csv` |
 | `estimé` | aucun contrôle concluant |
@@ -74,3 +74,11 @@ donnent les mêmes distances à 0,6 km près, sauf Paris-Gare-de-Lyon–Montpell
 (738,7 km au lieu de 741,8) : le contournement Nîmes–Montpellier est limité à 220 km/h,
 il n'est donc plus privilégié comme LGV et l'itinéraire reprend la ligne classique
 après Nîmes. Écart aux PK SNCF : +0,09 % sur Bordeaux–Toulouse, −0,15 % sur Marseille–Nice.
+
+**Contrôle sur le même itinéraire.** SNCF et RINF ne portent pas les mêmes vitesses : en mode
+`grande_vitesse`, chaque moteur choisissait souvent un itinéraire différent (ex. Beaune–St-Raphaël :
+SNCF 634,0 km ; RINF 647,1 km en grande vitesse mais 630,6 km en plus court chemin), ce qui mesurait
+l'écart entre deux itinéraires et non entre deux sources. Depuis le 2026-09-29, le contrôle RINF d'une
+relation SNCF emprunte les mêmes lignes (codes `code_ligne`, voie RINF ignorée) ; à défaut de chemin,
+il revient au calcul RINF autonome. Effet sur les 1 593 couples du périmètre : 979 -> 1 119 relations
+vérifiées, relations à plus de 5 % d'écart : 88 -> 25.

@@ -122,10 +122,10 @@ class MoteurRinf:
         return n, [f"{g['nom']} associée au point RINF {n} ({G.nodes[n].get('nom')}, à {dist:.0f} m) : "
                    f"renseigner uopid_rinf pour figer"]
 
-    def calculer(self, go: dict, gd: dict, mode: str) -> tuple[Resultat, list[str]]:
+    def calculer(self, go: dict, gd: dict, mode: str, lignes=None) -> tuple[Resultat, list[str]]:
         o, n1 = self.point(go)
         d, n2 = self.point(gd)
-        return self.routeur.chemin(o, d, mode), n1 + n2
+        return self.routeur.chemin(o, d, mode, lignes), n1 + n2
 
 
 # --- calcul ------------------------------------------------------------------------
@@ -232,7 +232,16 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
     autre = None if repli else moteurs.get("rinf" if nom_principal == "sncf" else "sncf")
     if autre is not None and (autre.nom == "rinf" or tous_sncf):
         try:
-            ctl = ctl_rinf if autre.nom == "rinf" and ctl_rinf is not None else autre.calculer(go, gd, rel["itineraire"])[0]
+            ctl = None
+            if autre.nom == "rinf" and nom_principal == "sncf":
+                # contrôle sur le même itinéraire : les lignes empruntées côté SNCF, en plus court chemin
+                try:
+                    ctl = autre.calculer(go, gd, "plus_court", [l for l, _ in res.lignes if l != "MANUEL"])[0]
+                    ligne["remarques"].append("contrôle RINF sur les lignes de l'itinéraire SNCF")
+                except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError):
+                    ctl = None
+            if ctl is None:
+                ctl = ctl_rinf if autre.nom == "rinf" and ctl_rinf is not None else autre.calculer(go, gd, rel["itineraire"])[0]
             if ctl.km <= 0:
                 raise LookupError(f"distance nulle sur {autre.nom} (même point aux deux bouts)")
             ecart = 100 * (res.km / ctl.km - 1)

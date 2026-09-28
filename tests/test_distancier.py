@@ -128,3 +128,16 @@ def test_raccordement_valide_ne_force_plus_a_verifier(cfg, valide, statut):
     assert r["resultat"].manuels == ["raccourci P-S"]
     assert r["statut"] == statut
     assert any("raccourci P-S" in x for x in r["remarques"])
+
+
+def test_chemin_suivant_les_lignes_d_un_autre_itineraire():
+    import networkx as nx
+    from distancier.routage import Routeur
+
+    G = nx.MultiGraph()
+    for u, v, km, ligne in (("A", "B", 10.0, "L1-1"), ("A", "C", 6.0, "L2-1"), ("C", "B", 6.0, "L2-2")):
+        G.add_edge(u, v, km=km, ligne=ligne, profil=[160], sens=(u, v), manuel=None)
+    r = Routeur(G)
+    assert r.chemin("A", "B").km == pytest.approx(10.0)                        # plus court : L1
+    assert r.chemin("A", "B", lignes=["L2"]).km == pytest.approx(12.0)         # suit L2 (code SNCF sans voie)
+    assert [l for l, _ in r.chemin("A", "B", lignes=["L2"]).lignes] == ["L2-1", "L2-2"]
