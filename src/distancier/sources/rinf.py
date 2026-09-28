@@ -139,22 +139,36 @@ def charger(cfg: dict, jour: str | None = None, raccordements=()) -> dict:
             "vitesses": sorted({v for _, _, d in G.edges(data=True) for v in d["profil"] if v is not None})}
 
 
+TYPES_GARE = {"station", "small station", "passenger stop"}
+
+
 def point_le_plus_proche(G: nx.MultiGraph, lon: float, lat: float, rayon_m: float = math.inf,
                          nom: str | None = None) -> tuple[str, float]:
-    """uopid du point d'exploitation relié au réseau le plus proche (bonus si le nom correspond)."""
-    meilleur = None
+    """uopid du point d'exploitation relié au réseau le plus proche.
+
+    Avec `nom` (rattachement d'une gare), préférence dans l'ordre : une gare RINF de même nom,
+    une gare RINF à moins de 500 m, puis n'importe quel point (faisceau, bifurcation...).
+    """
+    candidats = []
+    cle_nom = _simplifie(nom) if nom else ""
     for n, d in G.nodes(data=True):
         if d.get("lon") is None or G.degree(n) == 0:
             continue
         dist = GEOD.inv(lon, lat, d["lon"], d["lat"])[2]
         if dist > rayon_m:
             continue
-        score = dist * (0.5 if nom and _simplifie(nom) in _simplifie(d.get("nom") or "") else 1.0)
-        if meilleur is None or score < meilleur[2]:
-            meilleur = (n, dist, score)
-    if meilleur is None:
+        if nom:
+            autre = _simplifie(d.get("nom") or "")
+            gare = d.get("type") in TYPES_GARE
+            meme_nom = gare and bool(autre) and (cle_nom in autre or autre in cle_nom)
+            rang = 0 if meme_nom else 1 if gare and dist <= 500 else 2
+        else:
+            rang = 0
+        candidats.append((rang, dist, n))
+    if not candidats:
         raise LookupError(f"aucun point d'exploitation RINF à moins de {rayon_m:.0f} m de ({lon}, {lat})")
-    return meilleur[0], meilleur[1]
+    _, dist, n = min(candidats)
+    return n, dist
 
 
 def _simplifie(s: str) -> str:

@@ -30,6 +30,25 @@ raccordements:
     de: [7.567592, 47.577565]
     a: [7.5725294, 47.5703063]
     note: "RINF du 2026-09-28 : aucune section entre le point frontière EU00138 et le réseau suisse ; relié à Basel St. Johann (CH00016)"
+  - nom: "Albertville - ligne de la Tarentaise (RINF)"
+    source: rinf
+    de: [6.3831804, 45.673387]
+    a: [6.3822336, 45.6648599]
+    note: "RINF du 2026-09-28 : la ligne de la Tarentaise (Moûtiers, Bourg-St-Maurice) forme un îlot de 19 points ; son extrémité (FR9900002170) est reliée à Albertville (FR0000002899), à 950 m"
 
 # Lignes SNCF à exclure du graphe (code_ligne), par exemple un tracé erroné.
-lignes_exclues: []
+lignes_exclues:
+  # Raccordement de Chaulnes (LGV Nord PK 98 vers ligne 259000, voie de service à 50 km/h) :
+  # aucun TGV ne l'emprunte, mais il faisait passer les trajets Est <-> Nord (Reims, Meuse,
+  # Lorraine, Strasbourg vers Haute-Picardie, Lille) par Laon et Chaulnes. RINF ne le connaît pas.
+  # Constaté le 2026-09-28 (formes-des-lignes-du-rfn, jeu du 2022-03-24).
+  - "226305"
+
+# Lignes absentes de formes-des-lignes-du-rfn mais présentes dans le fichier des voies SNCF
+# (fichier-de-formes-des-voies-du-reseau-ferre-national, jeu « voies » de settings.yaml) :
+# on reprend le tracé de leur voie la plus longue. Liste établie le 2026-09-28 : toutes les
+# lignes du fichier des voies absentes des tracés de lignes ET présentes dans RINF (preuve
+# d'exploitation ; RINF ne sert qu'à choisir la liste, pas au calcul). Dont 226310,
+# l'Interconnexion Est (Roissy-CDG 2 TGV, Marne-la-Vallée-Chessy), 262000 (Douai - Valenciennes),
+# 657000 (Lamothe - Arcachon), 811000 (Sète), 514300 (Nantes).
+lignes_complementaires: ["070606", "145306", "226301", "226303", "226310", "228601", "242606", "242608", "242610", "245300", "261606", "262000", "272326", "292311", "299000", "314606", "335303", "340606", "354000", "365000", "383300", "408321", "431301", "450611", "514300", "523606", "523611", "534606", "578000", "586306", "606611", "657000", "753306", "768300", "811000", "830341", "849606", "860611", "867610", "880621", "898606", "905306", "905611", "939506"]

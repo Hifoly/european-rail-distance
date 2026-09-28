@@ -34,7 +34,8 @@ def charger_corrections(cfg: dict) -> dict:
             Raccordement(r["nom"], tuple(r["de"]), tuple(r["a"]), r.get("v_max"), r.get("note", "")))
         if r.get("valide"):  # raccord vérifié sur une carte : ne suffit plus à rendre la relation « à vérifier »
             valides[r["nom"]] = str(r["valide"])
-    return {"raccordements": racc, "valides": valides,
+    compl = {str(x["code"] if isinstance(x, dict) else x) for x in c.get("lignes_complementaires") or []}
+    return {"raccordements": racc, "valides": valides, "lignes_complementaires": compl,
             "lignes_exclues": {str(x) for x in c.get("lignes_exclues") or []}}
 
 
@@ -45,7 +46,8 @@ class MoteurSncf:
 
     def __init__(self, cfg: dict, jour: str | None, corrections: dict):
         from distancier.sources import sncf
-        d = sncf.charger(cfg, jour)
+        self.complementaires = corrections.get("lignes_complementaires", set())
+        d = sncf.charger(cfg, jour, self.complementaires)
         self.gares = d["gares"]
         self.source = sncf.description_source(d["manifeste"])
         self.date = sncf.date_consultation(d["manifeste"])
@@ -53,7 +55,8 @@ class MoteurSncf:
         troncons = [t for t in d["troncons"] if t.ligne not in corrections["lignes_exclues"]]
         params = dict(cfg["reseau"], crs=cfg["crs_metrique"])
         racc = corrections["raccordements"]["sncf"]
-        cle = hashlib.sha1(json.dumps([params, [r.__dict__ for r in racc], sorted(corrections["lignes_exclues"])],
+        cle = hashlib.sha1(json.dumps([params, [r.__dict__ for r in racc], sorted(corrections["lignes_exclues"]),
+                                       sorted(self.complementaires)],
                                       sort_keys=True, default=str).encode()).hexdigest()[:10]
         cache = config.chemin(cfg, "intermediaire") / f"graphe_sncf_{d['jour']}_{cle}.pkl"
         if cache.exists():
@@ -250,6 +253,10 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
             if abs(ecart) <= rt["seuil_verification_pct"]:
                 verifie.append("vérifié (PK SNCF)")
 
+    compl = sorted({lg for lg, _ in res.lignes} & getattr(principal, "complementaires", set()))
+    if compl:
+        ligne["remarques"].append("emprunte une ligne absente de formes-des-lignes-du-rfn, tracé repris du "
+                                  "fichier des voies SNCF : " + ", ".join(compl))
     valides = valides or {}
     non_valides = [m for m in res.manuels if m not in valides]
     if non_valides:
