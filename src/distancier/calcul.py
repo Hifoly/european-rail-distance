@@ -5,6 +5,7 @@ import csv
 import hashlib
 import json
 import logging
+import math
 import pickle
 from pathlib import Path
 
@@ -207,7 +208,7 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
             and ligne["distance_plus_courte_km"] < res.km - 0.5:
         ligne["remarques"].append(f"itinéraire LGV privilégié ; le plus court chemin fait {ligne['distance_plus_courte_km']} km")
 
-    verifie = []
+    verifie, alerte = [], False
     autre = None if repli else moteurs.get("rinf" if nom_principal == "sncf" else "sncf")
     if autre is not None and (autre.nom == "rinf" or tous_sncf):
         try:
@@ -219,6 +220,9 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
                          ecart_controle_pct=round(ecart, 2))
             if abs(ecart) <= rt["seuil_verification_pct"]:
                 verifie.append(f"vérifié ({autre.nom.upper()})")
+            elif abs(ecart) > rt.get("seuil_alerte_pct", math.inf):
+                alerte = True
+                ligne["remarques"].append(f"écart de {ecart:+.1f} % avec {autre.nom.upper()} : trou probable dans un des réseaux")
         except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e:
             ligne["remarques"].append(f"contrôle {autre.nom} impossible : {e}")
     if nom_principal == "sncf":
@@ -233,7 +237,7 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
         ligne["remarques"].append("emprunte un raccordement ajouté à la main : " + ", ".join(res.manuels))
     if rel.get("statut_force"):
         ligne["statut"] = rel["statut_force"]
-    elif res.manuels or repli:
+    elif res.manuels or repli or alerte:
         ligne["statut"] = "à vérifier"
     elif verifie:
         ligne["statut"] = verifie[0]

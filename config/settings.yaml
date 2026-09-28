@@ -24,6 +24,7 @@ routage:
   facteur_lgv: 0.75            # itinéraire « grande vitesse » : 1 km de LGV compte 0,75 km
   part_lgv_type_lgv_pct: 95    # type_ligne = LGV au-delà, classique en dessous de 100 - 95
   seuil_verification_pct: 1.0  # écart max entre deux sources pour passer « vérifié »
+  seuil_alerte_pct: 10.0       # au-delà, écart avec le contrôle => « à vérifier » (trou probable)
   part_ligne_controle_pk_pct: 95  # contrôle par PK si >= 95 % du trajet est sur une seule ligne
 
 # Moteur de calcul principal par pays. Une relation dont les deux gares sont dans un

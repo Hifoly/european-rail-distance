@@ -89,3 +89,25 @@ def test_export(cfg, resultat, tmp_path):
 def test_cache_du_graphe(cfg):
     calcul.calculer(cfg)
     assert list((cfg["_racine"] / cfg["chemins"]["intermediaire"]).glob("graphe_sncf_2026-01-01_*.pkl"))
+
+
+def test_ecart_de_controle_excessif_passe_a_verifier(cfg):
+    cfg["routage"]["seuil_alerte_pct"] = 3.0   # LGV (SNCF) contre ligne classique (RINF) : ~4 %
+    r = par_id(calcul.calculer(cfg))[1]
+    assert r["ecart_controle_pct"] > 3
+    assert r["statut"] == "à vérifier"
+    assert "trou probable" in " ".join(r["remarques"])
+
+
+def test_raccordement_manuel_en_pleine_ligne():
+    import networkx as nx
+    from shapely.geometry import LineString
+    from distancier.reseau import Raccordement, Troncon, construire_graphe
+
+    a = Troncon("A", LineString([(2.0, 48.0), (2.5, 48.0), (3.0, 48.0)]))
+    b = Troncon("B", LineString([(2.5, 48.01), (2.5, 48.5)]))   # s'arrête à ~1,1 km de A
+    assert nx.number_connected_components(construire_graphe([a, b], [])) == 2
+    r = Raccordement("test", (2.5, 48.01), (2.5, 48.0))
+    G = construire_graphe([a, b], [], raccordements=[r])
+    assert nx.number_connected_components(G) == 1
+    assert sum(1 for *_, d in G.edges(data=True) if d["ligne"] == "A") == 2   # A coupée au raccord

@@ -111,6 +111,12 @@ def construire_graphe(troncons: list[Troncon], vitesses: list[TronconVitesse], c
             for j in arbre.query(extremite.buffer(tol)):
                 if j != i and geoms[j].distance(extremite) <= tol:
                     coupes[j].add(geoms[j].project(extremite))
+    # un raccordement manuel peut aboutir en pleine ligne : on y coupe aussi le tracé
+    for r in raccordements:
+        for bout in (Point(vers_m(*r.de)), Point(vers_m(*r.a))):
+            for j in arbre.query(bout.buffer(tol)):
+                if geoms[j].distance(bout) <= tol:
+                    coupes[j].add(geoms[j].project(bout))
 
     vgeoms = [transform(vers_m, v.geom) for v in vitesses]
     varbre = STRtree(vgeoms) if vgeoms else None

@@ -4,7 +4,17 @@
 
 # Raccordements absents des tracés sources. La longueur retenue est la distance
 # géodésique en ligne droite entre les deux points (donc approximative).
-raccordements: []
+raccordements:
+  - nom: "Raccord de Sète, ligne 810000 (Tarascon-Sète) sur ligne 640000 (Bordeaux-Sète)"
+    source: sncf
+    de: [3.679089, 43.414189]
+    a: [3.674363, 43.414271]
+    note: "extrémité de tracé à 384m de l'autre ligne dans formes-des-lignes-du-rfn (consulté le 2026-09-28), corrige les détours constatés au contrôle RINF"
+  - nom: "Raccord de Boulogne-Ville, ligne 311000 sur ligne 314000"
+    source: sncf
+    de: [1.61334, 50.719208]
+    a: [1.613114, 50.721714]
+    note: "extrémité de tracé à 280m de l'autre ligne dans formes-des-lignes-du-rfn (consulté le 2026-09-28), corrige les détours constatés au contrôle RINF"
 #  - nom: Raccordement de Pasilly (LGV Sud-Est > ligne Paris-Dijon)
 #    source: sncf              # moteur concerné (sncf ou rinf)
 #    de: [lon, lat]
