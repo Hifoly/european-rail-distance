@@ -232,16 +232,18 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
     autre = None if repli else moteurs.get("rinf" if nom_principal == "sncf" else "sncf")
     if autre is not None and (autre.nom == "rinf" or tous_sncf):
         try:
-            ctl = None
+            ctl = ctl_rinf if autre.nom == "rinf" and ctl_rinf is not None else autre.calculer(go, gd, rel["itineraire"])[0]
             if autre.nom == "rinf" and nom_principal == "sncf":
-                # contrôle sur le même itinéraire : les lignes empruntées côté SNCF, en plus court chemin
+                # Second contrôle RINF sur le même itinéraire (lignes empruntées côté SNCF, même mode) :
+                # les vitesses des deux sources diffèrent, chaque moteur peut choisir un autre itinéraire.
+                # On garde celui des deux contrôles RINF le plus proche, et on dit lequel.
                 try:
-                    ctl = autre.calculer(go, gd, rel["itineraire"], [l for l, _ in res.lignes if l != "MANUEL"])[0]
-                    ligne["remarques"].append("contrôle RINF sur les lignes de l'itinéraire SNCF")
+                    suivi = autre.calculer(go, gd, rel["itineraire"], [l for l, _ in res.lignes if l != "MANUEL"])[0]
+                    if suivi.km > 0 and (ctl.km <= 0 or abs(res.km - suivi.km) < abs(res.km - ctl.km)):
+                        ctl = suivi
+                        ligne["remarques"].append("contrôle RINF sur les lignes de l'itinéraire SNCF")
                 except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError):
-                    ctl = None
-            if ctl is None:
-                ctl = ctl_rinf if autre.nom == "rinf" and ctl_rinf is not None else autre.calculer(go, gd, rel["itineraire"])[0]
+                    pass
             if ctl.km <= 0:
                 raise LookupError(f"distance nulle sur {autre.nom} (même point aux deux bouts)")
             ecart = 100 * (res.km / ctl.km - 1)

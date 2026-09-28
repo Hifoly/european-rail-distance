@@ -49,7 +49,7 @@ nouvelles à grande vitesse) : LGV au-delà de 95 %, classique sous 5 %, mixte e
 
 | statut | condition |
 |---|---|
-| `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près ; pour une relation calculée sur SNCF, le contrôle RINF suit les lignes de l'itinéraire SNCF (même mode d'itinéraire, lignes hors itinéraire pénalisées ×5) |
+| `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près ; pour une relation calculée sur SNCF, deux contrôles RINF sont calculés (itinéraire RINF autonome, et itinéraire suivant les lignes SNCF, même mode, lignes hors itinéraire pénalisées ×5) ; le plus proche est retenu et la remarque dit lequel |
 | `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près |
 | `à vérifier` | raccordement manuel emprunté et non validé sur carte (clé `valide` de `corrections.yaml`), repli sur RINF (voir ci-dessous), écart avec le contrôle supérieur à `seuil_alerte_pct` (10 %, trou probable dans un des réseaux), ou statut forcé dans `relations.csv` |
 | `estimé` | aucun contrôle concluant |
@@ -84,3 +84,9 @@ d'itinéraire (`grande_vitesse` ou `plus_court`) : en plus court chemin, une lig
 du trajet (ex. 070000 pour Paris-Est–Châlons) permettait de couper l'itinéraire LGV. À défaut de chemin,
 le contrôle revient au calcul RINF autonome. Effet sur les 1 593 couples du périmètre (avec les lignes
 complémentaires) : 1 331 -> 1 401 relations vérifiées, relations à plus de 5 % d'écart : 24 -> 13.
+
+Suivre les lignes SNCF échoue quand une même ligne se retrouve aux deux bouts du trajet : le contrôle
+peut rester sur cette ligne et couper l'itinéraire LGV (Avignon-Centre–Valence : SNCF 136,5 km par la
+LGV, RINF autonome 136,7 km, RINF « suivi » 124,5 km par la ligne 830000). Les deux contrôles RINF sont
+donc calculés et le plus proche est retenu : deux calculs RINF indépendants de la distance SNCF, sur le
+même critère d'itinéraire. Effet : 1 401 -> 1 420 relations vérifiées, écart > 5 % : 13 -> 9.
