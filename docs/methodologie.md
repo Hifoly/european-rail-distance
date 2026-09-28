@@ -49,7 +49,7 @@ nouvelles à grande vitesse) : LGV au-delà de 95 %, classique sous 5 %, mixte e
 
 | statut | condition |
 |---|---|
-| `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près ; pour une relation calculée sur SNCF, le contrôle RINF suit les lignes de l'itinéraire SNCF (plus court chemin, lignes hors itinéraire pénalisées ×5) |
+| `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près ; pour une relation calculée sur SNCF, le contrôle RINF suit les lignes de l'itinéraire SNCF (même mode d'itinéraire, lignes hors itinéraire pénalisées ×5) |
 | `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près |
 | `à vérifier` | raccordement manuel emprunté et non validé sur carte (clé `valide` de `corrections.yaml`), repli sur RINF (voir ci-dessous), écart avec le contrôle supérieur à `seuil_alerte_pct` (10 %, trou probable dans un des réseaux), ou statut forcé dans `relations.csv` |
 | `estimé` | aucun contrôle concluant |
@@ -79,6 +79,8 @@ après Nîmes. Écart aux PK SNCF : +0,09 % sur Bordeaux–Toulouse, −0,15 % s
 `grande_vitesse`, chaque moteur choisissait souvent un itinéraire différent (ex. Beaune–St-Raphaël :
 SNCF 634,0 km ; RINF 647,1 km en grande vitesse mais 630,6 km en plus court chemin), ce qui mesurait
 l'écart entre deux itinéraires et non entre deux sources. Depuis le 2026-09-29, le contrôle RINF d'une
-relation SNCF emprunte les mêmes lignes (codes `code_ligne`, voie RINF ignorée) ; à défaut de chemin,
-il revient au calcul RINF autonome. Effet sur les 1 593 couples du périmètre : 979 -> 1 119 relations
-vérifiées, relations à plus de 5 % d'écart : 88 -> 25.
+relation SNCF emprunte les mêmes lignes (codes `code_ligne`, voie RINF ignorée), dans le même mode
+d'itinéraire (`grande_vitesse` ou `plus_court`) : en plus court chemin, une ligne présente aux deux bouts
+du trajet (ex. 070000 pour Paris-Est–Châlons) permettait de couper l'itinéraire LGV. À défaut de chemin,
+le contrôle revient au calcul RINF autonome. Effet sur les 1 593 couples du périmètre (avec les lignes
+complémentaires) : 1 331 -> 1 401 relations vérifiées, relations à plus de 5 % d'écart : 24 -> 13.
