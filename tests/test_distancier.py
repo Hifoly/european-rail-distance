@@ -141,3 +141,19 @@ def test_chemin_suivant_les_lignes_d_un_autre_itineraire():
     assert r.chemin("A", "B").km == pytest.approx(10.0)                        # plus court : L1
     assert r.chemin("A", "B", lignes=["L2"]).km == pytest.approx(12.0)         # suit L2 (code SNCF sans voie)
     assert [l for l, _ in r.chemin("A", "B", lignes=["L2"]).lignes] == ["L2-1", "L2-2"]
+
+
+def test_concordance_en_pourcentage_ou_en_km():
+    from distancier.calcul import _concorde
+    rt = {"seuil_verification_pct": 1.0, "seuil_verification_km": 0.5}
+    assert _concorde(10.7, 10.3, 100 * (10.7 / 10.3 - 1), rt)        # 3,9 % mais 0,4 km
+    assert not _concorde(10.7, 9.9, 100 * (10.7 / 9.9 - 1), rt)      # 0,8 km
+    assert _concorde(300.0, 302.0, 100 * (300 / 302 - 1), rt)        # 0,7 %
+
+
+def test_plafond_du_detour_lgv(cfg):
+    cfg["routage"]["plafond_detour_lgv_pct"] = 3.0   # LGV ~4 % plus longue que la ligne classique
+    r = par_id(calcul.calculer(cfg))[1]
+    assert r["moteur"] == "sncf"
+    assert r["resultat"].km == pytest.approx(km(P, X, Q), rel=1e-3)
+    assert any("plus court chemin retenu" in x for x in r["remarques"])

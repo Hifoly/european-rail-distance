@@ -173,6 +173,12 @@ def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = No
             "sources": {n: {"description": m.source, "date_consultation": m.date} for n, m in moteurs.items()}}
 
 
+def _concorde(km: float, controle: float, ecart_pct: float, rt: dict) -> bool:
+    """Deux distances concordent si l'écart est sous le seuil en % OU sous le seuil en km
+    (trajets courts : la position de la gare sur la voie varie de quelques centaines de mètres)."""
+    return abs(ecart_pct) <= rt["seuil_verification_pct"] or abs(km - controle) <= rt.get("seuil_verification_km", 0)
+
+
 def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None) -> dict:
     go, gd = gares.get(rel["uic_origine"]), gares.get(rel["uic_destination"])
     ligne = {"id": rel["id"], "itineraire_retenu": rel["itineraire"], "remarques": []}
@@ -205,6 +211,18 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
         except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e2:
             return {**ligne, "statut": f"erreur : SNCF : {e} ; RINF : {e2}"}
         notes.insert(0, f"calcul SNCF impossible ({e}) : distance RINF, sans contrôle SNCF")
+    # Itinéraire « grande vitesse » trop long par rapport au plus court chemin (ex. demi-tour
+    # après la LGV) : on garde le plus court chemin du même moteur.
+    plafond = rt.get("plafond_detour_lgv_pct")
+    if plafond is not None and rel["itineraire"] == "grande_vitesse":
+        try:
+            court = principal.calculer(go, gd, "plus_court")[0]
+            if court.km > 0 and res.km > court.km * (1 + plafond / 100):
+                notes.append(f"itinéraire LGV plus long de {100 * (res.km / court.km - 1):+.1f} % que le plus court "
+                             f"chemin ({res.km:.1f} km) : plus court chemin retenu")
+                res = court
+        except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError):
+            pass
     # Détour SNCF nettement plus long que RINF : ligne probablement absente des tracés SNCF.
     ctl_rinf = None
     if not repli and nom_principal == "sncf" and "rinf" in moteurs:
@@ -253,7 +271,7 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
             ecart = 100 * (res.km / ctl.km - 1)
             ligne.update(distance_controle_km=round(ctl.km, 1), source_controle=autre.nom,
                          ecart_controle_pct=round(ecart, 2))
-            if abs(ecart) <= rt["seuil_verification_pct"]:
+            if _concorde(res.km, ctl.km, ecart, rt):
                 verifie.append(f"vérifié ({autre.nom.upper()})")
             elif abs(ecart) > rt.get("seuil_alerte_pct", math.inf):
                 alerte = True
@@ -265,7 +283,7 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
         if pk:
             ecart = 100 * (res.km / pk - 1)
             ligne.update(controle_pk_km=round(pk, 1), ecart_pk_pct=round(ecart, 2))
-            if abs(ecart) <= rt["seuil_verification_pct"]:
+            if _concorde(res.km, pk, ecart, rt):
                 verifie.append("vérifié (PK SNCF)")
 
     compl = sorted({lg for lg, _ in res.lignes} & getattr(principal, "complementaires", set()))
