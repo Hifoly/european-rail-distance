@@ -48,6 +48,8 @@ sources:
       lignes:   {id: formes-des-lignes-du-rfn, format: geojson}
       vitesses: {id: vitesse-maximale-nominale-sur-ligne, format: geojson}
       gares:    {id: liste-des-gares, format: csv}
+      # tracés voie par voie : seulement pour les lignes absentes des tracés de lignes (corrections.yaml)
+      voies:    {id: fichier-de-formes-des-voies-du-reseau-ferre-national, format: geojson}
     statuts_lignes: [EXPLOITE]   # valeur du champ « mnemo » des tracés
 
   rinf:

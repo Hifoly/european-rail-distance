@@ -52,7 +52,7 @@ def test_telechargement_sncf(cfg, monkeypatch):
     monkeypatch.setattr(http, "session", lambda: fausse)
     dossier = sncf.telecharger(cfg, jour="2026-09-28")
     man = http.lire_manifeste(dossier)
-    assert set(man["jeux"]) == {"lignes", "vitesses", "gares"}
+    assert set(man["jeux"]) == {"lignes", "vitesses", "gares", "voies"}
     assert man["jeux"]["gares"]["url"].endswith("/catalog/datasets/liste-des-gares/exports/csv")
     assert man["jeux"]["lignes"]["modifie_a_la_source"] == "2026-09-01T00:00:00Z"
     assert config.dossier_source(cfg, "sncf") == dossier   # le plus récent
