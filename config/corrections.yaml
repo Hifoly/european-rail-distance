@@ -43,6 +43,12 @@ lignes_exclues:
   # Lorraine, Strasbourg vers Haute-Picardie, Lille) par Laon et Chaulnes. RINF ne le connaît pas.
   # Constaté le 2026-09-28 (formes-des-lignes-du-rfn, jeu du 2022-03-24).
   - "226305"
+  # Ligne 076000 (RER B, branche de Roissy) et 025000 (CDG Express) : leurs extrémités à
+  # Aéroport-CDG-2 sont à moins de 150 m de l'Interconnexion Est (226310) et y étaient soudées,
+  # alors qu'aucune voie ne les relie. Les trajets TGV vers CDG passaient par le RER B et Paris.
+  # Aucune autre relation du périmètre ne les emprunte. Constaté le 2026-09-28.
+  - "076000"
+  - "025000"
 
 # Lignes absentes de formes-des-lignes-du-rfn mais présentes dans le fichier des voies SNCF
 # (fichier-de-formes-des-voies-du-reseau-ferre-national, jeu « voies » de settings.yaml) :
@@ -52,3 +58,12 @@ lignes_exclues:
 # l'Interconnexion Est (Roissy-CDG 2 TGV, Marne-la-Vallée-Chessy), 262000 (Douai - Valenciennes),
 # 657000 (Lamothe - Arcachon), 811000 (Sète), 514300 (Nantes).
 lignes_complementaires: ["070606", "145306", "226301", "226303", "226310", "228601", "242606", "242608", "242610", "245300", "261606", "262000", "272326", "292311", "299000", "314606", "335303", "340606", "354000", "365000", "383300", "408321", "431301", "450611", "514300", "523606", "523611", "534606", "578000", "586306", "606611", "657000", "753306", "768300", "811000", "830341", "849606", "860611", "867610", "880621", "898606", "905306", "905611", "939506"]
+
+# Ligne de rattachement des gares absentes de liste-des-gares (qui n'ont donc pas de PK SNCF) :
+# sans cela la gare est rattachée à la voie la plus proche, qui peut être une autre ligne.
+lignes_gares:
+  # Aéroport-CDG-2-TGV-Roissy : voie la plus proche = ligne 025000 (à 1 m), la gare TGV est sur
+  # l'Interconnexion Est (226310, à 17 m). Constaté le 2026-09-28.
+  "87271494": ["226310"]
+  # Marne-la-Vallée-Chessy : sur l'Interconnexion Est.
+  "87111849": ["226310"]

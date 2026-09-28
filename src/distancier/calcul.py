@@ -35,7 +35,9 @@ def charger_corrections(cfg: dict) -> dict:
         if r.get("valide"):  # raccord vérifié sur une carte : ne suffit plus à rendre la relation « à vérifier »
             valides[r["nom"]] = str(r["valide"])
     compl = {str(x["code"] if isinstance(x, dict) else x) for x in c.get("lignes_complementaires") or []}
-    return {"raccordements": racc, "valides": valides, "lignes_complementaires": compl,
+    lignes_gares = {str(u): tuple(str(l) for l in (ls if isinstance(ls, list) else [ls]))
+                    for u, ls in (c.get("lignes_gares") or {}).items()}
+    return {"raccordements": racc, "valides": valides, "lignes_complementaires": compl, "lignes_gares": lignes_gares,
             "lignes_exclues": {str(x) for x in c.get("lignes_exclues") or []}}
 
 
@@ -47,6 +49,7 @@ class MoteurSncf:
     def __init__(self, cfg: dict, jour: str | None, corrections: dict):
         from distancier.sources import sncf
         self.complementaires = corrections.get("lignes_complementaires", set())
+        self.lignes_gares = corrections.get("lignes_gares", {})
         d = sncf.charger(cfg, jour, self.complementaires)
         self.gares = d["gares"]
         self.source = sncf.description_source(d["manifeste"])
@@ -82,7 +85,8 @@ class MoteurSncf:
                 raise LookupError(f"{g['nom']} : absente du jeu SNCF des gares, saisir lat/lon dans config/gares.csv")
         try:
             for tag, g in (("O", go), ("D", gd)):
-                dist = self.routeur.rattacher(tag, g["lon"], g["lat"], tuple(g.get("pks", {})))
+                preferees = tuple(g.get("pks", {})) + self.lignes_gares.get(g["uic"], ())
+                dist = self.routeur.rattacher(tag, g["lon"], g["lat"], preferees)
                 if dist > 100:
                     notes.append(f"{g['nom']} rattachée à la voie à {dist:.0f} m")
             return self.routeur.chemin("O", "D", mode), notes
