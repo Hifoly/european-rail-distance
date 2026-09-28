@@ -62,6 +62,15 @@ def test_controles_et_statuts(resultat):
     assert r[4]["statut"].startswith("erreur")
 
 
+def test_repli_rinf_gare_hors_reseau_sncf(resultat):
+    r = par_id(resultat)[5]
+    assert r["moteur"] == "rinf"
+    assert r["resultat"].km == pytest.approx(37.25 + 55.6, rel=1e-3)
+    assert r["statut"] == "à vérifier"
+    assert "distance_controle_km" not in r
+    assert "calcul SNCF impossible" in r["remarques"][0]
+
+
 def test_export(cfg, resultat, tmp_path):
     fichiers = export.ecrire(resultat, cfg, tmp_path / "sortie", "test")
     principal = fichiers[0]

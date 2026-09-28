@@ -79,12 +79,15 @@ def cfg(tmp_path):
         {"uic": "87000001", "nom": "Pville", "pays": "FR", "lat": "", "lon": "", "uopid_rinf": "FRP", "note": ""},
         {"uic": "87000002", "nom": "Qville", "pays": "FR", "lat": "", "lon": "", "uopid_rinf": "", "note": ""},
         {"uic": "87000003", "nom": "Sville", "pays": "FR", "lat": "", "lon": "", "uopid_rinf": "", "note": ""},
+        # absente du jeu SNCF des gares, à 20 km de toute voie SNCF, mais point RINF connu
+        {"uic": "87000004", "nom": "Tville", "pays": "FR", "lat": "47.8", "lon": "2.0", "uopid_rinf": "FRS", "note": ""},
     ])
     _csv(tmp_path / "relations.csv", [
         {"id": 1, "uic_origine": "87000001", "uic_destination": "87000002", "itineraire": "grande_vitesse", "statut_force": "", "remarque": ""},
         {"id": 2, "uic_origine": "87000001", "uic_destination": "87000002", "itineraire": "plus_court", "statut_force": "", "remarque": ""},
         {"id": 3, "uic_origine": "87000001", "uic_destination": "87000003", "itineraire": "plus_court", "statut_force": "", "remarque": ""},
         {"id": 4, "uic_origine": "87000001", "uic_destination": "99999999", "itineraire": "plus_court", "statut_force": "", "remarque": ""},
+        {"id": 5, "uic_origine": "87000001", "uic_destination": "87000004", "itineraire": "plus_court", "statut_force": "", "remarque": ""},
     ])
     c["chemins"]["gares"] = str(tmp_path / "gares.csv")
     c["chemins"]["relations"] = str(tmp_path / "relations.csv")

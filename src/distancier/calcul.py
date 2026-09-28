@@ -180,11 +180,20 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
     principal = moteurs.get(nom_principal)
     if principal is None:
         return {**ligne, "statut": f"erreur : données {nom_principal} non téléchargées"}
-    ligne["moteur"] = nom_principal
+    repli = False
     try:
         res, notes = principal.calculer(go, gd, rel["itineraire"])
     except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e:
-        return {**ligne, "statut": f"erreur : {e}"}
+        # Gare hors du réseau SNCF (ligne absente des tracés) : repli sur RINF, sans contrôle.
+        if nom_principal != "sncf" or "rinf" not in moteurs:
+            return {**ligne, "statut": f"erreur : {e}"}
+        nom_principal, principal, repli = "rinf", moteurs["rinf"], True
+        try:
+            res, notes = principal.calculer(go, gd, rel["itineraire"])
+        except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e2:
+            return {**ligne, "statut": f"erreur : SNCF : {e} ; RINF : {e2}"}
+        notes.insert(0, f"calcul SNCF impossible ({e}) : distance RINF, sans contrôle SNCF")
+    ligne["moteur"] = nom_principal
     ligne["remarques"] += notes
     ligne["resultat"] = res
     ligne["source"] = principal.source
@@ -199,7 +208,7 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
         ligne["remarques"].append(f"itinéraire LGV privilégié ; le plus court chemin fait {ligne['distance_plus_courte_km']} km")
 
     verifie = []
-    autre = moteurs.get("rinf" if nom_principal == "sncf" else "sncf")
+    autre = None if repli else moteurs.get("rinf" if nom_principal == "sncf" else "sncf")
     if autre is not None and (autre.nom == "rinf" or tous_sncf):
         try:
             ctl, _ = autre.calculer(go, gd, rel["itineraire"])
@@ -222,7 +231,7 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
         ligne["remarques"].append("emprunte un raccordement ajouté à la main : " + ", ".join(res.manuels))
     if rel.get("statut_force"):
         ligne["statut"] = rel["statut_force"]
-    elif res.manuels:
+    elif res.manuels or repli:
         ligne["statut"] = "à vérifier"
     elif verifie:
         ligne["statut"] = verifie[0]

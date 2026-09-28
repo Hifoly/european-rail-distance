@@ -51,9 +51,15 @@ nouvelles à grande vitesse) : LGV au-delà de 95 %, classique sous 5 %, mixte e
 |---|---|
 | `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près |
 | `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près |
-| `à vérifier` | raccordement manuel emprunté, ou statut forcé dans `relations.csv` |
+| `à vérifier` | raccordement manuel emprunté, repli sur RINF (voir ci-dessous), ou statut forcé dans `relations.csv` |
 | `estimé` | aucun contrôle concluant |
 | `erreur : …` | gare inconnue, source absente ou pas d'itinéraire |
+
+**Repli sur RINF.** Quand le moteur SNCF ne peut pas calculer une relation française (gare à
+plus de `distance_max_rattachement_m` de toute voie SNCF, ou pas d'itinéraire), la distance est
+calculée sur RINF, sans contrôle SNCF, et la relation est marquée `à vérifier`. Cas connus au
+2026-09-28 : Marne-la-Vallée-Chessy (Interconnexion Est absente des tracés SNCF), Arcachon et
+La Teste (branche Lamothe–Arcachon absente).
 
 ## Résultats de référence (POC du 2026-09-28)
 
