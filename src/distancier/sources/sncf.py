@@ -4,6 +4,9 @@ Jeux utilisés (identifiants dans config/settings.yaml) :
 - formes-des-lignes-du-rfn : tracés des lignes (champs code_ligne, mnemo, pk_debut_r, pk_fin_r)
 - vitesse-maximale-nominale-sur-ligne : v_max par tronçon (code_ligne, v_max, pkd, pkf)
 - liste-des-gares : code_uic, libelle, code_ligne, pk, x_wgs84, y_wgs84 (une ligne par gare × ligne)
+- fichier-de-formes-des-voies-du-reseau-ferre-national : tracés voie par voie (code_ligne, nom_voie,
+  pk_debut_r, pk_fin_r). Sert seulement pour les lignes absentes de formes-des-lignes-du-rfn, listées
+  dans config/corrections.yaml (lignes_complementaires).
 """
 from __future__ import annotations
 
@@ -83,7 +86,24 @@ def dernieres_gares(cfg: dict) -> dict[str, dict]:
     return lire_gares(dossier / man["jeux"]["gares"]["fichier"])
 
 
-def charger(cfg: dict, jour: str | None = None) -> dict:
+def _voies_complementaires(chemin: Path, codes: set[str]) -> list[Troncon]:
+    """Pour chaque ligne demandée, la voie la plus longue du fichier des voies (une seule, pour ne pas doubler)."""
+    meilleures: dict[str, tuple] = {}
+    for p, g in _features(chemin):
+        code = str(p["code_ligne"])
+        if code not in codes:
+            continue
+        for part in _lignes_simples(g):
+            if code not in meilleures or part.length > meilleures[code][1].length:
+                meilleures[code] = (p, part)
+    manquantes = sorted(codes - set(meilleures))
+    if manquantes:
+        log.warning("lignes complémentaires absentes du fichier des voies : %s", ", ".join(manquantes))
+    return [Troncon(code, g, parse_pk(p.get("pk_debut_r")), parse_pk(p.get("pk_fin_r")))
+            for code, (p, g) in sorted(meilleures.items())]
+
+
+def charger(cfg: dict, jour: str | None = None, complementaires: set[str] | frozenset = frozenset()) -> dict:
     src = cfg["sources"]["sncf"]
     dossier = config.dossier_source(cfg, "sncf", jour)
     man = http.lire_manifeste(dossier)
@@ -96,6 +116,13 @@ def charger(cfg: dict, jour: str | None = None) -> dict:
             continue
         for part in _lignes_simples(g):
             troncons.append(Troncon(str(p["code_ligne"]), part, parse_pk(p.get("pk_debut_r")), parse_pk(p.get("pk_fin_r"))))
+
+    if complementaires:
+        if "voies" in fichiers:
+            deja = {t.ligne for t in troncons}
+            troncons += _voies_complementaires(fichiers["voies"], set(complementaires) - deja)
+        else:
+            log.warning("jeu des voies non téléchargé : lignes complémentaires ignorées (relancer « distancier telecharger »)")
 
     vitesses = []
     for p, g in _features(fichiers["vitesses"]):

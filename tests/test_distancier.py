@@ -62,6 +62,15 @@ def test_controles_et_statuts(resultat):
     assert r[4]["statut"].startswith("erreur")
 
 
+def test_repli_rinf_gare_hors_reseau_sncf(resultat):
+    r = par_id(resultat)[5]
+    assert r["moteur"] == "rinf"
+    assert r["resultat"].km == pytest.approx(37.25 + 55.6, rel=1e-3)
+    assert r["statut"] == "à vérifier"
+    assert "distance_controle_km" not in r
+    assert "calcul SNCF impossible" in r["remarques"][0]
+
+
 def test_export(cfg, resultat, tmp_path):
     fichiers = export.ecrire(resultat, cfg, tmp_path / "sortie", "test")
     principal = fichiers[0]
@@ -80,3 +89,71 @@ def test_export(cfg, resultat, tmp_path):
 def test_cache_du_graphe(cfg):
     calcul.calculer(cfg)
     assert list((cfg["_racine"] / cfg["chemins"]["intermediaire"]).glob("graphe_sncf_2026-01-01_*.pkl"))
+
+
+def test_detour_sncf_excessif_bascule_sur_rinf(cfg):
+    cfg["routage"]["seuil_alerte_pct"] = 3.0   # LGV (SNCF, ~4 % plus longue) contre ligne classique (RINF)
+    r = par_id(calcul.calculer(cfg))[1]
+    assert r["moteur"] == "rinf"
+    assert r["resultat"].km == pytest.approx(km(P, X, Q), rel=1e-3)
+    assert r["statut"] == "à vérifier"
+    assert "distance_controle_km" not in r
+    assert "détour SNCF" in r["remarques"][0]
+
+
+def test_raccordement_manuel_en_pleine_ligne():
+    import networkx as nx
+    from shapely.geometry import LineString
+    from distancier.reseau import Raccordement, Troncon, construire_graphe
+
+    a = Troncon("A", LineString([(2.0, 48.0), (2.5, 48.0), (3.0, 48.0)]))
+    b = Troncon("B", LineString([(2.5, 48.01), (2.5, 48.5)]))   # s'arrête à ~1,1 km de A
+    assert nx.number_connected_components(construire_graphe([a, b], [])) == 2
+    r = Raccordement("test", (2.5, 48.01), (2.5, 48.0))
+    G = construire_graphe([a, b], [], raccordements=[r])
+    assert nx.number_connected_components(G) == 1
+    assert sum(1 for *_, d in G.edges(data=True) if d["ligne"] == "A") == 2   # A coupée au raccord
+
+
+@pytest.mark.parametrize("valide,statut", [(None, "à vérifier"), ("OpenRailwayMap, 2026-01-03", "estimé")])
+def test_raccordement_valide_ne_force_plus_a_verifier(cfg, valide, statut):
+    import yaml
+    racc = {"nom": "raccourci P-S", "source": "sncf", "de": list(P), "a": list(S)}
+    if valide:
+        racc["valide"] = valide
+    (cfg["_racine"] / cfg["chemins"]["corrections"]).write_text(
+        yaml.safe_dump({"raccordements": [racc], "lignes_exclues": []}, allow_unicode=True), encoding="utf-8")
+    cfg["routage"]["seuil_alerte_pct"] = 1000.0   # garder SNCF malgré l'écart avec RINF
+    r = par_id(calcul.calculer(cfg))[3]
+    assert r["resultat"].manuels == ["raccourci P-S"]
+    assert r["statut"] == statut
+    assert any("raccourci P-S" in x for x in r["remarques"])
+
+
+def test_chemin_suivant_les_lignes_d_un_autre_itineraire():
+    import networkx as nx
+    from distancier.routage import Routeur
+
+    G = nx.MultiGraph()
+    for u, v, km, ligne in (("A", "B", 10.0, "L1-1"), ("A", "C", 6.0, "L2-1"), ("C", "B", 6.0, "L2-2")):
+        G.add_edge(u, v, km=km, ligne=ligne, profil=[160], sens=(u, v), manuel=None)
+    r = Routeur(G)
+    assert r.chemin("A", "B").km == pytest.approx(10.0)                        # plus court : L1
+    assert r.chemin("A", "B", lignes=["L2"]).km == pytest.approx(12.0)         # suit L2 (code SNCF sans voie)
+    assert [l for l, _ in r.chemin("A", "B", lignes=["L2"]).lignes] == ["L2-1", "L2-2"]
+
+
+def test_concordance_en_pourcentage_ou_en_km():
+    from distancier.calcul import _concorde
+    rt = {"seuil_verification_pct": 1.0, "seuil_verification_km": 0.5}
+    assert _concorde(10.7, 10.3, 100 * (10.7 / 10.3 - 1), rt)        # 3,9 % mais 0,4 km
+    assert not _concorde(10.7, 9.9, 100 * (10.7 / 9.9 - 1), rt)      # 0,8 km
+    assert _concorde(300.0, 302.0, 100 * (300 / 302 - 1), rt)        # 0,7 %
+
+
+def test_plafond_du_detour_lgv(cfg):
+    cfg["routage"]["plafond_detour_lgv_pct"] = 3.0   # LGV ~4 % plus longue que la ligne classique
+    r = par_id(calcul.calculer(cfg))[1]
+    assert r["moteur"] == "sncf"
+    assert r["resultat"].km == pytest.approx(km(P, X, Q), rel=1e-3)
+    assert any("plus court chemin retenu" in x for x in r["remarques"])

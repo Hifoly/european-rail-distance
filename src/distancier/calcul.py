@@ -5,6 +5,7 @@ import csv
 import hashlib
 import json
 import logging
+import math
 import pickle
 from pathlib import Path
 
@@ -27,10 +28,17 @@ def charger_corrections(cfg: dict) -> dict:
     p = config.chemin(cfg, "corrections")
     c = (yaml.safe_load(p.read_text(encoding="utf-8")) if p.exists() else None) or {}
     racc = {"sncf": [], "rinf": []}
+    valides = {}
     for r in c.get("raccordements") or []:
         racc[r.get("source", "sncf")].append(
             Raccordement(r["nom"], tuple(r["de"]), tuple(r["a"]), r.get("v_max"), r.get("note", "")))
-    return {"raccordements": racc, "lignes_exclues": {str(x) for x in c.get("lignes_exclues") or []}}
+        if r.get("valide"):  # raccord vérifié sur une carte : ne suffit plus à rendre la relation « à vérifier »
+            valides[r["nom"]] = str(r["valide"])
+    compl = {str(x["code"] if isinstance(x, dict) else x) for x in c.get("lignes_complementaires") or []}
+    lignes_gares = {str(u): tuple(str(l) for l in (ls if isinstance(ls, list) else [ls]))
+                    for u, ls in (c.get("lignes_gares") or {}).items()}
+    return {"raccordements": racc, "valides": valides, "lignes_complementaires": compl, "lignes_gares": lignes_gares,
+            "lignes_exclues": {str(x) for x in c.get("lignes_exclues") or []}}
 
 
 # --- moteurs -----------------------------------------------------------------------
@@ -40,7 +48,9 @@ class MoteurSncf:
 
     def __init__(self, cfg: dict, jour: str | None, corrections: dict):
         from distancier.sources import sncf
-        d = sncf.charger(cfg, jour)
+        self.complementaires = corrections.get("lignes_complementaires", set())
+        self.lignes_gares = corrections.get("lignes_gares", {})
+        d = sncf.charger(cfg, jour, self.complementaires)
         self.gares = d["gares"]
         self.source = sncf.description_source(d["manifeste"])
         self.date = sncf.date_consultation(d["manifeste"])
@@ -48,7 +58,8 @@ class MoteurSncf:
         troncons = [t for t in d["troncons"] if t.ligne not in corrections["lignes_exclues"]]
         params = dict(cfg["reseau"], crs=cfg["crs_metrique"])
         racc = corrections["raccordements"]["sncf"]
-        cle = hashlib.sha1(json.dumps([params, [r.__dict__ for r in racc], sorted(corrections["lignes_exclues"])],
+        cle = hashlib.sha1(json.dumps([params, [r.__dict__ for r in racc], sorted(corrections["lignes_exclues"]),
+                                       sorted(self.complementaires)],
                                       sort_keys=True, default=str).encode()).hexdigest()[:10]
         cache = config.chemin(cfg, "intermediaire") / f"graphe_sncf_{d['jour']}_{cle}.pkl"
         if cache.exists():
@@ -74,7 +85,8 @@ class MoteurSncf:
                 raise LookupError(f"{g['nom']} : absente du jeu SNCF des gares, saisir lat/lon dans config/gares.csv")
         try:
             for tag, g in (("O", go), ("D", gd)):
-                dist = self.routeur.rattacher(tag, g["lon"], g["lat"], tuple(g.get("pks", {})))
+                preferees = tuple(g.get("pks", {})) + self.lignes_gares.get(g["uic"], ())
+                dist = self.routeur.rattacher(tag, g["lon"], g["lat"], preferees)
                 if dist > 100:
                     notes.append(f"{g['nom']} rattachée à la voie à {dist:.0f} m")
             return self.routeur.chemin("O", "D", mode), notes
@@ -114,10 +126,10 @@ class MoteurRinf:
         return n, [f"{g['nom']} associée au point RINF {n} ({G.nodes[n].get('nom')}, à {dist:.0f} m) : "
                    f"renseigner uopid_rinf pour figer"]
 
-    def calculer(self, go: dict, gd: dict, mode: str) -> tuple[Resultat, list[str]]:
+    def calculer(self, go: dict, gd: dict, mode: str, lignes=None) -> tuple[Resultat, list[str]]:
         o, n1 = self.point(go)
         d, n2 = self.point(gd)
-        return self.routeur.chemin(o, d, mode), n1 + n2
+        return self.routeur.chemin(o, d, mode, lignes), n1 + n2
 
 
 # --- calcul ------------------------------------------------------------------------
@@ -155,13 +167,19 @@ def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = No
     rt = cfg["routage"]
     lignes = []
     for rel in lire_csv(config.chemin(cfg, "relations")):
-        lignes.append(_relation(rel, gares, moteurs, cfg, rt))
+        lignes.append(_relation(rel, gares, moteurs, cfg, rt, corrections["valides"]))
     vitesses = sorted({v for m in moteurs.values() for v in m.vitesses}, reverse=True)
     return {"relations": lignes, "vitesses": vitesses,
             "sources": {n: {"description": m.source, "date_consultation": m.date} for n, m in moteurs.items()}}
 
 
-def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dict:
+def _concorde(km: float, controle: float, ecart_pct: float, rt: dict) -> bool:
+    """Deux distances concordent si l'écart est sous le seuil en % OU sous le seuil en km
+    (trajets courts : la position de la gare sur la voie varie de quelques centaines de mètres)."""
+    return abs(ecart_pct) <= rt["seuil_verification_pct"] or abs(km - controle) <= rt.get("seuil_verification_km", 0)
+
+
+def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None) -> dict:
     go, gd = gares.get(rel["uic_origine"]), gares.get(rel["uic_destination"])
     ligne = {"id": rel["id"], "itineraire_retenu": rel["itineraire"], "remarques": []}
     if rel.get("remarque"):
@@ -180,11 +198,45 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
     principal = moteurs.get(nom_principal)
     if principal is None:
         return {**ligne, "statut": f"erreur : données {nom_principal} non téléchargées"}
-    ligne["moteur"] = nom_principal
+    repli = False
     try:
         res, notes = principal.calculer(go, gd, rel["itineraire"])
     except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e:
-        return {**ligne, "statut": f"erreur : {e}"}
+        # Gare hors du réseau SNCF (ligne absente des tracés) : repli sur RINF, sans contrôle.
+        if nom_principal != "sncf" or "rinf" not in moteurs:
+            return {**ligne, "statut": f"erreur : {e}"}
+        nom_principal, principal, repli = "rinf", moteurs["rinf"], True
+        try:
+            res, notes = principal.calculer(go, gd, rel["itineraire"])
+        except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e2:
+            return {**ligne, "statut": f"erreur : SNCF : {e} ; RINF : {e2}"}
+        notes.insert(0, f"calcul SNCF impossible ({e}) : distance RINF, sans contrôle SNCF")
+    # Itinéraire « grande vitesse » trop long par rapport au plus court chemin (ex. demi-tour
+    # après la LGV) : on garde le plus court chemin du même moteur.
+    plafond = rt.get("plafond_detour_lgv_pct")
+    if plafond is not None and rel["itineraire"] == "grande_vitesse":
+        try:
+            court = principal.calculer(go, gd, "plus_court")[0]
+            if court.km > 0 and res.km > court.km * (1 + plafond / 100):
+                notes.append(f"itinéraire LGV plus long de {100 * (res.km / court.km - 1):+.1f} % que le plus court "
+                             f"chemin ({res.km:.1f} km) : plus court chemin retenu")
+                res = court
+        except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError):
+            pass
+    # Détour SNCF nettement plus long que RINF : ligne probablement absente des tracés SNCF.
+    ctl_rinf = None
+    if not repli and nom_principal == "sncf" and "rinf" in moteurs:
+        try:
+            ctl_rinf = moteurs["rinf"].calculer(go, gd, rel["itineraire"])[0]
+        except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError):
+            pass
+        if ctl_rinf is not None and ctl_rinf.km > 0 \
+                and res.km > ctl_rinf.km * (1 + rt.get("seuil_alerte_pct", math.inf) / 100):
+            detour = 100 * (res.km / ctl_rinf.km - 1)
+            notes = [f"détour SNCF de {detour:+.1f} % ({res.km:.1f} km, ligne probablement absente des tracés) : "
+                     f"distance RINF, sans contrôle SNCF"] + moteurs["rinf"].calculer(go, gd, rel["itineraire"])[1]
+            nom_principal, principal, repli, res = "rinf", moteurs["rinf"], True, ctl_rinf
+    ligne["moteur"] = nom_principal
     ligne["remarques"] += notes
     ligne["resultat"] = res
     ligne["source"] = principal.source
@@ -198,16 +250,32 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
             and ligne["distance_plus_courte_km"] < res.km - 0.5:
         ligne["remarques"].append(f"itinéraire LGV privilégié ; le plus court chemin fait {ligne['distance_plus_courte_km']} km")
 
-    verifie = []
-    autre = moteurs.get("rinf" if nom_principal == "sncf" else "sncf")
+    verifie, alerte = [], False
+    autre = None if repli else moteurs.get("rinf" if nom_principal == "sncf" else "sncf")
     if autre is not None and (autre.nom == "rinf" or tous_sncf):
         try:
-            ctl, _ = autre.calculer(go, gd, rel["itineraire"])
+            ctl = ctl_rinf if autre.nom == "rinf" and ctl_rinf is not None else autre.calculer(go, gd, rel["itineraire"])[0]
+            if autre.nom == "rinf" and nom_principal == "sncf":
+                # Second contrôle RINF sur le même itinéraire (lignes empruntées côté SNCF, même mode) :
+                # les vitesses des deux sources diffèrent, chaque moteur peut choisir un autre itinéraire.
+                # On garde celui des deux contrôles RINF le plus proche, et on dit lequel.
+                try:
+                    suivi = autre.calculer(go, gd, rel["itineraire"], [l for l, _ in res.lignes if l != "MANUEL"])[0]
+                    if suivi.km > 0 and (ctl.km <= 0 or abs(res.km - suivi.km) < abs(res.km - ctl.km)):
+                        ctl = suivi
+                        ligne["remarques"].append("contrôle RINF sur les lignes de l'itinéraire SNCF")
+                except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError):
+                    pass
+            if ctl.km <= 0:
+                raise LookupError(f"distance nulle sur {autre.nom} (même point aux deux bouts)")
             ecart = 100 * (res.km / ctl.km - 1)
             ligne.update(distance_controle_km=round(ctl.km, 1), source_controle=autre.nom,
                          ecart_controle_pct=round(ecart, 2))
-            if abs(ecart) <= rt["seuil_verification_pct"]:
+            if _concorde(res.km, ctl.km, ecart, rt):
                 verifie.append(f"vérifié ({autre.nom.upper()})")
+            elif abs(ecart) > rt.get("seuil_alerte_pct", math.inf):
+                alerte = True
+                ligne["remarques"].append(f"écart de {ecart:+.1f} % avec {autre.nom.upper()} : trou probable dans un des réseaux")
         except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e:
             ligne["remarques"].append(f"contrôle {autre.nom} impossible : {e}")
     if nom_principal == "sncf":
@@ -215,14 +283,23 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
         if pk:
             ecart = 100 * (res.km / pk - 1)
             ligne.update(controle_pk_km=round(pk, 1), ecart_pk_pct=round(ecart, 2))
-            if abs(ecart) <= rt["seuil_verification_pct"]:
+            if _concorde(res.km, pk, ecart, rt):
                 verifie.append("vérifié (PK SNCF)")
 
-    if res.manuels:
-        ligne["remarques"].append("emprunte un raccordement ajouté à la main : " + ", ".join(res.manuels))
+    compl = sorted({lg for lg, _ in res.lignes} & getattr(principal, "complementaires", set()))
+    if compl:
+        ligne["remarques"].append("emprunte une ligne absente de formes-des-lignes-du-rfn, tracé repris du "
+                                  "fichier des voies SNCF : " + ", ".join(compl))
+    valides = valides or {}
+    non_valides = [m for m in res.manuels if m not in valides]
+    if non_valides:
+        ligne["remarques"].append("emprunte un raccordement ajouté à la main : " + ", ".join(non_valides))
+    for m in res.manuels:
+        if m in valides:
+            ligne["remarques"].append(f"emprunte un raccordement ajouté à la main, validé ({valides[m]}) : {m}")
     if rel.get("statut_force"):
         ligne["statut"] = rel["statut_force"]
-    elif res.manuels:
+    elif non_valides or repli or alerte:
         ligne["statut"] = "à vérifier"
     elif verifie:
         ligne["statut"] = verifie[0]

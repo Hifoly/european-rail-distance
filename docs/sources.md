@@ -14,26 +14,42 @@ métadonnées (date de mise à jour, licence) : `GET {base_url}/catalog/datasets
 | lignes | `formes-des-lignes-du-rfn` (GeoJSON) | code_ligne, mnemo (statut : on garde EXPLOITE), pk_debut_r, pk_fin_r, géométrie |
 | vitesses | `vitesse-maximale-nominale-sur-ligne` (GeoJSON) | code_ligne, v_max (km/h), pkd, pkf, géométrie |
 | gares | `liste-des-gares` (CSV `;`) | code_uic, libelle, code_ligne, pk, x_wgs84, y_wgs84 |
+| voies | `fichier-de-formes-des-voies-du-reseau-ferre-national` (GeoJSON) | code_ligne, nom_voie, pk_debut_r, pk_fin_r, géométrie ; seulement pour les `lignes_complementaires` de corrections.yaml |
 
 Constats sur les fichiers du 2026-09-28 :
 - aucun jeu n'indique si une ligne est une LGV ; le classement se fait par la vitesse ;
 - `liste-des-gares` a une ligne par couple gare × ligne ; Paris-Montparnasse et
   Marne-la-Vallée-Chessy en sont absentes ;
 - les tracés n'ont ni la LGV Interconnexion Est (Roissy–Chessy) ni le raccordement de Pasilly ;
+  plus généralement 66 codes de ligne du fichier des voies (tracés voie par voie, modifié en 2020)
+  manquent aux tracés de lignes. Les 44 qui existent aussi dans RINF (donc exploités) sont repris
+  du fichier des voies, voie la plus longue de chaque ligne (`lignes_complementaires`), dont
+  226310 Interconnexion Est, 262000 Douai–Valenciennes, 657000 Lamothe–Arcachon, 811000 à Sète.
+  Sans vitesse dans le jeu des vitesses, leurs km vont en `dont_km_vitesse_inconnue` ;
+- le raccordement 226305 (Chaulnes, LGV Nord vers la ligne 259000, voie de service à 50 km/h)
+  est écarté (`lignes_exclues`) : il faisait passer les trajets Est–Nord par Laon et Chaulnes ;
 - PK incohérents sur certains tronçons (ligne 590000) ;
 - le jeu des vitesses couvre 99 % des km exploités.
 
 ## RINF (Registre de l'infrastructure, ERA)
 
 Le RINF est publié par l'Agence de l'Union européenne pour les chemins de fer sous forme
-de graphe de connaissances interrogeable en SPARQL (https://data-interop.era.europa.eu).
+de graphe de connaissances interrogeable en SPARQL
+(https://rinf.data.era.europa.eu/api/v1/sparql/rinf, vérifié le 2026-09-28).
 Il couvre les 7 pays du projet de façon homogène (la Suisse y contribue).
 
 - `queries/rinf_sections.rq` : sections de ligne (era:SectionOfLine) d'un pays, avec
-  longueur (era:length), points d'exploitation de début et de fin (uopid) et vitesse
-  maximale des voies (max de era:maximumPermittedSpeed).
+  longueur (era:lengthOfSectionOfLine, en km), points d'exploitation de début et de fin
+  (uopid), ligne (era:nationalLine/era:lineId) et vitesse maximale des voies
+  (max de era:maximumPermittedSpeed sur les voies era:hasPart).
 - `queries/rinf_points.rq` : points d'exploitation (era:OperationalPoint) avec nom,
-  position et type.
+  position (era:netReference, wgs84 lat/long) et type.
+- Les objets du graphe sont versionnés (era:validity) : les requêtes ne gardent que la
+  version valide le jour du téléchargement.
+- Environ 1 500 sections françaises (souvent autour des faisceaux) ont une longueur déclarée
+  plus courte que la ligne droite entre leurs points d'exploitation, parfois 0 km : le plus court
+  chemin s'y engouffrait et RINF sortait 2 à 8 % trop court. Ces sections prennent la longueur de
+  la ligne droite (constat du 2026-09-28 ; Bordeaux–Toulouse passe de 238,7 à 256,4 km, PK SNCF 256,4).
 
 Les requêtes sont paginées (`taille_page` dans `settings.yaml`). La longueur est attendue
 en mètres ; si la médiane des longueurs est inférieure à 100, le code considère qu'elles

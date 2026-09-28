@@ -4,7 +4,9 @@
 
 1. **Graphe.** Les tracés des lignes exploitées sont projetés en mètres (ETRS89-LAEA,
    EPSG:3035). Chaque tracé est coupé là où l'extrémité d'un autre tracé le touche à moins
-   de 50 m (bifurcations en T) ; les extrémités à moins de 50 m sont fusionnées en un nœud.
+   de 150 m (bifurcations en T) ; les extrémités à moins de 150 m sont fusionnées en un nœud.
+   Avec 50 m, des tracés dessinés en décalage restaient déconnectés (ex. ligne 500000 à
+   Saintes, 122 m : Nantes–Bordeaux passait par Tours).
 2. **Longueurs.** La longueur de chaque arête est géodésique (ellipsoïde GRS80), calculée
    sur les coordonnées d'origine : la projection ne sert qu'à la topologie.
 3. **Vitesses.** Tous les 100 m, on lit la vitesse maximale nominale du tronçon de
@@ -47,11 +49,23 @@ nouvelles à grande vitesse) : LGV au-delà de 95 %, classique sous 5 %, mixte e
 
 | statut | condition |
 |---|---|
-| `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près |
+| `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près ; pour une relation calculée sur SNCF, deux contrôles RINF sont calculés (itinéraire RINF autonome, et itinéraire suivant les lignes SNCF, même mode, lignes hors itinéraire pénalisées ×5) ; le plus proche est retenu et la remarque dit lequel |
 | `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près |
-| `à vérifier` | raccordement manuel emprunté, ou statut forcé dans `relations.csv` |
+| `à vérifier` | raccordement manuel emprunté et non validé sur carte (clé `valide` de `corrections.yaml`), repli sur RINF (voir ci-dessous), écart avec le contrôle supérieur à `seuil_alerte_pct` (10 %, trou probable dans un des réseaux), ou statut forcé dans `relations.csv` |
 | `estimé` | aucun contrôle concluant |
 | `erreur : …` | gare inconnue, source absente ou pas d'itinéraire |
+
+**Repli sur RINF.** Quand le moteur SNCF ne peut pas calculer une relation française (gare à
+plus de `distance_max_rattachement_m` de toute voie SNCF, ou pas d'itinéraire), la distance est
+calculée sur RINF, sans contrôle SNCF, et la relation est marquée `à vérifier`. Cas connus au
+2026-09-28 : Marne-la-Vallée-Chessy (Interconnexion Est absente des tracés SNCF), Arcachon et
+La Teste (branche Lamothe–Arcachon absente).
+
+**Détour SNCF.** Quand la distance SNCF dépasse la distance RINF de plus de `seuil_alerte_pct`
+(10 %), une ligne manque probablement aux tracés SNCF : la distance RINF est retenue, sans
+contrôle, et la relation est `à vérifier` (ex. Douai–Valenciennes : SNCF 68,0 km par détour, RINF
+35,4 km ; la ligne Douai–Somain–Valenciennes est absente des tracés au 2026-09-28). Quand c'est
+RINF qui est plus long, la distance SNCF est gardée et la relation est `à vérifier`.
 
 ## Résultats de référence (POC du 2026-09-28)
 
@@ -60,3 +74,19 @@ donnent les mêmes distances à 0,6 km près, sauf Paris-Gare-de-Lyon–Montpell
 (738,7 km au lieu de 741,8) : le contournement Nîmes–Montpellier est limité à 220 km/h,
 il n'est donc plus privilégié comme LGV et l'itinéraire reprend la ligne classique
 après Nîmes. Écart aux PK SNCF : +0,09 % sur Bordeaux–Toulouse, −0,15 % sur Marseille–Nice.
+
+**Contrôle sur le même itinéraire.** SNCF et RINF ne portent pas les mêmes vitesses : en mode
+`grande_vitesse`, chaque moteur choisissait souvent un itinéraire différent (ex. Beaune–St-Raphaël :
+SNCF 634,0 km ; RINF 647,1 km en grande vitesse mais 630,6 km en plus court chemin), ce qui mesurait
+l'écart entre deux itinéraires et non entre deux sources. Depuis le 2026-09-29, le contrôle RINF d'une
+relation SNCF emprunte les mêmes lignes (codes `code_ligne`, voie RINF ignorée), dans le même mode
+d'itinéraire (`grande_vitesse` ou `plus_court`) : en plus court chemin, une ligne présente aux deux bouts
+du trajet (ex. 070000 pour Paris-Est–Châlons) permettait de couper l'itinéraire LGV. À défaut de chemin,
+le contrôle revient au calcul RINF autonome. Effet sur les 1 593 couples du périmètre (avec les lignes
+complémentaires) : 1 331 -> 1 401 relations vérifiées, relations à plus de 5 % d'écart : 24 -> 13.
+
+Suivre les lignes SNCF échoue quand une même ligne se retrouve aux deux bouts du trajet : le contrôle
+peut rester sur cette ligne et couper l'itinéraire LGV (Avignon-Centre–Valence : SNCF 136,5 km par la
+LGV, RINF autonome 136,7 km, RINF « suivi » 124,5 km par la ligne 830000). Les deux contrôles RINF sont
+donc calculés et le plus proche est retenu : deux calculs RINF indépendants de la distance SNCF, sur le
+même critère d'itinéraire. Effet : 1 401 -> 1 420 relations vérifiées, écart > 5 % : 13 -> 9.

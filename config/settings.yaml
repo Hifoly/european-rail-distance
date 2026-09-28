@@ -14,7 +14,7 @@ chemins:
 crs_metrique: 3035
 
 reseau:
-  tolerance_noeud_m: 50              # deux extrémités à moins de 50 m = même nœud
+  tolerance_noeud_m: 150             # deux extrémités à moins de 150 m = même nœud (50 m laissait des trous, ex. Saintes)
   pas_echantillonnage_vitesse_m: 100 # une vitesse lue tous les 100 m de voie
   tolerance_vitesse_m: 25            # distance max entre tracé et tronçon de vitesse
   distance_max_rattachement_m: 300   # distance max gare -> voie
@@ -24,6 +24,10 @@ routage:
   facteur_lgv: 0.75            # itinéraire « grande vitesse » : 1 km de LGV compte 0,75 km
   part_lgv_type_lgv_pct: 95    # type_ligne = LGV au-delà, classique en dessous de 100 - 95
   seuil_verification_pct: 1.0  # écart max entre deux sources pour passer « vérifié »
+  seuil_verification_km: 0.5   # ... ou écart absolu max (trajets courts), choix d'Aloïs le 2026-09-28
+  seuil_alerte_pct: 10.0       # au-delà, écart avec le contrôle => « à vérifier » (trou probable)
+  # plafond_detour_lgv_pct: 5.0  # itinéraire LGV > plus court chemin + x % : plus court chemin retenu.
+  #   Désactivé : à 5 %, 86 relations perdaient leur itinéraire TGV (Rennes-Marseille par la province).
   part_ligne_controle_pk_pct: 95  # contrôle par PK si >= 95 % du trajet est sur une seule ligne
 
 # Moteur de calcul principal par pays. Une relation dont les deux gares sont dans un
@@ -47,14 +51,16 @@ sources:
       lignes:   {id: formes-des-lignes-du-rfn, format: geojson}
       vitesses: {id: vitesse-maximale-nominale-sur-ligne, format: geojson}
       gares:    {id: liste-des-gares, format: csv}
+      # tracés voie par voie : seulement pour les lignes absentes des tracés de lignes (corrections.yaml)
+      voies:    {id: fichier-de-formes-des-voies-du-reseau-ferre-national, format: geojson}
     statuts_lignes: [EXPLOITE]   # valeur du champ « mnemo » des tracés
 
   rinf:
     nom: ERA RINF (Knowledge Graph)
-    # À CONFIRMER : adresse du point d'accès SPARQL public de l'ERA
-    # (voir data-interop.era.europa.eu, rubrique SPARQL). Surchargeable par la
-    # variable d'environnement RINF_SPARQL_ENDPOINT.
-    endpoint: https://data-interop.era.europa.eu/api/sparql
+    # Point d'accès SPARQL public de l'ERA, vérifié le 2026-09-28 (répond ;
+    # l'ancienne adresse data-interop.era.europa.eu/api/sparql ne répondait pas).
+    # Surchargeable par la variable d'environnement RINF_SPARQL_ENDPOINT.
+    endpoint: https://rinf.data.era.europa.eu/api/v1/sparql/rinf
     taille_page: 10000
     pays:              # code du projet -> code pays du référentiel UE
       FR: FRA
