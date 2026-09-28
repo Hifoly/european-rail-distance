@@ -91,12 +91,14 @@ def test_cache_du_graphe(cfg):
     assert list((cfg["_racine"] / cfg["chemins"]["intermediaire"]).glob("graphe_sncf_2026-01-01_*.pkl"))
 
 
-def test_ecart_de_controle_excessif_passe_a_verifier(cfg):
-    cfg["routage"]["seuil_alerte_pct"] = 3.0   # LGV (SNCF) contre ligne classique (RINF) : ~4 %
+def test_detour_sncf_excessif_bascule_sur_rinf(cfg):
+    cfg["routage"]["seuil_alerte_pct"] = 3.0   # LGV (SNCF, ~4 % plus longue) contre ligne classique (RINF)
     r = par_id(calcul.calculer(cfg))[1]
-    assert r["ecart_controle_pct"] > 3
+    assert r["moteur"] == "rinf"
+    assert r["resultat"].km == pytest.approx(km(P, X, Q), rel=1e-3)
     assert r["statut"] == "à vérifier"
-    assert "trou probable" in " ".join(r["remarques"])
+    assert "distance_controle_km" not in r
+    assert "détour SNCF" in r["remarques"][0]
 
 
 def test_raccordement_manuel_en_pleine_ligne():

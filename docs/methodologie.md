@@ -61,6 +61,12 @@ calculée sur RINF, sans contrôle SNCF, et la relation est marquée `à vérifi
 2026-09-28 : Marne-la-Vallée-Chessy (Interconnexion Est absente des tracés SNCF), Arcachon et
 La Teste (branche Lamothe–Arcachon absente).
 
+**Détour SNCF.** Quand la distance SNCF dépasse la distance RINF de plus de `seuil_alerte_pct`
+(10 %), une ligne manque probablement aux tracés SNCF : la distance RINF est retenue, sans
+contrôle, et la relation est `à vérifier` (ex. Douai–Valenciennes : SNCF 68,0 km par détour, RINF
+35,4 km ; la ligne Douai–Somain–Valenciennes est absente des tracés au 2026-09-28). Quand c'est
+RINF qui est plus long, la distance SNCF est gardée et la relation est `à vérifier`.
+
 ## Résultats de référence (POC du 2026-09-28)
 
 Recalculées avec ce code sur les fichiers SNCF du 2026-09-28, les 20 relations du POC

@@ -194,6 +194,19 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
         except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e2:
             return {**ligne, "statut": f"erreur : SNCF : {e} ; RINF : {e2}"}
         notes.insert(0, f"calcul SNCF impossible ({e}) : distance RINF, sans contrôle SNCF")
+    # Détour SNCF nettement plus long que RINF : ligne probablement absente des tracés SNCF.
+    ctl_rinf = None
+    if not repli and nom_principal == "sncf" and "rinf" in moteurs:
+        try:
+            ctl_rinf = moteurs["rinf"].calculer(go, gd, rel["itineraire"])[0]
+        except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError):
+            pass
+        if ctl_rinf is not None and ctl_rinf.km > 0 \
+                and res.km > ctl_rinf.km * (1 + rt.get("seuil_alerte_pct", math.inf) / 100):
+            detour = 100 * (res.km / ctl_rinf.km - 1)
+            notes = [f"détour SNCF de {detour:+.1f} % ({res.km:.1f} km, ligne probablement absente des tracés) : "
+                     f"distance RINF, sans contrôle SNCF"] + moteurs["rinf"].calculer(go, gd, rel["itineraire"])[1]
+            nom_principal, principal, repli, res = "rinf", moteurs["rinf"], True, ctl_rinf
     ligne["moteur"] = nom_principal
     ligne["remarques"] += notes
     ligne["resultat"] = res
@@ -212,7 +225,7 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
     autre = None if repli else moteurs.get("rinf" if nom_principal == "sncf" else "sncf")
     if autre is not None and (autre.nom == "rinf" or tous_sncf):
         try:
-            ctl, _ = autre.calculer(go, gd, rel["itineraire"])
+            ctl = ctl_rinf if autre.nom == "rinf" and ctl_rinf is not None else autre.calculer(go, gd, rel["itineraire"])[0]
             if ctl.km <= 0:
                 raise LookupError(f"distance nulle sur {autre.nom} (même point aux deux bouts)")
             ecart = 100 * (res.km / ctl.km - 1)
