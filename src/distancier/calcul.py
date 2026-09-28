@@ -212,6 +212,8 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict) -> dic
     if autre is not None and (autre.nom == "rinf" or tous_sncf):
         try:
             ctl, _ = autre.calculer(go, gd, rel["itineraire"])
+            if ctl.km <= 0:
+                raise LookupError(f"distance nulle sur {autre.nom} (même point aux deux bouts)")
             ecart = 100 * (res.km / ctl.km - 1)
             ligne.update(distance_controle_km=round(ctl.km, 1), source_controle=autre.nom,
                          ecart_controle_pct=round(ecart, 2))
