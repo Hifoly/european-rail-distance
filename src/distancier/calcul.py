@@ -289,6 +289,8 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
             ligne.update(controle_pk_km=round(pk, 1), ecart_pk_pct=round(ecart, 2))
             if _concorde(res.km, pk, ecart, rt):
                 verifie.append("vérifié (PK SNCF)")
+                if alerte:  # les PK SNCF priment sur l'alerte RINF (choix d'Aloïs le 2026-09-29)
+                    ligne["remarques"].append("distance confirmée par les PK SNCF, l'écart RINF n'est pas retenu")
 
     compl = sorted({lg for lg, _ in res.lignes} & getattr(principal, "complementaires", set()))
     if compl:
@@ -303,7 +305,7 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
             ligne["remarques"].append(f"emprunte un raccordement ajouté à la main, validé ({valides[m]}) : {m}")
     if rel.get("statut_force"):
         ligne["statut"] = rel["statut_force"]
-    elif non_valides or repli or alerte:
+    elif non_valides or repli or (alerte and "vérifié (PK SNCF)" not in verifie):
         ligne["statut"] = "à vérifier"
     elif verifie:
         ligne["statut"] = verifie[0]

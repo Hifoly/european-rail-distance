@@ -58,7 +58,7 @@ nouvelles à grande vitesse) : LGV au-delà de 95 %, classique sous 5 %, mixte e
 | statut | condition |
 |---|---|
 | `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près ; pour une relation calculée sur SNCF, deux contrôles RINF sont calculés (itinéraire RINF autonome, et itinéraire suivant les lignes SNCF, même mode, lignes hors itinéraire pénalisées ×5) ; le plus proche est retenu et la remarque dit lequel |
-| `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près |
+| `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près (ou 0,5 km) ; ce contrôle prime sur l'alerte RINF (choix d'Aloïs le 2026-09-29, ex. Calais-Ville–Calais-Fréthun : SNCF 7,7 km, PK 7,8 km, RINF 9,4 km par les voies de la gare LGV) |
 | `à vérifier` | raccordement manuel emprunté et non validé sur carte (clé `valide` de `corrections.yaml`), repli sur RINF (voir ci-dessous), écart avec le contrôle supérieur à `seuil_alerte_pct` (10 %, trou probable dans un des réseaux), ou statut forcé dans `relations.csv` |
 | `estimé` | aucun contrôle concluant |
 | `erreur : …` | gare inconnue, source absente ou pas d'itinéraire |

@@ -73,7 +73,7 @@ uic;nom;pays;lat;lon;uopid_rinf;note
 87381509;Mantes-la-Jolie;FR;;;FR9900001565;
 87393009;Versailles-Chantiers;FR;;;FR0000004260;
 87393579;Massy-Palaiseau;FR;;;FR0000004227;
-87393702;Massy-TGV;FR;;;FR0000004293;
+87393702;Massy-TGV;FR;48.7277692;2.263872;FR0000004293;coordonnées du point RINF (2026-09-29) : celles de liste-des-gares sont 1,3 km plus au sud et rallongeaient Massy-TGV - Paris-Montparnasse (15,2 km pour 14,0 au PK)
 87396002;Le Mans;FR;;;FR0000004524;
 87396408;Sablé-sur-Sarthe;FR;;;FR0000003488;
 87411017;Rouen-Rive-Droite;FR;;;FR0000004979;
@@ -82,7 +82,7 @@ uic;nom;pays;lat;lon;uopid_rinf;note
 87471508;Vitré;FR;;;FR0000004851;
 87473009;St-Brieuc;FR;;;FR0000003778;
 87473108;Lamballe;FR;;;FR0000004917;
-87473181;Plouaret-Trégor;FR;;;FR0000003259;
+87473181;Plouaret-Trégor;FR;48.606174;-3.466908;FR0000003259;coordonnées du point RINF (2026-09-29) : celles de liste-des-gares sont 1,1 km à l'est du PK 530+923 (bifurcation de Lannion au PK 531+252)
 87473207;Guingamp;FR;;;FR0000003834;
 87473223;Lannion;FR;;;FR9900001512;
 87474098;Quimper;FR;;;FR9900001675;

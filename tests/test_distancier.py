@@ -188,3 +188,15 @@ def test_virage_interdit_supprime_le_demi_tour():
 
     G = construire_graphe([c, r], [], virages_interdits=[VirageInterdit("t", (2.0, 48.0), "R", "C", separer=True)])
     assert nx.number_connected_components(G) == 2
+
+
+def test_pk_sncf_priment_sur_l_alerte_rinf(cfg):
+    from pathlib import Path
+    sections = Path(cfg["chemins"]["donnees_brutes"]) / "rinf" / "2026-01-02" / "sections_FR.csv"
+    texte = sections.read_text(encoding="utf-8")
+    sections.write_text(texte.replace(";37250;", ";50000;"), encoding="utf-8")   # RINF P-Q : 100 km
+    r = par_id(calcul.calculer(cfg))[2]
+    assert r["ecart_controle_pct"] < -10                     # alerte RINF...
+    assert r["controle_pk_km"] == pytest.approx(74.4)        # ...mais les PK confirment SNCF
+    assert r["statut"] == "vérifié (PK SNCF)"
+    assert any("PK SNCF" in x and "RINF" in x for x in r["remarques"])
