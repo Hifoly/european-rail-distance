@@ -77,6 +77,9 @@ sources:
     # compte comme LGV. Les km restent en dont_km_vitesse_inconnue.
     lgv_presumee_ecartement:
       ES: "1435"
+    # Voie métrique (ex-FEVE en Espagne) : aucun train du périmètre n'y circule, sections écartées
+    # du graphe (sinon le plus court chemin y passait aux gares communes, ex. Gijón).
+    ecartements_exclus: ["1000"]
 
   renfe:
     nom: Renfe open data (GTFS alta velocidad, larga y media distancia)

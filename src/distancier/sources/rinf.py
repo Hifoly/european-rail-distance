@@ -111,6 +111,7 @@ def charger(cfg: dict, jour: str | None = None, raccordements=()) -> dict:
         with open(dossier / f"sections_{p}.csv", encoding="utf-8") as f:
             sections += [dict(r, pays=p) for r in csv.DictReader(f, delimiter=";")]
     lgv_presumee = cfg["sources"]["rinf"].get("lgv_presumee_ecartement") or {}
+    exclus = set(cfg["sources"]["rinf"].get("ecartements_exclus") or ())
     longueurs = [float(r["longueur"]) for r in sections if r["longueur"]]
     # era:length est attendu en mètres ; si la médiane est < 100, les valeurs sont en km
     facteur = 1.0 if longueurs and statistics.median(longueurs) < 100 else 0.001
@@ -132,6 +133,8 @@ def charger(cfg: dict, jour: str | None = None, raccordements=()) -> dict:
                 corrigees += droite - km > 0.05
                 km = droite
         ec = ecartement(r.get("ecartement"))
+        if ec in exclus:
+            continue
         G.add_edge(a, b, km=km, ligne=r.get("ligne") or "", profil=[v], ecartement=ec,
                    lgv_presumee=v is None and ec is not None and ec == lgv_presumee.get(r["pays"]),
                    sens=(a, b), manuel=None, sol=r["sol"])

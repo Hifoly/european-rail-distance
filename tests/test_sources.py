@@ -90,6 +90,24 @@ def test_rinf_section_plus_courte_que_la_ligne_droite(cfg):
     assert min(d["km"] for d in G["FRX"]["FRS"].values()) == pytest.approx(droite)
 
 
+def test_rinf_ecartement_exclu_et_lgv_presumee(cfg):
+    import csv
+    chemin = config.dossier_source(cfg, "rinf", None) / "sections_FR.csv"
+    lignes = list(csv.DictReader(open(chemin, encoding="utf-8"), delimiter=";"))
+    lignes[2]["ecartement"] = "1000"                 # s3 (X -> S) à voie métrique
+    with open(chemin, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(lignes[0]), delimiter=";")
+        w.writeheader()
+        w.writerows(lignes)
+    G = rinf.charger(cfg)["graphe"]
+    assert not G.has_edge("FRX", "FRS")
+    assert not any(d["lgv_presumee"] for *_, d in G.edges(data=True))   # vitesses connues, pays FR
+    cfg["sources"]["rinf"]["ecartements_exclus"] = []
+    cfg["sources"]["rinf"]["lgv_presumee_ecartement"] = {"FR": "1000"}
+    G = rinf.charger(cfg)["graphe"]
+    assert [d["lgv_presumee"] for d in G["FRX"]["FRS"].values()] == [True]   # s3 sans vitesse
+
+
 def test_lignes_complementaires_depuis_le_fichier_des_voies(cfg):
     """Une ligne absente des tracés de lignes est reprise du fichier des voies (voie la plus longue)."""
     dossier = config.dossier_source(cfg, "sncf")
