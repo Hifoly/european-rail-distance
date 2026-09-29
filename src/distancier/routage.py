@@ -31,6 +31,7 @@ class Resultat:
     lignes: list = field(default_factory=list)       # [(ligne, km)] dans l'ordre du trajet
     vitesses: dict = field(default_factory=dict)     # {v_max ou None: km}
     manuels: list = field(default_factory=list)      # raccordements manuels empruntés
+    ecartements: dict = field(default_factory=dict)  # {'1668', '1435', '1000', 'mixte' ou None: km}
 
     def km_lgv(self, seuil: int) -> float:
         return sum(k for v, k in self.vitesses.items() if v is not None and v >= seuil)
@@ -64,6 +65,8 @@ class Routeur:
         self._rattachements: dict = {}
 
     def _part_lgv(self, d: dict) -> float:
+        if d.get("lgv_presumee"):   # LAV sans vitesse publiée (voir settings.yaml, lgv_presumee_ecartement)
+            return 1.0
         lgv = sum(k for v, k in d["vitesses"].items() if v is not None and v >= self.seuil)
         return lgv / d["km"] if d["km"] else 0.0
 
@@ -99,7 +102,8 @@ class Routeur:
     def _ajouter(self, tag, noeud, d, a, b):
         vit = km_par_vitesse(d, a, b)
         km = d["km"] * (b - a)
-        attrs = dict(km=km, ligne=d["ligne"], vitesses=vit, manuel=d.get("manuel"), temporaire=True)
+        attrs = dict(km=km, ligne=d["ligne"], vitesses=vit, manuel=d.get("manuel"), ecartement=d.get("ecartement"),
+                     temporaire=True)
         attrs["part_lgv"] = self._part_lgv(attrs)
         self.G.add_edge(tag, noeud, **attrs)
 
@@ -131,12 +135,13 @@ class Routeur:
 
         noeuds = nx.shortest_path(self.G, origine, destination, weight=poids)
         res = Resultat(km=0.0)
-        vit = collections.Counter()
+        vit, ecart = collections.Counter(), collections.Counter()
         for u, v in zip(noeuds[:-1], noeuds[1:]):
             d = min((d for d in self.G[u][v].values() if self._cout(d, mode, lignes) is not None),
                     key=lambda d: self._cout(d, mode, lignes))
             res.km += d["km"]
             vit.update(d["vitesses"])
+            ecart[d.get("ecartement")] += d["km"]
             if res.lignes and res.lignes[-1][0] == d["ligne"]:
                 res.lignes[-1] = (d["ligne"], res.lignes[-1][1] + d["km"])
             else:
@@ -144,4 +149,5 @@ class Routeur:
             if d.get("manuel") and d["manuel"] not in res.manuels:
                 res.manuels.append(d["manuel"])
         res.vitesses = dict(vit)
+        res.ecartements = dict(ecart)
         return res

@@ -42,6 +42,18 @@ Plus court chemin (Dijkstra) selon le champ `itineraire` de la relation :
 Sont aussi calculés, pour information, le plus court chemin et le plus court chemin sans
 LGV.
 
+En Espagne, Adif ne publie pas la vitesse des LAV dans RINF : une section espagnole à 1 435 mm
+sans vitesse compte comme LGV pour le choix d'itinéraire (`lgv_presumee_ecartement` dans
+`settings.yaml`). Ses km restent dans `dont_km_vitesse_inconnue` et ne comptent pas dans
+`part_lgv_pct`. Le graphe ne tient pas compte de l'écartement : il passe d'un réseau à l'autre
+aux points communs, ce qu'un train ne fait qu'à un changeur d'écartement.
+
+## Répartition par écartement
+
+`km_ecartement_<mm>` = km du trajet par écartement nominal des voies de la section (RINF,
+era:wheelSetGauge) ; `mixte` quand la section porte plusieurs écartements. La somme des colonnes
+égale `distance_km`.
+
 ## Répartition par vitesse
 
 `dont_km_<v>` = km du trajet dont la vitesse maximale nominale vaut v. Il y a une colonne

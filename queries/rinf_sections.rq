@@ -4,11 +4,14 @@
 # Schéma vérifié le 2026-09-28 sur https://rinf.data.era.europa.eu/api/v1/sparql/rinf :
 # - era:lengthOfSectionOfLine est en km ;
 # - les objets sont versionnés (era:validity) : seule la version valide ce jour est gardée ;
-# - la vitesse est portée par les voies (era:hasPart) de la section.
+# - la vitesse est portée par les voies (era:hasPart) de la section ;
+# - l'écartement aussi (era:wheelSetGauge, libellé en mm : 1435, 1668, 1000) ; vérifié le 2026-09-29.
 PREFIX era:  <http://data.europa.eu/949/>
 PREFIX time: <http://www.w3.org/2006/time#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 SELECT ?sol ?longueur ?ligne ?op_debut ?op_fin (MAX(?v) AS ?v_max)
+       (GROUP_CONCAT(DISTINCT ?ec; separator="+") AS ?ecartement)
 WHERE {
   ?sol a era:SectionOfLine ;
        era:inCountry <http://publications.europa.eu/resource/authority/country/%%PAYS%%> ;
@@ -23,6 +26,7 @@ WHERE {
   FILTER(!BOUND(?debut) || (STR(?debut) <= ?jour && STR(?fin) >= ?jour))
   OPTIONAL { ?sol era:nationalLine/era:lineId ?ligne }
   OPTIONAL { ?sol era:hasPart ?voie . ?voie a era:RunningTrack ; era:maximumPermittedSpeed ?v }
+  OPTIONAL { ?sol era:hasPart ?voie2 . ?voie2 a era:RunningTrack ; era:wheelSetGauge/skos:prefLabel ?ec }
 }
 GROUP BY ?sol ?longueur ?ligne ?op_debut ?op_fin
 ORDER BY ?sol

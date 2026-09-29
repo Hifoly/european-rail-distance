@@ -68,9 +68,9 @@ def cfg(tmp_path):
         {"op": "o4", "uopid": "FRS", "nom": "Sville", "wkt": f"POINT({S[0]} {S[1]})", "lat": "", "lon": "", "type": "station"},
     ])
     _csv(rinf / "sections_FR.csv", [
-        {"sol": "s1", "longueur": 37250, "ligne": "C1", "op_debut": "FRP", "op_fin": "FRX", "v_max": 160},
-        {"sol": "s2", "longueur": 37250, "ligne": "C1", "op_debut": "FRX", "op_fin": "FRQ", "v_max": 160},
-        {"sol": "s3", "longueur": 55600, "ligne": "C3", "op_debut": "FRX", "op_fin": "FRS", "v_max": ""},
+        {"sol": "s1", "longueur": 37250, "ligne": "C1", "op_debut": "FRP", "op_fin": "FRX", "v_max": 160, "ecartement": "1435"},
+        {"sol": "s2", "longueur": 37250, "ligne": "C1", "op_debut": "FRX", "op_fin": "FRQ", "v_max": 160, "ecartement": "1668+1435"},
+        {"sol": "s3", "longueur": 55600, "ligne": "C3", "op_debut": "FRX", "op_fin": "FRS", "v_max": "", "ecartement": ""},
     ])
     (rinf / "manifest.json").write_text(json.dumps({"source": "ERA RINF", "api": "https://exemple/sparql",
                                                     "pays": {"FR": {"date_consultation": "2026-01-02T10:00:00+00:00"}}}))

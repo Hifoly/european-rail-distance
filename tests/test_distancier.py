@@ -83,6 +83,17 @@ def test_export(cfg, resultat, tmp_path):
         assert somme == pytest.approx(float(l["distance_km"]), abs=1e-6)
         assert l["date_consultation"] == "2026-01-01"
     assert lignes[0]["type_ligne"] == "LGV" and lignes[2]["type_ligne"] == "classique"
+    assert entete[12:17] == ["km_ecartement_1668", "km_ecartement_1435", "km_ecartement_1000",
+                             "km_ecartement_mixte", "km_ecartement_inconnu"]
+    for l in lignes:
+        if l["distance_km"]:
+            somme = sum(float(l[c]) for c in entete[12:17])
+            assert somme == pytest.approx(float(l["distance_km"]), abs=1e-6)
+    # SNCF ne publie pas l'écartement ; RINF (relation 5) : s1 à 1435 mm, s3 non renseigné
+    assert float(lignes[0]["km_ecartement_inconnu"]) == float(lignes[0]["distance_km"])
+    l5 = next(l for l in lignes if l["id"] == "5")
+    assert float(l5["km_ecartement_1435"]) == pytest.approx(37.2, abs=0.1)
+    assert float(l5["km_ecartement_inconnu"]) == pytest.approx(55.6, abs=0.2)
     assert any(f.suffix == ".xlsx" for f in fichiers)
 
 

@@ -1592,3 +1592,1463 @@ id;uic_origine;uic_destination;itineraire;statut_force;remarque
 2891;87703975;87342014;grande_vitesse;;
 2893;87703975;87313882;grande_vitesse;;
 2895;87703975;87218156;grande_vitesse;;
+10001;7102002;7102003;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+10002;7102002;7102030;grande_vitesse;;périmètre Renfe : AVANT, AVE
+10003;7102002;7104040;grande_vitesse;;périmètre Renfe : AVE
+10004;7102002;7104104;grande_vitesse;;périmètre Renfe : AVE
+10005;7102002;7105000;grande_vitesse;;périmètre Renfe : AVANT, AVE
+10006;7102002;7105012;grande_vitesse;;périmètre Renfe : AVANT
+10007;7102002;7137200;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10008;7102002;7137300;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10009;7102002;7137704;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10010;7102002;7150500;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+10011;7102002;7151003;grande_vitesse;;périmètre Renfe : AVANT
+10012;7102002;7154413;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+10013;7102002;7160000;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10014;7102002;7171801;grande_vitesse;;périmètre Renfe : AVE
+10015;7102002;7178400;grande_vitesse;;périmètre Renfe : AVE
+10016;7102003;7102030;grande_vitesse;;périmètre Renfe : AVANT, AVE
+10017;7102003;7104040;grande_vitesse;;périmètre Renfe : AVE
+10018;7102003;7104104;grande_vitesse;;périmètre Renfe : AVE
+10019;7102003;7105000;grande_vitesse;;périmètre Renfe : AVANT, AVE
+10020;7102003;7105012;grande_vitesse;;périmètre Renfe : AVANT, AVE
+10021;7102003;7137200;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10022;7102003;7137300;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10023;7102003;7137704;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10024;7102003;7150500;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, AVLO
+10025;7102003;7151003;grande_vitesse;;périmètre Renfe : AVANT
+10026;7102003;7154413;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+10027;7102003;7155007;grande_vitesse;;périmètre Renfe : ALVIA
+10028;7102003;7155018;grande_vitesse;;périmètre Renfe : ALVIA
+10029;7102003;7155020;grande_vitesse;;périmètre Renfe : ALVIA
+10030;7102003;7160000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10031;7102003;7171801;grande_vitesse;;périmètre Renfe : AVE
+10032;7102003;7178400;grande_vitesse;;périmètre Renfe : AVE
+10033;7102030;7104040;grande_vitesse;;périmètre Renfe : AVE
+10034;7102030;7104104;grande_vitesse;;périmètre Renfe : AVE
+10035;7102030;7105000;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE
+10036;7102030;7105012;grande_vitesse;;périmètre Renfe : AVANT, AVE
+10037;7102030;7137200;grande_vitesse;;périmètre Renfe : AVE
+10038;7102030;7150500;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE
+10039;7102030;7151003;grande_vitesse;;périmètre Renfe : AVANT
+10040;7102030;7154413;grande_vitesse;;périmètre Renfe : AVANT
+10041;7102030;7156200;grande_vitesse;;périmètre Renfe : ALVIA
+10042;7102030;7156310;grande_vitesse;;périmètre Renfe : ALVIA
+10043;7102030;7156312;grande_vitesse;;périmètre Renfe : ALVIA
+10044;7102030;7160000;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+10045;7102030;7171801;grande_vitesse;;périmètre Renfe : AVE
+10046;7102030;7178400;grande_vitesse;;périmètre Renfe : AVE
+10047;7103208;7103213;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10048;7103208;7103216;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10049;7103208;7103309;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10050;7103208;7103410;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10051;7103208;7108004;grande_vitesse;;périmètre Renfe : ALVIA
+10052;7103208;7110600;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10053;7103208;7114100;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+10054;7103208;7114114;grande_vitesse;;périmètre Renfe : ALVIA
+10055;7103208;7114202;grande_vitesse;;périmètre Renfe : ALVIA
+10056;7103208;7114213;grande_vitesse;;périmètre Renfe : ALVIA
+10057;7103208;7114223;grande_vitesse;;périmètre Renfe : ALVIA
+10058;7103208;7115100;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+10059;7103208;7115122;grande_vitesse;;périmètre Renfe : ALVIA
+10060;7103208;7115203;grande_vitesse;;périmètre Renfe : ALVIA
+10061;7103208;7115211;grande_vitesse;;périmètre Renfe : ALVIA
+10062;7103208;7115410;grande_vitesse;;périmètre Renfe : ALVIA
+10063;7103208;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10064;7103208;7122100;grande_vitesse;;périmètre Renfe : AVE
+10065;7103208;7130200;grande_vitesse;;périmètre Renfe : AVE
+10066;7103208;7137200;grande_vitesse;;périmètre Renfe : AVE
+10067;7103208;7137300;grande_vitesse;;périmètre Renfe : AVE
+10068;7103208;7150500;grande_vitesse;;périmètre Renfe : AVE
+10069;7103208;7151003;grande_vitesse;;périmètre Renfe : AVE
+10070;7103208;7160000;grande_vitesse;;périmètre Renfe : AVANT, AVE
+10071;7103208;7160600;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, AVLO
+10072;7103208;7160911;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10073;7103208;7161200;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10074;7103208;7162002;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10075;7103208;7165300;grande_vitesse;;périmètre Renfe : AVE
+10076;7103208;7192102;grande_vitesse;;périmètre Renfe : AVANT
+10077;7103213;7103216;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+10078;7103213;7117000;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10079;7103213;7160000;grande_vitesse;;périmètre Renfe : AVE
+10080;7103213;7165300;grande_vitesse;;périmètre Renfe : AVE
+10081;7103216;7108004;grande_vitesse;;périmètre Renfe : AVE
+10082;7103216;7110600;grande_vitesse;;périmètre Renfe : AVE
+10083;7103216;7111014;grande_vitesse;;périmètre Renfe : AVE
+10084;7103216;7114100;grande_vitesse;;périmètre Renfe : AVE
+10085;7103216;7115100;grande_vitesse;;périmètre Renfe : AVE
+10086;7103216;7117000;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10087;7103216;7137200;grande_vitesse;;périmètre Renfe : AVE
+10088;7103216;7137300;grande_vitesse;;périmètre Renfe : AVE
+10089;7103216;7150500;grande_vitesse;;périmètre Renfe : AVE
+10090;7103216;7151003;grande_vitesse;;périmètre Renfe : AVE
+10091;7103216;7160000;grande_vitesse;;périmètre Renfe : AVE
+10092;7103216;7165300;grande_vitesse;;périmètre Renfe : AVE
+10093;7103309;7103410;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10094;7103309;7108004;grande_vitesse;;périmètre Renfe : ALVIA
+10095;7103309;7110600;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10096;7103309;7114100;grande_vitesse;;périmètre Renfe : ALVIA
+10097;7103309;7114114;grande_vitesse;;périmètre Renfe : ALVIA
+10098;7103309;7114202;grande_vitesse;;périmètre Renfe : ALVIA
+10099;7103309;7114213;grande_vitesse;;périmètre Renfe : ALVIA
+10100;7103309;7114223;grande_vitesse;;périmètre Renfe : ALVIA
+10101;7103309;7115100;grande_vitesse;;périmètre Renfe : ALVIA
+10102;7103309;7115122;grande_vitesse;;périmètre Renfe : ALVIA
+10103;7103309;7115203;grande_vitesse;;périmètre Renfe : ALVIA
+10104;7103309;7115211;grande_vitesse;;périmètre Renfe : ALVIA
+10105;7103309;7115410;grande_vitesse;;périmètre Renfe : ALVIA
+10106;7103309;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10107;7103309;7160000;grande_vitesse;;périmètre Renfe : AVE
+10108;7103309;7160600;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10109;7103309;7160911;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10110;7103309;7161200;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10111;7103309;7162002;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10112;7103410;7103412;grande_vitesse;;périmètre Renfe : AVANT
+10113;7103410;7108004;grande_vitesse;;périmètre Renfe : AVE
+10114;7103410;7110600;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10115;7103410;7111014;grande_vitesse;;périmètre Renfe : AVE
+10116;7103410;7117000;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10117;7103410;7160000;grande_vitesse;;périmètre Renfe : AVE
+10118;7103410;7160600;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10119;7103410;7160911;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+10120;7103410;7161200;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+10121;7103410;7162001;grande_vitesse;;périmètre Renfe : AVANT
+10122;7103410;7162002;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+10123;7103412;7160911;grande_vitesse;;périmètre Renfe : AVANT
+10124;7103412;7161200;grande_vitesse;;périmètre Renfe : AVANT
+10125;7103412;7162001;grande_vitesse;;périmètre Renfe : AVANT
+10126;7103412;7162002;grande_vitesse;;périmètre Renfe : AVANT
+10127;7104007;7104040;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+10128;7104007;7104104;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+10129;7104007;7104307;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+10130;7104007;7160000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVE INT
+10131;7104007;7170600;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+10132;7104007;7171801;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+10133;7104007;7174200;grande_vitesse;;périmètre Renfe : AVE
+10134;7104007;7178200;grande_vitesse;;périmètre Renfe : AVE
+10135;7104007;7178400;grande_vitesse;;périmètre Renfe : AVE
+10136;7104007;7179300;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+10137;7104007;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10138;7104007;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10139;7104007;7181100;grande_vitesse;;périmètre Renfe : ALVIA
+10140;7104007;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+10141;7104007;7181109;grande_vitesse;;périmètre Renfe : ALVIA
+10142;7104007;7181110;grande_vitesse;;périmètre Renfe : ALVIA
+10143;7104007;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10144;7104007;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10145;7104040;7104104;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVE INT, Intercity
+10146;7104040;7104307;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+10147;7104040;7105000;grande_vitesse;;périmètre Renfe : AVE
+10148;7104040;7108223;grande_vitesse;;périmètre Renfe : ALVIA
+10149;7104040;7110500;grande_vitesse;;périmètre Renfe : Intercity
+10150;7104040;7110501;grande_vitesse;;périmètre Renfe : Intercity
+10151;7104040;7110502;grande_vitesse;;périmètre Renfe : Intercity
+10152;7104040;7110503;grande_vitesse;;périmètre Renfe : Intercity
+10153;7104040;7110504;grande_vitesse;;périmètre Renfe : Intercity
+10154;7104040;7110600;grande_vitesse;;périmètre Renfe : Intercity
+10155;7104040;7111014;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10156;7104040;7111200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10157;7104040;7111208;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10158;7104040;7111300;grande_vitesse;;périmètre Renfe : ALVIA
+10159;7104040;7111400;grande_vitesse;;périmètre Renfe : ALVIA
+10160;7104040;7111511;grande_vitesse;;périmètre Renfe : ALVIA
+10161;7104040;7113200;grande_vitesse;;périmètre Renfe : ALVIA
+10162;7104040;7114100;grande_vitesse;;périmètre Renfe : ALVIA
+10163;7104040;7115100;grande_vitesse;;périmètre Renfe : ALVIA
+10164;7104040;7120100;grande_vitesse;;périmètre Renfe : ALVIA
+10165;7104040;7120111;grande_vitesse;;périmètre Renfe : ALVIA
+10166;7104040;7120200;grande_vitesse;;périmètre Renfe : ALVIA
+10167;7104040;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10168;7104040;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10169;7104040;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10170;7104040;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10171;7104040;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10172;7104040;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10173;7104040;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10174;7104040;7130100;grande_vitesse;;périmètre Renfe : Intercity
+10175;7104040;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10176;7104040;7132002;grande_vitesse;;périmètre Renfe : Intercity
+10177;7104040;7132003;grande_vitesse;;périmètre Renfe : Intercity
+10178;7104040;7132004;grande_vitesse;;périmètre Renfe : Intercity
+10179;7104040;7137200;grande_vitesse;;périmètre Renfe : AVE
+10180;7104040;7137300;grande_vitesse;;périmètre Renfe : AVE
+10181;7104040;7150500;grande_vitesse;;périmètre Renfe : AVE
+10182;7104040;7151003;grande_vitesse;;périmètre Renfe : AVE
+10183;7104040;7154413;grande_vitesse;;périmètre Renfe : AVE
+10184;7104040;7160000;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+10185;7104040;7170600;grande_vitesse;;périmètre Renfe : AVANT, AVE
+10186;7104040;7171801;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVE INT, Intercity
+10187;7104040;7174200;grande_vitesse;;périmètre Renfe : AVE
+10188;7104040;7178200;grande_vitesse;;périmètre Renfe : AVE
+10189;7104040;7178400;grande_vitesse;;périmètre Renfe : ALVIA, AVE, Intercity
+10190;7104040;7179300;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+10191;7104040;7180100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10192;7104040;7180108;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10193;7104040;7181002;grande_vitesse;;périmètre Renfe : ALVIA
+10194;7104040;7181100;grande_vitesse;;périmètre Renfe : ALVIA
+10195;7104040;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+10196;7104040;7181200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10197;7104040;7181202;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10198;7104104;7104307;grande_vitesse;;périmètre Renfe : AVE, AVE INT, EUROMED
+10199;7104104;7105000;grande_vitesse;;périmètre Renfe : AVE
+10200;7104104;7108223;grande_vitesse;;périmètre Renfe : ALVIA
+10201;7104104;7111014;grande_vitesse;;périmètre Renfe : ALVIA
+10202;7104104;7111200;grande_vitesse;;périmètre Renfe : ALVIA
+10203;7104104;7111208;grande_vitesse;;périmètre Renfe : ALVIA
+10204;7104104;7111300;grande_vitesse;;périmètre Renfe : ALVIA
+10205;7104104;7111400;grande_vitesse;;périmètre Renfe : ALVIA
+10206;7104104;7111511;grande_vitesse;;périmètre Renfe : ALVIA
+10207;7104104;7113200;grande_vitesse;;périmètre Renfe : ALVIA
+10208;7104104;7114100;grande_vitesse;;périmètre Renfe : ALVIA
+10209;7104104;7115100;grande_vitesse;;périmètre Renfe : ALVIA
+10210;7104104;7120100;grande_vitesse;;périmètre Renfe : ALVIA
+10211;7104104;7120111;grande_vitesse;;périmètre Renfe : ALVIA
+10212;7104104;7120200;grande_vitesse;;périmètre Renfe : ALVIA
+10213;7104104;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10214;7104104;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10215;7104104;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10216;7104104;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10217;7104104;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10218;7104104;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10219;7104104;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10220;7104104;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10221;7104104;7137200;grande_vitesse;;périmètre Renfe : AVE
+10222;7104104;7137300;grande_vitesse;;périmètre Renfe : AVE
+10223;7104104;7150100;grande_vitesse;;périmètre Renfe : ALVIA
+10224;7104104;7150102;grande_vitesse;;périmètre Renfe : ALVIA
+10225;7104104;7150207;grande_vitesse;;périmètre Renfe : ALVIA
+10226;7104104;7150300;grande_vitesse;;périmètre Renfe : ALVIA
+10227;7104104;7150500;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+10228;7104104;7151003;grande_vitesse;;périmètre Renfe : AVE
+10229;7104104;7154413;grande_vitesse;;périmètre Renfe : AVE
+10230;7104104;7160000;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+10231;7104104;7160400;grande_vitesse;;périmètre Renfe : ALVIA
+10232;7104104;7160406;grande_vitesse;;périmètre Renfe : ALVIA
+10233;7104104;7160500;grande_vitesse;;périmètre Renfe : ALVIA
+10234;7104104;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+10235;7104104;7160902;grande_vitesse;;périmètre Renfe : Intercity
+10236;7104104;7160905;grande_vitesse;;périmètre Renfe : Intercity
+10237;7104104;7160911;grande_vitesse;;périmètre Renfe : EUROMED, Intercity
+10238;7104104;7164100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10239;7104104;7165000;grande_vitesse;;périmètre Renfe : ALVIA, EUROMED, Intercity
+10240;7104104;7165200;grande_vitesse;;périmètre Renfe : Intercity
+10241;7104104;7165300;grande_vitesse;;périmètre Renfe : ALVIA, EUROMED, Intercity
+10242;7104104;7165304;grande_vitesse;;périmètre Renfe : Intercity
+10243;7104104;7165311;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10244;7104104;7165312;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10245;7104104;7165318;grande_vitesse;;périmètre Renfe : Intercity
+10246;7104104;7165400;grande_vitesse;;périmètre Renfe : AVANT EXP
+10247;7104104;7165402;grande_vitesse;;périmètre Renfe : ALVIA, AVANT EXP, Intercity
+10248;7104104;7165404;grande_vitesse;;périmètre Renfe : AVANT EXP
+10249;7104104;7165405;grande_vitesse;;périmètre Renfe : AVANT EXP
+10250;7104104;7165420;grande_vitesse;;périmètre Renfe : AVANT EXP
+10251;7104104;7165422;grande_vitesse;;périmètre Renfe : ALVIA, AVANT EXP, Intercity
+10252;7104104;7170600;grande_vitesse;;périmètre Renfe : AVE
+10253;7104104;7171801;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVANT EXP, AVE, AVE INT, EUROMED, Intercity
+10254;7104104;7178400;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, Intercity
+10255;7104104;7179300;grande_vitesse;;périmètre Renfe : AVE, AVE INT, EUROMED
+10256;7104104;7180100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10257;7104104;7180108;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10258;7104104;7181002;grande_vitesse;;périmètre Renfe : ALVIA
+10259;7104104;7181100;grande_vitesse;;périmètre Renfe : ALVIA
+10260;7104104;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+10261;7104104;7181200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10262;7104104;7181202;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10263;7104307;7160000;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+10264;7104307;7160911;grande_vitesse;;périmètre Renfe : EUROMED
+10265;7104307;7165000;grande_vitesse;;périmètre Renfe : EUROMED
+10266;7104307;7165300;grande_vitesse;;périmètre Renfe : EUROMED
+10267;7104307;7170600;grande_vitesse;;périmètre Renfe : AVE
+10268;7104307;7171801;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVE INT, EUROMED
+10269;7104307;7178400;grande_vitesse;;périmètre Renfe : AVE
+10270;7104307;7179300;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVE INT, EUROMED
+10271;7105000;7105012;grande_vitesse;;périmètre Renfe : AVANT, AVE
+10272;7105000;7137200;grande_vitesse;;périmètre Renfe : AVE
+10273;7105000;7150500;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE
+10274;7105000;7151003;grande_vitesse;;périmètre Renfe : AVANT
+10275;7105000;7154413;grande_vitesse;;périmètre Renfe : AVANT
+10276;7105000;7156200;grande_vitesse;;périmètre Renfe : ALVIA
+10277;7105000;7156310;grande_vitesse;;périmètre Renfe : ALVIA
+10278;7105000;7156312;grande_vitesse;;périmètre Renfe : ALVIA
+10279;7105000;7160000;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+10280;7105000;7171801;grande_vitesse;;périmètre Renfe : AVE
+10281;7105000;7178400;grande_vitesse;;périmètre Renfe : AVE
+10282;7105012;7150500;grande_vitesse;;périmètre Renfe : AVANT, AVE
+10283;7105012;7151003;grande_vitesse;;périmètre Renfe : AVANT
+10284;7105012;7154413;grande_vitesse;;périmètre Renfe : AVANT
+10285;7105012;7160000;grande_vitesse;;périmètre Renfe : AVE
+10286;7106002;7106003;grande_vitesse;;périmètre Renfe : Intercity
+10287;7106002;7106006;grande_vitesse;;périmètre Renfe : Intercity
+10288;7106002;7160902;grande_vitesse;;périmètre Renfe : Intercity
+10289;7106002;7160905;grande_vitesse;;périmètre Renfe : Intercity
+10290;7106002;7160911;grande_vitesse;;périmètre Renfe : Intercity
+10291;7106002;7161200;grande_vitesse;;périmètre Renfe : Intercity
+10292;7106002;7162002;grande_vitesse;;périmètre Renfe : Intercity
+10293;7106002;7162103;grande_vitesse;;périmètre Renfe : Intercity
+10294;7106002;7164100;grande_vitesse;;périmètre Renfe : Intercity
+10295;7106002;7165000;grande_vitesse;;périmètre Renfe : Intercity
+10296;7106003;7106006;grande_vitesse;;périmètre Renfe : Intercity
+10297;7106003;7160902;grande_vitesse;;périmètre Renfe : Intercity
+10298;7106003;7160905;grande_vitesse;;périmètre Renfe : Intercity
+10299;7106003;7160911;grande_vitesse;;périmètre Renfe : Intercity
+10300;7106003;7161200;grande_vitesse;;périmètre Renfe : Intercity
+10301;7106003;7162002;grande_vitesse;;périmètre Renfe : Intercity
+10302;7106003;7162103;grande_vitesse;;périmètre Renfe : Intercity
+10303;7106003;7164100;grande_vitesse;;périmètre Renfe : Intercity
+10304;7106003;7165000;grande_vitesse;;périmètre Renfe : Intercity
+10305;7106006;7160902;grande_vitesse;;périmètre Renfe : Intercity
+10306;7106006;7160905;grande_vitesse;;périmètre Renfe : Intercity
+10307;7106006;7160911;grande_vitesse;;périmètre Renfe : Intercity
+10308;7106006;7161200;grande_vitesse;;périmètre Renfe : Intercity
+10309;7106006;7162002;grande_vitesse;;périmètre Renfe : Intercity
+10310;7106006;7162103;grande_vitesse;;périmètre Renfe : Intercity
+10311;7106006;7164100;grande_vitesse;;périmètre Renfe : Intercity
+10312;7106006;7165000;grande_vitesse;;périmètre Renfe : Intercity
+10313;7107004;7161200;grande_vitesse;;périmètre Renfe : Intercity
+10314;7108004;7108240;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10315;7108004;7108247;grande_vitesse;;périmètre Renfe : AVLO
+10316;7108004;7108251;grande_vitesse;;périmètre Renfe : AVLO
+10317;7108004;7110600;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, AVLO, Intercity
+10318;7108004;7111014;grande_vitesse;;périmètre Renfe : ALVIA, AVE, Intercity
+10319;7108004;7111200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10320;7108004;7111208;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10321;7108004;7111400;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10322;7108004;7111500;grande_vitesse;;périmètre Renfe : ALVIA
+10323;7108004;7111511;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10324;7108004;7111600;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10325;7108004;7113106;grande_vitesse;;périmètre Renfe : ALVIA
+10326;7108004;7113200;grande_vitesse;;périmètre Renfe : ALVIA
+10327;7108004;7114100;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO, Intercity
+10328;7108004;7114114;grande_vitesse;;périmètre Renfe : ALVIA
+10329;7108004;7114202;grande_vitesse;;périmètre Renfe : ALVIA
+10330;7108004;7114213;grande_vitesse;;périmètre Renfe : ALVIA
+10331;7108004;7114223;grande_vitesse;;périmètre Renfe : ALVIA
+10332;7108004;7115100;grande_vitesse;;périmètre Renfe : AVE, AVLO, Intercity
+10333;7108004;7115122;grande_vitesse;;périmètre Renfe : AVLO
+10334;7108004;7115203;grande_vitesse;;périmètre Renfe : AVLO
+10335;7108004;7115211;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10336;7108004;7115410;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10337;7108004;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, AVLO, Intercity
+10338;7108004;7120005;grande_vitesse;;périmètre Renfe : Intercity
+10339;7108004;7120100;grande_vitesse;;périmètre Renfe : Intercity
+10340;7108004;7120102;grande_vitesse;;périmètre Renfe : Intercity
+10341;7108004;7120104;grande_vitesse;;périmètre Renfe : Intercity
+10342;7108004;7120109;grande_vitesse;;périmètre Renfe : Intercity
+10343;7108004;7120111;grande_vitesse;;périmètre Renfe : Intercity
+10344;7108004;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10345;7108004;7120200;grande_vitesse;;périmètre Renfe : Intercity
+10346;7108004;7122100;grande_vitesse;;périmètre Renfe : AVLO
+10347;7108004;7130100;grande_vitesse;;périmètre Renfe : ALVIA
+10348;7108004;7130200;grande_vitesse;;périmètre Renfe : AVLO
+10349;7108004;7131400;grande_vitesse;;périmètre Renfe : AVLO
+10350;7108004;7131412;grande_vitesse;;périmètre Renfe : AVLO
+10351;7108004;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+10352;7108004;7160911;grande_vitesse;;périmètre Renfe : ALVIA
+10353;7108004;7161200;grande_vitesse;;périmètre Renfe : AVE
+10354;7108004;7162002;grande_vitesse;;périmètre Renfe : AVE
+10355;7108004;7181002;grande_vitesse;;périmètre Renfe : Intercity
+10356;7108004;7181100;grande_vitesse;;périmètre Renfe : Intercity
+10357;7108223;7108240;grande_vitesse;;périmètre Renfe : AVLO
+10358;7108223;7108247;grande_vitesse;;périmètre Renfe : AVLO
+10359;7108223;7108251;grande_vitesse;;périmètre Renfe : AVLO
+10360;7108223;7111014;grande_vitesse;;périmètre Renfe : ALVIA
+10361;7108223;7111200;grande_vitesse;;périmètre Renfe : ALVIA
+10362;7108223;7111208;grande_vitesse;;périmètre Renfe : ALVIA
+10363;7108223;7114100;grande_vitesse;;périmètre Renfe : ALVIA
+10364;7108223;7115100;grande_vitesse;;périmètre Renfe : ALVIA
+10365;7108223;7117000;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10366;7108223;7120100;grande_vitesse;;périmètre Renfe : ALVIA
+10367;7108223;7120111;grande_vitesse;;périmètre Renfe : ALVIA
+10368;7108223;7120200;grande_vitesse;;périmètre Renfe : ALVIA
+10369;7108223;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10370;7108223;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10371;7108223;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10372;7108223;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10373;7108223;7122100;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10374;7108223;7123004;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10375;7108223;7123008;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10376;7108223;7130200;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10377;7108223;7131400;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10378;7108223;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10379;7108223;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10380;7108223;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10381;7108223;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10382;7108223;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10383;7108223;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10384;7108240;7108247;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10385;7108240;7108251;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10386;7108240;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10387;7108240;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10388;7108240;7120305;grande_vitesse;;périmètre Renfe : ALVIA
+10389;7108240;7120309;grande_vitesse;;périmètre Renfe : ALVIA
+10390;7108240;7122100;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10391;7108240;7123004;grande_vitesse;;périmètre Renfe : AVLO
+10392;7108240;7123008;grande_vitesse;;périmètre Renfe : AVLO
+10393;7108240;7130100;grande_vitesse;;périmètre Renfe : ALVIA
+10394;7108240;7130200;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10395;7108240;7131400;grande_vitesse;;périmètre Renfe : AVLO
+10396;7108240;7131412;grande_vitesse;;périmètre Renfe : AVLO
+10397;7108247;7108251;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10398;7108247;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10399;7108247;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10400;7108247;7120305;grande_vitesse;;périmètre Renfe : ALVIA
+10401;7108247;7120309;grande_vitesse;;périmètre Renfe : ALVIA
+10402;7108247;7122100;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10403;7108247;7123004;grande_vitesse;;périmètre Renfe : AVLO
+10404;7108247;7123008;grande_vitesse;;périmètre Renfe : AVLO
+10405;7108247;7130200;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10406;7108247;7131400;grande_vitesse;;périmètre Renfe : AVLO
+10407;7108247;7131412;grande_vitesse;;périmètre Renfe : AVLO
+10408;7108251;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10409;7108251;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10410;7108251;7120305;grande_vitesse;;périmètre Renfe : ALVIA
+10411;7108251;7120309;grande_vitesse;;périmètre Renfe : ALVIA
+10412;7108251;7122100;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10413;7108251;7123004;grande_vitesse;;périmètre Renfe : AVLO
+10414;7108251;7123008;grande_vitesse;;périmètre Renfe : AVLO
+10415;7108251;7130200;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10416;7108251;7131400;grande_vitesse;;périmètre Renfe : AVLO
+10417;7108251;7131412;grande_vitesse;;périmètre Renfe : AVLO
+10418;7110500;7110501;grande_vitesse;;périmètre Renfe : Intercity
+10419;7110500;7110502;grande_vitesse;;périmètre Renfe : Intercity
+10420;7110500;7110503;grande_vitesse;;périmètre Renfe : Intercity
+10421;7110500;7110504;grande_vitesse;;périmètre Renfe : Intercity
+10422;7110500;7110600;grande_vitesse;;périmètre Renfe : Intercity
+10423;7110500;7111014;grande_vitesse;;périmètre Renfe : Intercity
+10424;7110500;7111200;grande_vitesse;;périmètre Renfe : Intercity
+10425;7110500;7111208;grande_vitesse;;périmètre Renfe : Intercity
+10426;7110500;7130100;grande_vitesse;;périmètre Renfe : Intercity
+10427;7110500;7132002;grande_vitesse;;périmètre Renfe : Intercity
+10428;7110500;7132003;grande_vitesse;;périmètre Renfe : Intercity
+10429;7110500;7132004;grande_vitesse;;périmètre Renfe : Intercity
+10430;7110500;7180100;grande_vitesse;;périmètre Renfe : Intercity
+10431;7110501;7110502;grande_vitesse;;périmètre Renfe : Intercity
+10432;7110501;7110503;grande_vitesse;;périmètre Renfe : Intercity
+10433;7110501;7110504;grande_vitesse;;périmètre Renfe : Intercity
+10434;7110501;7110600;grande_vitesse;;périmètre Renfe : Intercity
+10435;7110501;7111014;grande_vitesse;;périmètre Renfe : Intercity
+10436;7110501;7111200;grande_vitesse;;périmètre Renfe : Intercity
+10437;7110501;7111208;grande_vitesse;;périmètre Renfe : Intercity
+10438;7110501;7130100;grande_vitesse;;périmètre Renfe : Intercity
+10439;7110501;7180100;grande_vitesse;;périmètre Renfe : Intercity
+10440;7110502;7110503;grande_vitesse;;périmètre Renfe : Intercity
+10441;7110502;7110504;grande_vitesse;;périmètre Renfe : Intercity
+10442;7110502;7110600;grande_vitesse;;périmètre Renfe : Intercity
+10443;7110502;7111014;grande_vitesse;;périmètre Renfe : Intercity
+10444;7110502;7111200;grande_vitesse;;périmètre Renfe : Intercity
+10445;7110502;7111208;grande_vitesse;;périmètre Renfe : Intercity
+10446;7110502;7130100;grande_vitesse;;périmètre Renfe : Intercity
+10447;7110502;7180100;grande_vitesse;;périmètre Renfe : Intercity
+10448;7110503;7110504;grande_vitesse;;périmètre Renfe : Intercity
+10449;7110503;7110600;grande_vitesse;;périmètre Renfe : Intercity
+10450;7110503;7111014;grande_vitesse;;périmètre Renfe : Intercity
+10451;7110503;7111200;grande_vitesse;;périmètre Renfe : Intercity
+10452;7110503;7111208;grande_vitesse;;périmètre Renfe : Intercity
+10453;7110503;7130100;grande_vitesse;;périmètre Renfe : Intercity
+10454;7110503;7180100;grande_vitesse;;périmètre Renfe : Intercity
+10455;7110504;7110600;grande_vitesse;;périmètre Renfe : Intercity
+10456;7110504;7111014;grande_vitesse;;périmètre Renfe : Intercity
+10457;7110504;7111200;grande_vitesse;;périmètre Renfe : Intercity
+10458;7110504;7111208;grande_vitesse;;périmètre Renfe : Intercity
+10459;7110504;7130100;grande_vitesse;;périmètre Renfe : Intercity
+10460;7110504;7180100;grande_vitesse;;périmètre Renfe : Intercity
+10461;7110600;7111014;grande_vitesse;;périmètre Renfe : ALVIA, AVE, Intercity
+10462;7110600;7111200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10463;7110600;7111208;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10464;7110600;7111400;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10465;7110600;7111500;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10466;7110600;7111511;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10467;7110600;7111600;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10468;7110600;7113106;grande_vitesse;;périmètre Renfe : ALVIA
+10469;7110600;7113200;grande_vitesse;;périmètre Renfe : ALVIA
+10470;7110600;7114100;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO, Intercity
+10471;7110600;7114114;grande_vitesse;;périmètre Renfe : ALVIA
+10472;7110600;7114202;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10473;7110600;7114213;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10474;7110600;7114223;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10475;7110600;7115100;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO, Intercity
+10476;7110600;7115122;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10477;7110600;7115203;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10478;7110600;7115211;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10479;7110600;7115410;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10480;7110600;7116403;grande_vitesse;;périmètre Renfe : ALVIA
+10481;7110600;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, AVLO, Intercity
+10482;7110600;7120005;grande_vitesse;;périmètre Renfe : Intercity
+10483;7110600;7120100;grande_vitesse;;périmètre Renfe : Intercity
+10484;7110600;7120102;grande_vitesse;;périmètre Renfe : Intercity
+10485;7110600;7120104;grande_vitesse;;périmètre Renfe : Intercity
+10486;7110600;7120109;grande_vitesse;;périmètre Renfe : Intercity
+10487;7110600;7120111;grande_vitesse;;périmètre Renfe : Intercity
+10488;7110600;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10489;7110600;7120200;grande_vitesse;;périmètre Renfe : Intercity
+10490;7110600;7130100;grande_vitesse;;périmètre Renfe : Intercity
+10491;7110600;7132002;grande_vitesse;;périmètre Renfe : Intercity
+10492;7110600;7132003;grande_vitesse;;périmètre Renfe : Intercity
+10493;7110600;7132004;grande_vitesse;;périmètre Renfe : Intercity
+10494;7110600;7160600;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10495;7110600;7160911;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10496;7110600;7161200;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10497;7110600;7162002;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10498;7110600;7180100;grande_vitesse;;périmètre Renfe : Intercity
+10499;7110600;7181002;grande_vitesse;;périmètre Renfe : Intercity
+10500;7110600;7181100;grande_vitesse;;périmètre Renfe : Intercity
+10501;7111014;7111200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10502;7111014;7111208;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10503;7111014;7111400;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10504;7111014;7111500;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10505;7111014;7111511;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10506;7111014;7111600;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10507;7111014;7113106;grande_vitesse;;périmètre Renfe : ALVIA
+10508;7111014;7113200;grande_vitesse;;périmètre Renfe : ALVIA
+10509;7111014;7114100;grande_vitesse;;périmètre Renfe : ALVIA
+10510;7111014;7115100;grande_vitesse;;périmètre Renfe : ALVIA
+10511;7111014;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, Intercity
+10512;7111014;7120100;grande_vitesse;;périmètre Renfe : ALVIA
+10513;7111014;7120111;grande_vitesse;;périmètre Renfe : ALVIA
+10514;7111014;7120200;grande_vitesse;;périmètre Renfe : ALVIA
+10515;7111014;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10516;7111014;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10517;7111014;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10518;7111014;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10519;7111014;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10520;7111014;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10521;7111014;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10522;7111014;7130100;grande_vitesse;;périmètre Renfe : Intercity
+10523;7111014;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10524;7111014;7132002;grande_vitesse;;périmètre Renfe : Intercity
+10525;7111014;7132003;grande_vitesse;;périmètre Renfe : Intercity
+10526;7111014;7132004;grande_vitesse;;périmètre Renfe : Intercity
+10527;7111014;7161200;grande_vitesse;;périmètre Renfe : AVE
+10528;7111014;7162002;grande_vitesse;;périmètre Renfe : AVE
+10529;7111014;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10530;7111014;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10531;7111014;7180100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10532;7111014;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10533;7111014;7181002;grande_vitesse;;périmètre Renfe : Intercity
+10534;7111014;7181100;grande_vitesse;;périmètre Renfe : Intercity
+10535;7111014;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10536;7111014;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10537;7111200;7111208;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10538;7111200;7111400;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10539;7111200;7111500;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10540;7111200;7111511;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10541;7111200;7111600;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10542;7111200;7113106;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10543;7111200;7113200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10544;7111200;7114100;grande_vitesse;;périmètre Renfe : ALVIA
+10545;7111200;7115100;grande_vitesse;;périmètre Renfe : ALVIA
+10546;7111200;7117000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10547;7111200;7120100;grande_vitesse;;périmètre Renfe : ALVIA
+10548;7111200;7120111;grande_vitesse;;périmètre Renfe : ALVIA
+10549;7111200;7120200;grande_vitesse;;périmètre Renfe : ALVIA
+10550;7111200;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10551;7111200;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10552;7111200;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10553;7111200;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10554;7111200;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10555;7111200;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10556;7111200;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10557;7111200;7130100;grande_vitesse;;périmètre Renfe : Intercity
+10558;7111200;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10559;7111200;7132002;grande_vitesse;;périmètre Renfe : Intercity
+10560;7111200;7132003;grande_vitesse;;périmètre Renfe : Intercity
+10561;7111200;7132004;grande_vitesse;;périmètre Renfe : Intercity
+10562;7111200;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10563;7111200;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10564;7111200;7180100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10565;7111200;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10566;7111200;7181002;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10567;7111200;7181100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10568;7111200;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+10569;7111200;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10570;7111200;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10571;7111208;7111300;grande_vitesse;;périmètre Renfe : Intercity
+10572;7111208;7111400;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10573;7111208;7111500;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10574;7111208;7111511;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10575;7111208;7111600;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10576;7111208;7114100;grande_vitesse;;périmètre Renfe : ALVIA
+10577;7111208;7115100;grande_vitesse;;périmètre Renfe : ALVIA
+10578;7111208;7117000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10579;7111208;7120100;grande_vitesse;;périmètre Renfe : ALVIA
+10580;7111208;7120111;grande_vitesse;;périmètre Renfe : ALVIA
+10581;7111208;7120200;grande_vitesse;;périmètre Renfe : ALVIA
+10582;7111208;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10583;7111208;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10584;7111208;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10585;7111208;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10586;7111208;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10587;7111208;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10588;7111208;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10589;7111208;7130100;grande_vitesse;;périmètre Renfe : Intercity
+10590;7111208;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10591;7111208;7132002;grande_vitesse;;périmètre Renfe : Intercity
+10592;7111208;7132003;grande_vitesse;;périmètre Renfe : Intercity
+10593;7111208;7132004;grande_vitesse;;périmètre Renfe : Intercity
+10594;7111208;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10595;7111208;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10596;7111208;7180100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10597;7111208;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10598;7111208;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10599;7111208;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10600;7111300;7111400;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10601;7111300;7111511;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10602;7111300;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10603;7111300;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10604;7111300;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10605;7111300;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10606;7111300;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10607;7111300;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10608;7111400;7111500;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10609;7111400;7111511;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10610;7111400;7111600;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10611;7111400;7117000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10612;7111400;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10613;7111400;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10614;7111400;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10615;7111400;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10616;7111400;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10617;7111400;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10618;7111500;7111511;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10619;7111500;7111600;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10620;7111500;7117000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10621;7111511;7117000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10622;7111511;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10623;7111511;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10624;7111511;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10625;7111511;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10626;7111511;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10627;7111511;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10628;7111600;7117000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10629;7113106;7113200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10630;7113106;7117000;grande_vitesse;;périmètre Renfe : ALVIA
+10631;7113200;7117000;grande_vitesse;;périmètre Renfe : ALVIA
+10632;7113200;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10633;7113200;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10634;7113200;7181002;grande_vitesse;;périmètre Renfe : ALVIA
+10635;7113200;7181100;grande_vitesse;;périmètre Renfe : ALVIA
+10636;7113200;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+10637;7113200;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10638;7113200;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10639;7114100;7114114;grande_vitesse;;périmètre Renfe : ALVIA
+10640;7114100;7114202;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10641;7114100;7114213;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10642;7114100;7114223;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10643;7114100;7115100;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO, Intercity
+10644;7114100;7115122;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10645;7114100;7115203;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10646;7114100;7115211;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10647;7114100;7115410;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10648;7114100;7116403;grande_vitesse;;périmètre Renfe : ALVIA
+10649;7114100;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO, Intercity
+10650;7114100;7120005;grande_vitesse;;périmètre Renfe : Intercity
+10651;7114100;7120100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10652;7114100;7120102;grande_vitesse;;périmètre Renfe : Intercity
+10653;7114100;7120104;grande_vitesse;;périmètre Renfe : Intercity
+10654;7114100;7120109;grande_vitesse;;périmètre Renfe : Intercity
+10655;7114100;7120111;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10656;7114100;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10657;7114100;7120200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10658;7114100;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10659;7114100;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10660;7114100;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10661;7114100;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10662;7114100;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10663;7114100;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10664;7114100;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10665;7114100;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10666;7114100;7160600;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+10667;7114100;7160911;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+10668;7114100;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10669;7114100;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10670;7114100;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10671;7114100;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10672;7114100;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10673;7114100;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10674;7114114;7114202;grande_vitesse;;périmètre Renfe : ALVIA
+10675;7114114;7114213;grande_vitesse;;périmètre Renfe : ALVIA
+10676;7114114;7114223;grande_vitesse;;périmètre Renfe : ALVIA
+10677;7114114;7117000;grande_vitesse;;périmètre Renfe : ALVIA
+10678;7114114;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+10679;7114114;7160911;grande_vitesse;;périmètre Renfe : ALVIA
+10680;7114202;7117000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10681;7114202;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+10682;7114202;7160911;grande_vitesse;;périmètre Renfe : ALVIA
+10683;7114213;7117000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10684;7114213;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+10685;7114213;7160911;grande_vitesse;;périmètre Renfe : ALVIA
+10686;7114223;7117000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10687;7114223;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+10688;7114223;7160911;grande_vitesse;;périmètre Renfe : ALVIA
+10689;7115100;7115122;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10690;7115100;7115203;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10691;7115100;7115211;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10692;7115100;7115410;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10693;7115100;7116403;grande_vitesse;;périmètre Renfe : ALVIA
+10694;7115100;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO, Intercity
+10695;7115100;7120005;grande_vitesse;;périmètre Renfe : Intercity
+10696;7115100;7120100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10697;7115100;7120102;grande_vitesse;;périmètre Renfe : Intercity
+10698;7115100;7120104;grande_vitesse;;périmètre Renfe : Intercity
+10699;7115100;7120109;grande_vitesse;;périmètre Renfe : Intercity
+10700;7115100;7120111;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10701;7115100;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10702;7115100;7120200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10703;7115100;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10704;7115100;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10705;7115100;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10706;7115100;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10707;7115100;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10708;7115100;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10709;7115100;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10710;7115100;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10711;7115100;7160600;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+10712;7115100;7160911;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+10713;7115100;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10714;7115100;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10715;7115100;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10716;7115100;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10717;7115100;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10718;7115100;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10719;7115122;7115203;grande_vitesse;;périmètre Renfe : ALVIA
+10720;7115122;7115211;grande_vitesse;;périmètre Renfe : ALVIA
+10721;7115122;7115410;grande_vitesse;;périmètre Renfe : ALVIA
+10722;7115122;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVLO
+10723;7115122;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+10724;7115122;7160911;grande_vitesse;;périmètre Renfe : ALVIA
+10725;7115203;7115211;grande_vitesse;;périmètre Renfe : ALVIA
+10726;7115203;7115410;grande_vitesse;;périmètre Renfe : ALVIA
+10727;7115203;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10728;7115203;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+10729;7115203;7160911;grande_vitesse;;périmètre Renfe : ALVIA
+10730;7115211;7115410;grande_vitesse;;périmètre Renfe : ALVIA
+10731;7115211;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10732;7115211;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+10733;7115211;7160911;grande_vitesse;;périmètre Renfe : ALVIA
+10734;7115410;7117000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10735;7115410;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+10736;7115410;7160911;grande_vitesse;;périmètre Renfe : ALVIA
+10737;7116403;7117000;grande_vitesse;;périmètre Renfe : ALVIA
+10738;7117000;7120005;grande_vitesse;;périmètre Renfe : Intercity
+10739;7117000;7120100;grande_vitesse;;périmètre Renfe : Intercity
+10740;7117000;7120102;grande_vitesse;;périmètre Renfe : Intercity
+10741;7117000;7120104;grande_vitesse;;périmètre Renfe : Intercity
+10742;7117000;7120109;grande_vitesse;;périmètre Renfe : Intercity
+10743;7117000;7120111;grande_vitesse;;périmètre Renfe : Intercity
+10744;7117000;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10745;7117000;7120200;grande_vitesse;;périmètre Renfe : Intercity
+10746;7117000;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10747;7117000;7120305;grande_vitesse;;périmètre Renfe : ALVIA
+10748;7117000;7120309;grande_vitesse;;périmètre Renfe : ALVIA
+10749;7117000;7122100;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10750;7117000;7123004;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10751;7117000;7123008;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10752;7117000;7130000;grande_vitesse;;périmètre Renfe : ALVIA
+10753;7117000;7130002;grande_vitesse;;périmètre Renfe : ALVIA
+10754;7117000;7130100;grande_vitesse;;périmètre Renfe : ALVIA
+10755;7117000;7130200;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10756;7117000;7131400;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10757;7117000;7131412;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10758;7117000;7135105;grande_vitesse;;périmètre Renfe : ALVIA
+10759;7117000;7135200;grande_vitesse;;périmètre Renfe : ALVIA
+10760;7117000;7135203;grande_vitesse;;périmètre Renfe : ALVIA
+10761;7117000;7135206;grande_vitesse;;périmètre Renfe : ALVIA
+10762;7117000;7135400;grande_vitesse;;périmètre Renfe : ALVIA
+10763;7117000;7137500;grande_vitesse;;périmètre Renfe : ALVIA
+10764;7117000;7137603;grande_vitesse;;périmètre Renfe : ALVIA
+10765;7117000;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+10766;7117000;7160600;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10767;7117000;7160911;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10768;7117000;7161200;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10769;7117000;7162002;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10770;7117000;7181002;grande_vitesse;;périmètre Renfe : Intercity
+10771;7117000;7181100;grande_vitesse;;périmètre Renfe : Intercity
+10772;7118000;7130000;grande_vitesse;;périmètre Renfe : ALVIA
+10773;7118000;7130002;grande_vitesse;;périmètre Renfe : ALVIA
+10774;7118000;7135105;grande_vitesse;;périmètre Renfe : ALVIA
+10775;7118000;7135200;grande_vitesse;;périmètre Renfe : ALVIA
+10776;7118000;7135203;grande_vitesse;;périmètre Renfe : ALVIA
+10777;7118000;7135206;grande_vitesse;;périmètre Renfe : ALVIA
+10778;7118000;7135400;grande_vitesse;;périmètre Renfe : ALVIA
+10779;7118000;7137500;grande_vitesse;;périmètre Renfe : ALVIA
+10780;7118000;7137603;grande_vitesse;;périmètre Renfe : ALVIA
+10781;7118000;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+10782;7120005;7120100;grande_vitesse;;périmètre Renfe : Intercity
+10783;7120005;7120102;grande_vitesse;;périmètre Renfe : Intercity
+10784;7120005;7120104;grande_vitesse;;périmètre Renfe : Intercity
+10785;7120005;7120109;grande_vitesse;;périmètre Renfe : Intercity
+10786;7120005;7120111;grande_vitesse;;périmètre Renfe : Intercity
+10787;7120005;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10788;7120005;7120200;grande_vitesse;;périmètre Renfe : Intercity
+10789;7120100;7120102;grande_vitesse;;périmètre Renfe : Intercity
+10790;7120100;7120104;grande_vitesse;;périmètre Renfe : Intercity
+10791;7120100;7120109;grande_vitesse;;périmètre Renfe : Intercity
+10792;7120100;7120111;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10793;7120100;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10794;7120100;7120200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10795;7120100;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10796;7120100;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10797;7120100;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10798;7120100;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10799;7120100;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10800;7120100;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10801;7120100;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10802;7120100;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10803;7120100;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10804;7120100;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10805;7120100;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10806;7120100;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10807;7120100;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10808;7120100;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10809;7120102;7120104;grande_vitesse;;périmètre Renfe : Intercity
+10810;7120102;7120109;grande_vitesse;;périmètre Renfe : Intercity
+10811;7120102;7120111;grande_vitesse;;périmètre Renfe : Intercity
+10812;7120102;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10813;7120102;7120200;grande_vitesse;;périmètre Renfe : Intercity
+10814;7120104;7120109;grande_vitesse;;périmètre Renfe : Intercity
+10815;7120104;7120111;grande_vitesse;;périmètre Renfe : Intercity
+10816;7120104;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10817;7120104;7120200;grande_vitesse;;périmètre Renfe : Intercity
+10818;7120109;7120111;grande_vitesse;;périmètre Renfe : Intercity
+10819;7120109;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10820;7120109;7120200;grande_vitesse;;périmètre Renfe : Intercity
+10821;7120111;7120113;grande_vitesse;;périmètre Renfe : Intercity
+10822;7120111;7120200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10823;7120111;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10824;7120111;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10825;7120111;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10826;7120111;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10827;7120111;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10828;7120111;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10829;7120111;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10830;7120111;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10831;7120111;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10832;7120111;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10833;7120111;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10834;7120111;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10835;7120111;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10836;7120111;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10837;7120113;7120200;grande_vitesse;;périmètre Renfe : Intercity
+10838;7120200;7120211;grande_vitesse;;périmètre Renfe : ALVIA
+10839;7120200;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10840;7120200;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10841;7120200;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10842;7120200;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10843;7120200;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10844;7120200;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10845;7120200;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10846;7120200;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10847;7120200;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10848;7120200;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10849;7120200;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10850;7120200;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10851;7120200;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10852;7120211;7120213;grande_vitesse;;périmètre Renfe : ALVIA
+10853;7120211;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10854;7120211;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10855;7120211;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10856;7120211;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10857;7120211;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10858;7120211;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10859;7120211;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10860;7120211;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10861;7120211;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10862;7120211;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10863;7120211;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10864;7120211;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10865;7120213;7120216;grande_vitesse;;périmètre Renfe : ALVIA
+10866;7120213;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10867;7120213;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10868;7120213;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10869;7120213;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10870;7120213;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10871;7120213;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10872;7120213;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10873;7120213;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10874;7120213;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10875;7120213;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10876;7120213;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10877;7120216;7120300;grande_vitesse;;périmètre Renfe : ALVIA
+10878;7120216;7122100;grande_vitesse;;périmètre Renfe : ALVIA
+10879;7120216;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10880;7120216;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10881;7120216;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10882;7120216;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10883;7120216;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10884;7120216;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10885;7120216;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10886;7120216;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10887;7120216;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10888;7120300;7120305;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10889;7120300;7120309;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10890;7120300;7122100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10891;7120300;7123004;grande_vitesse;;périmètre Renfe : ALVIA
+10892;7120300;7123008;grande_vitesse;;périmètre Renfe : ALVIA
+10893;7120300;7130200;grande_vitesse;;périmètre Renfe : ALVIA
+10894;7120300;7131400;grande_vitesse;;périmètre Renfe : ALVIA
+10895;7120300;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10896;7120300;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10897;7120300;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10898;7120300;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10899;7120300;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10900;7120300;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10901;7120305;7120309;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10902;7120305;7122100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10903;7120305;7130200;grande_vitesse;;périmètre Renfe : ALVIA
+10904;7120309;7122100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+10905;7120309;7130200;grande_vitesse;;périmètre Renfe : ALVIA
+10906;7122100;7123004;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10907;7122100;7123008;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10908;7122100;7130200;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10909;7122100;7131400;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, AVLO
+10910;7122100;7131412;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+10911;7122100;7160600;grande_vitesse;;périmètre Renfe : AVE
+10912;7122100;7160911;grande_vitesse;;périmètre Renfe : AVE
+10913;7122100;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10914;7122100;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10915;7122100;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10916;7122100;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10917;7122100;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10918;7122100;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10919;7122100;7199143;grande_vitesse;;périmètre Renfe : AVANT
+10920;7123004;7123008;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10921;7123004;7130200;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10922;7123004;7131400;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10923;7123004;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10924;7123004;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10925;7123004;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10926;7123004;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10927;7123004;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10928;7123004;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10929;7123008;7130200;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10930;7123008;7131400;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+10931;7123008;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10932;7123008;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10933;7123008;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10934;7123008;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10935;7123008;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10936;7123008;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10937;7130000;7135001;grande_vitesse;;périmètre Renfe : ALVIA
+10938;7130000;7135105;grande_vitesse;;périmètre Renfe : ALVIA
+10939;7130000;7135200;grande_vitesse;;périmètre Renfe : ALVIA
+10940;7130000;7135203;grande_vitesse;;périmètre Renfe : ALVIA
+10941;7130000;7135206;grande_vitesse;;périmètre Renfe : ALVIA
+10942;7130000;7135400;grande_vitesse;;périmètre Renfe : ALVIA
+10943;7130000;7137500;grande_vitesse;;périmètre Renfe : ALVIA
+10944;7130000;7137603;grande_vitesse;;périmètre Renfe : ALVIA
+10945;7130000;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+10946;7130002;7135001;grande_vitesse;;périmètre Renfe : ALVIA
+10947;7130002;7135200;grande_vitesse;;périmètre Renfe : ALVIA
+10948;7130002;7135206;grande_vitesse;;périmètre Renfe : ALVIA
+10949;7130002;7135400;grande_vitesse;;périmètre Renfe : ALVIA
+10950;7130002;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+10951;7130100;7132002;grande_vitesse;;périmètre Renfe : Intercity
+10952;7130100;7132003;grande_vitesse;;périmètre Renfe : Intercity
+10953;7130100;7132004;grande_vitesse;;périmètre Renfe : Intercity
+10954;7130100;7180100;grande_vitesse;;périmètre Renfe : Intercity
+10955;7130200;7131400;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10956;7130200;7131412;grande_vitesse;;périmètre Renfe : AVE, AVLO
+10957;7130200;7160600;grande_vitesse;;périmètre Renfe : AVE
+10958;7130200;7160911;grande_vitesse;;périmètre Renfe : AVE
+10959;7131400;7131412;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+10960;7131400;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+10961;7131400;7178400;grande_vitesse;;périmètre Renfe : ALVIA
+10962;7131400;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+10963;7131400;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+10964;7131400;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+10965;7131400;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+10966;7131400;7199143;grande_vitesse;;périmètre Renfe : AVANT
+10967;7132002;7132003;grande_vitesse;;périmètre Renfe : Intercity
+10968;7132002;7132004;grande_vitesse;;périmètre Renfe : Intercity
+10969;7132002;7180100;grande_vitesse;;périmètre Renfe : Intercity
+10970;7132003;7132004;grande_vitesse;;périmètre Renfe : Intercity
+10971;7132003;7180100;grande_vitesse;;périmètre Renfe : Intercity
+10972;7132004;7180100;grande_vitesse;;périmètre Renfe : Intercity
+10973;7135001;7135105;grande_vitesse;;périmètre Renfe : ALVIA
+10974;7135001;7135200;grande_vitesse;;périmètre Renfe : ALVIA
+10975;7135001;7135203;grande_vitesse;;périmètre Renfe : ALVIA
+10976;7135001;7135206;grande_vitesse;;périmètre Renfe : ALVIA
+10977;7135001;7135400;grande_vitesse;;périmètre Renfe : ALVIA
+10978;7135001;7137500;grande_vitesse;;périmètre Renfe : ALVIA
+10979;7135001;7137603;grande_vitesse;;périmètre Renfe : ALVIA
+10980;7135001;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+10981;7135105;7135200;grande_vitesse;;périmètre Renfe : ALVIA
+10982;7135105;7135203;grande_vitesse;;périmètre Renfe : ALVIA
+10983;7135105;7135206;grande_vitesse;;périmètre Renfe : ALVIA
+10984;7135105;7135400;grande_vitesse;;périmètre Renfe : ALVIA
+10985;7135105;7137500;grande_vitesse;;périmètre Renfe : ALVIA
+10986;7135105;7137603;grande_vitesse;;périmètre Renfe : ALVIA
+10987;7135105;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+10988;7135200;7135203;grande_vitesse;;périmètre Renfe : ALVIA
+10989;7135200;7135206;grande_vitesse;;périmètre Renfe : ALVIA
+10990;7135200;7135400;grande_vitesse;;périmètre Renfe : ALVIA
+10991;7135200;7137500;grande_vitesse;;périmètre Renfe : ALVIA
+10992;7135200;7137603;grande_vitesse;;périmètre Renfe : ALVIA
+10993;7135200;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+10994;7135203;7135206;grande_vitesse;;périmètre Renfe : ALVIA
+10995;7135203;7135400;grande_vitesse;;périmètre Renfe : ALVIA
+10996;7135203;7137500;grande_vitesse;;périmètre Renfe : ALVIA
+10997;7135203;7137603;grande_vitesse;;périmètre Renfe : ALVIA
+10998;7135203;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+10999;7135206;7135400;grande_vitesse;;périmètre Renfe : ALVIA
+11000;7135206;7137500;grande_vitesse;;périmètre Renfe : ALVIA
+11001;7135206;7137603;grande_vitesse;;périmètre Renfe : ALVIA
+11002;7135206;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+11003;7135400;7137500;grande_vitesse;;périmètre Renfe : ALVIA
+11004;7135400;7137603;grande_vitesse;;périmètre Renfe : ALVIA
+11005;7135400;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+11006;7137200;7137300;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, AVLO
+11007;7137200;7137704;grande_vitesse;;périmètre Renfe : AVE, AVLO
+11008;7137200;7150500;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+11009;7137200;7151003;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+11010;7137200;7151300;grande_vitesse;;périmètre Renfe : ALVIA
+11011;7137200;7151400;grande_vitesse;;périmètre Renfe : ALVIA
+11012;7137200;7151405;grande_vitesse;;périmètre Renfe : ALVIA
+11013;7137200;7151406;grande_vitesse;;périmètre Renfe : ALVIA
+11014;7137200;7154413;grande_vitesse;;périmètre Renfe : AVE, AVLO
+11015;7137200;7160000;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, AVLO
+11016;7137200;7171801;grande_vitesse;;périmètre Renfe : AVE
+11017;7137200;7178400;grande_vitesse;;périmètre Renfe : AVE
+11018;7137300;7137704;grande_vitesse;;périmètre Renfe : AVE, AVLO
+11019;7137300;7150500;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+11020;7137300;7151003;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+11021;7137300;7151300;grande_vitesse;;périmètre Renfe : ALVIA
+11022;7137300;7151400;grande_vitesse;;périmètre Renfe : ALVIA
+11023;7137300;7151405;grande_vitesse;;périmètre Renfe : ALVIA
+11024;7137300;7151406;grande_vitesse;;périmètre Renfe : ALVIA
+11025;7137300;7154413;grande_vitesse;;périmètre Renfe : AVE, AVLO
+11026;7137300;7160000;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, AVLO
+11027;7137300;7171801;grande_vitesse;;périmètre Renfe : AVE
+11028;7137300;7178400;grande_vitesse;;périmètre Renfe : AVE
+11029;7137500;7137603;grande_vitesse;;périmètre Renfe : ALVIA
+11030;7137500;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+11031;7137603;7137606;grande_vitesse;;périmètre Renfe : ALVIA
+11032;7137704;7150500;grande_vitesse;;périmètre Renfe : AVE, AVLO
+11033;7137704;7151003;grande_vitesse;;périmètre Renfe : AVLO
+11034;7137704;7154413;grande_vitesse;;périmètre Renfe : AVE, AVLO
+11035;7137704;7160000;grande_vitesse;;périmètre Renfe : AVE, AVLO
+11036;7143011;7143019;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11037;7143011;7150500;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11038;7143011;7151003;grande_vitesse;;périmètre Renfe : Intercity
+11039;7143011;7160000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11040;7143019;7150500;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11041;7143019;7151003;grande_vitesse;;périmètre Renfe : Intercity
+11042;7143019;7160000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11043;7150100;7150102;grande_vitesse;;périmètre Renfe : ALVIA
+11044;7150100;7150207;grande_vitesse;;périmètre Renfe : ALVIA
+11045;7150100;7150300;grande_vitesse;;périmètre Renfe : ALVIA
+11046;7150100;7150500;grande_vitesse;;périmètre Renfe : ALVIA
+11047;7150100;7160400;grande_vitesse;;périmètre Renfe : ALVIA
+11048;7150100;7160406;grande_vitesse;;périmètre Renfe : ALVIA
+11049;7150100;7160500;grande_vitesse;;périmètre Renfe : ALVIA
+11050;7150100;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+11051;7150100;7164100;grande_vitesse;;périmètre Renfe : ALVIA
+11052;7150100;7165000;grande_vitesse;;périmètre Renfe : ALVIA
+11053;7150100;7165300;grande_vitesse;;périmètre Renfe : ALVIA
+11054;7150100;7165311;grande_vitesse;;périmètre Renfe : ALVIA
+11055;7150100;7165312;grande_vitesse;;périmètre Renfe : ALVIA
+11056;7150100;7165402;grande_vitesse;;périmètre Renfe : ALVIA
+11057;7150100;7165422;grande_vitesse;;périmètre Renfe : ALVIA
+11058;7150100;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+11059;7150102;7150207;grande_vitesse;;périmètre Renfe : ALVIA
+11060;7150102;7150300;grande_vitesse;;périmètre Renfe : ALVIA
+11061;7150102;7150500;grande_vitesse;;périmètre Renfe : ALVIA
+11062;7150102;7160400;grande_vitesse;;périmètre Renfe : ALVIA
+11063;7150102;7160406;grande_vitesse;;périmètre Renfe : ALVIA
+11064;7150102;7160500;grande_vitesse;;périmètre Renfe : ALVIA
+11065;7150102;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+11066;7150102;7164100;grande_vitesse;;périmètre Renfe : ALVIA
+11067;7150102;7165000;grande_vitesse;;périmètre Renfe : ALVIA
+11068;7150102;7165300;grande_vitesse;;périmètre Renfe : ALVIA
+11069;7150102;7165311;grande_vitesse;;périmètre Renfe : ALVIA
+11070;7150102;7165312;grande_vitesse;;périmètre Renfe : ALVIA
+11071;7150102;7165402;grande_vitesse;;périmètre Renfe : ALVIA
+11072;7150102;7165422;grande_vitesse;;périmètre Renfe : ALVIA
+11073;7150102;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+11074;7150207;7150300;grande_vitesse;;périmètre Renfe : ALVIA
+11075;7150207;7150500;grande_vitesse;;périmètre Renfe : ALVIA
+11076;7150207;7160400;grande_vitesse;;périmètre Renfe : ALVIA
+11077;7150207;7160406;grande_vitesse;;périmètre Renfe : ALVIA
+11078;7150207;7160500;grande_vitesse;;périmètre Renfe : ALVIA
+11079;7150207;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+11080;7150207;7164100;grande_vitesse;;périmètre Renfe : ALVIA
+11081;7150207;7165000;grande_vitesse;;périmètre Renfe : ALVIA
+11082;7150207;7165300;grande_vitesse;;périmètre Renfe : ALVIA
+11083;7150207;7165311;grande_vitesse;;périmètre Renfe : ALVIA
+11084;7150207;7165312;grande_vitesse;;périmètre Renfe : ALVIA
+11085;7150207;7165402;grande_vitesse;;périmètre Renfe : ALVIA
+11086;7150207;7165422;grande_vitesse;;périmètre Renfe : ALVIA
+11087;7150207;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+11088;7150300;7150500;grande_vitesse;;périmètre Renfe : ALVIA
+11089;7150300;7160400;grande_vitesse;;périmètre Renfe : ALVIA
+11090;7150300;7160406;grande_vitesse;;périmètre Renfe : ALVIA
+11091;7150300;7160500;grande_vitesse;;périmètre Renfe : ALVIA
+11092;7150300;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+11093;7150300;7164100;grande_vitesse;;périmètre Renfe : ALVIA
+11094;7150300;7165000;grande_vitesse;;périmètre Renfe : ALVIA
+11095;7150300;7165300;grande_vitesse;;périmètre Renfe : ALVIA
+11096;7150300;7165311;grande_vitesse;;périmètre Renfe : ALVIA
+11097;7150300;7165312;grande_vitesse;;périmètre Renfe : ALVIA
+11098;7150300;7165402;grande_vitesse;;périmètre Renfe : ALVIA
+11099;7150300;7165422;grande_vitesse;;périmètre Renfe : ALVIA
+11100;7150300;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+11101;7150500;7151003;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, AVLO, Intercity
+11102;7150500;7151300;grande_vitesse;;périmètre Renfe : ALVIA
+11103;7150500;7151400;grande_vitesse;;périmètre Renfe : ALVIA
+11104;7150500;7151405;grande_vitesse;;périmètre Renfe : ALVIA
+11105;7150500;7151406;grande_vitesse;;périmètre Renfe : ALVIA
+11106;7150500;7154413;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO
+11107;7150500;7155007;grande_vitesse;;périmètre Renfe : ALVIA
+11108;7150500;7155018;grande_vitesse;;périmètre Renfe : ALVIA
+11109;7150500;7155020;grande_vitesse;;périmètre Renfe : ALVIA
+11110;7150500;7156200;grande_vitesse;;périmètre Renfe : ALVIA
+11111;7150500;7156310;grande_vitesse;;périmètre Renfe : ALVIA
+11112;7150500;7156312;grande_vitesse;;périmètre Renfe : ALVIA
+11113;7150500;7160000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO, Intercity
+11114;7150500;7160400;grande_vitesse;;périmètre Renfe : ALVIA
+11115;7150500;7160406;grande_vitesse;;périmètre Renfe : ALVIA
+11116;7150500;7160500;grande_vitesse;;périmètre Renfe : ALVIA
+11117;7150500;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+11118;7150500;7164100;grande_vitesse;;périmètre Renfe : ALVIA
+11119;7150500;7165000;grande_vitesse;;périmètre Renfe : ALVIA
+11120;7150500;7165300;grande_vitesse;;périmètre Renfe : ALVIA
+11121;7150500;7165311;grande_vitesse;;périmètre Renfe : ALVIA
+11122;7150500;7165312;grande_vitesse;;périmètre Renfe : ALVIA
+11123;7150500;7165402;grande_vitesse;;périmètre Renfe : ALVIA
+11124;7150500;7165422;grande_vitesse;;périmètre Renfe : ALVIA
+11125;7150500;7171801;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+11126;7150500;7178400;grande_vitesse;;périmètre Renfe : AVE
+11127;7151003;7151300;grande_vitesse;;périmètre Renfe : ALVIA
+11128;7151003;7151400;grande_vitesse;;périmètre Renfe : ALVIA
+11129;7151003;7151405;grande_vitesse;;périmètre Renfe : ALVIA
+11130;7151003;7151406;grande_vitesse;;périmètre Renfe : ALVIA
+11131;7151003;7154413;grande_vitesse;;périmètre Renfe : AVANT
+11132;7151003;7160000;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO, Intercity
+11133;7151003;7171801;grande_vitesse;;périmètre Renfe : AVE
+11134;7151003;7178400;grande_vitesse;;périmètre Renfe : AVE
+11135;7151300;7151400;grande_vitesse;;périmètre Renfe : ALVIA
+11136;7151300;7151405;grande_vitesse;;périmètre Renfe : ALVIA
+11137;7151300;7151406;grande_vitesse;;périmètre Renfe : ALVIA
+11138;7151300;7160000;grande_vitesse;;périmètre Renfe : ALVIA
+11139;7151400;7151405;grande_vitesse;;périmètre Renfe : ALVIA
+11140;7151400;7151406;grande_vitesse;;périmètre Renfe : ALVIA
+11141;7151400;7160000;grande_vitesse;;périmètre Renfe : ALVIA
+11142;7151405;7151406;grande_vitesse;;périmètre Renfe : ALVIA
+11143;7151405;7160000;grande_vitesse;;périmètre Renfe : ALVIA
+11144;7151406;7160000;grande_vitesse;;périmètre Renfe : ALVIA
+11145;7154403;7154404;grande_vitesse;;périmètre Renfe : Intercity
+11146;7154403;7154413;grande_vitesse;;périmètre Renfe : Intercity
+11147;7154404;7154413;grande_vitesse;;périmètre Renfe : Intercity
+11148;7154413;7160000;grande_vitesse;;périmètre Renfe : AVE, AVLO
+11149;7154413;7171801;grande_vitesse;;périmètre Renfe : AVE
+11150;7154413;7178400;grande_vitesse;;périmètre Renfe : AVE
+11151;7155007;7160000;grande_vitesse;;périmètre Renfe : ALVIA
+11152;7155018;7155020;grande_vitesse;;périmètre Renfe : ALVIA
+11153;7155018;7160000;grande_vitesse;;périmètre Renfe : ALVIA
+11154;7155020;7160000;grande_vitesse;;périmètre Renfe : ALVIA
+11155;7156200;7156310;grande_vitesse;;périmètre Renfe : ALVIA
+11156;7156200;7156312;grande_vitesse;;périmètre Renfe : ALVIA
+11157;7156200;7160000;grande_vitesse;;périmètre Renfe : ALVIA
+11158;7156310;7156312;grande_vitesse;;périmètre Renfe : ALVIA
+11159;7156310;7160000;grande_vitesse;;périmètre Renfe : ALVIA
+11160;7156312;7160000;grande_vitesse;;périmètre Renfe : ALVIA
+11161;7160000;7160600;grande_vitesse;;périmètre Renfe : AVANT, AVE
+11162;7160000;7160911;grande_vitesse;;périmètre Renfe : AVE
+11163;7160000;7161200;grande_vitesse;;périmètre Renfe : AVE
+11164;7160000;7162002;grande_vitesse;;périmètre Renfe : AVE
+11165;7160000;7165300;grande_vitesse;;périmètre Renfe : AVE
+11166;7160000;7170600;grande_vitesse;;périmètre Renfe : ALVIA, AVE
+11167;7160000;7171801;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+11168;7160000;7174200;grande_vitesse;;périmètre Renfe : AVE
+11169;7160000;7178200;grande_vitesse;;périmètre Renfe : AVE
+11170;7160000;7178400;grande_vitesse;;périmètre Renfe : AVE
+11171;7160000;7179300;grande_vitesse;;périmètre Renfe : AVE, AVE INT
+11172;7160000;7180100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11173;7160000;7180108;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11174;7160000;7181100;grande_vitesse;;périmètre Renfe : ALVIA
+11175;7160000;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+11176;7160000;7181109;grande_vitesse;;périmètre Renfe : ALVIA
+11177;7160000;7181110;grande_vitesse;;périmètre Renfe : ALVIA
+11178;7160000;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+11179;7160000;7181202;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11180;7160000;7192102;grande_vitesse;;périmètre Renfe : AVANT
+11181;7160400;7160406;grande_vitesse;;périmètre Renfe : ALVIA
+11182;7160400;7160500;grande_vitesse;;périmètre Renfe : ALVIA
+11183;7160400;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+11184;7160400;7164100;grande_vitesse;;périmètre Renfe : ALVIA
+11185;7160400;7165000;grande_vitesse;;périmètre Renfe : ALVIA
+11186;7160400;7165300;grande_vitesse;;périmètre Renfe : ALVIA
+11187;7160400;7165311;grande_vitesse;;périmètre Renfe : ALVIA
+11188;7160400;7165312;grande_vitesse;;périmètre Renfe : ALVIA
+11189;7160400;7165402;grande_vitesse;;périmètre Renfe : ALVIA
+11190;7160400;7165422;grande_vitesse;;périmètre Renfe : ALVIA
+11191;7160400;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+11192;7160406;7160500;grande_vitesse;;périmètre Renfe : ALVIA
+11193;7160406;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+11194;7160406;7164100;grande_vitesse;;périmètre Renfe : ALVIA
+11195;7160406;7165000;grande_vitesse;;périmètre Renfe : ALVIA
+11196;7160406;7165300;grande_vitesse;;périmètre Renfe : ALVIA
+11197;7160406;7165311;grande_vitesse;;périmètre Renfe : ALVIA
+11198;7160406;7165312;grande_vitesse;;périmètre Renfe : ALVIA
+11199;7160406;7165402;grande_vitesse;;périmètre Renfe : ALVIA
+11200;7160406;7165422;grande_vitesse;;périmètre Renfe : ALVIA
+11201;7160406;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+11202;7160500;7160600;grande_vitesse;;périmètre Renfe : ALVIA
+11203;7160500;7164100;grande_vitesse;;périmètre Renfe : ALVIA
+11204;7160500;7165000;grande_vitesse;;périmètre Renfe : ALVIA
+11205;7160500;7165300;grande_vitesse;;périmètre Renfe : ALVIA
+11206;7160500;7165311;grande_vitesse;;périmètre Renfe : ALVIA
+11207;7160500;7165312;grande_vitesse;;périmètre Renfe : ALVIA
+11208;7160500;7165402;grande_vitesse;;périmètre Renfe : ALVIA
+11209;7160500;7165422;grande_vitesse;;périmètre Renfe : ALVIA
+11210;7160500;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+11211;7160600;7160911;grande_vitesse;;périmètre Renfe : ALVIA, AVE, AVLO
+11212;7160600;7161005;grande_vitesse;;périmètre Renfe : Intercity
+11213;7160600;7161012;grande_vitesse;;périmètre Renfe : Intercity
+11214;7160600;7161015;grande_vitesse;;périmètre Renfe : Intercity
+11215;7160600;7161200;grande_vitesse;;périmètre Renfe : AVE, AVLO, Intercity
+11216;7160600;7161303;grande_vitesse;;périmètre Renfe : Intercity
+11217;7160600;7161304;grande_vitesse;;périmètre Renfe : Intercity
+11218;7160600;7161307;grande_vitesse;;périmètre Renfe : Intercity
+11219;7160600;7162002;grande_vitesse;;périmètre Renfe : AVE, AVLO
+11220;7160600;7164100;grande_vitesse;;périmètre Renfe : ALVIA
+11221;7160600;7165000;grande_vitesse;;périmètre Renfe : ALVIA
+11222;7160600;7165300;grande_vitesse;;périmètre Renfe : ALVIA
+11223;7160600;7165311;grande_vitesse;;périmètre Renfe : ALVIA
+11224;7160600;7165312;grande_vitesse;;périmètre Renfe : ALVIA
+11225;7160600;7165402;grande_vitesse;;périmètre Renfe : ALVIA
+11226;7160600;7165422;grande_vitesse;;périmètre Renfe : ALVIA
+11227;7160600;7171801;grande_vitesse;;périmètre Renfe : ALVIA
+11228;7160600;7192102;grande_vitesse;;périmètre Renfe : AVANT
+11229;7160902;7160905;grande_vitesse;;périmètre Renfe : Intercity
+11230;7160902;7160911;grande_vitesse;;périmètre Renfe : Intercity
+11231;7160902;7161200;grande_vitesse;;périmètre Renfe : Intercity
+11232;7160902;7161303;grande_vitesse;;périmètre Renfe : Intercity
+11233;7160902;7161304;grande_vitesse;;périmètre Renfe : Intercity
+11234;7160902;7161307;grande_vitesse;;périmètre Renfe : Intercity
+11235;7160902;7162002;grande_vitesse;;périmètre Renfe : Intercity
+11236;7160902;7162103;grande_vitesse;;périmètre Renfe : Intercity
+11237;7160902;7164100;grande_vitesse;;périmètre Renfe : Intercity
+11238;7160902;7165000;grande_vitesse;;périmètre Renfe : Intercity
+11239;7160902;7165200;grande_vitesse;;périmètre Renfe : Intercity
+11240;7160902;7165300;grande_vitesse;;périmètre Renfe : Intercity
+11241;7160902;7165304;grande_vitesse;;périmètre Renfe : Intercity
+11242;7160902;7165311;grande_vitesse;;périmètre Renfe : Intercity
+11243;7160902;7165312;grande_vitesse;;périmètre Renfe : Intercity
+11244;7160902;7165318;grande_vitesse;;périmètre Renfe : Intercity
+11245;7160902;7165402;grande_vitesse;;périmètre Renfe : Intercity
+11246;7160902;7165422;grande_vitesse;;périmètre Renfe : Intercity
+11247;7160902;7171801;grande_vitesse;;périmètre Renfe : Intercity
+11248;7160905;7160911;grande_vitesse;;périmètre Renfe : Intercity
+11249;7160905;7161200;grande_vitesse;;périmètre Renfe : Intercity
+11250;7160905;7161303;grande_vitesse;;périmètre Renfe : Intercity
+11251;7160905;7161304;grande_vitesse;;périmètre Renfe : Intercity
+11252;7160905;7161307;grande_vitesse;;périmètre Renfe : Intercity
+11253;7160905;7162002;grande_vitesse;;périmètre Renfe : Intercity
+11254;7160905;7162103;grande_vitesse;;périmètre Renfe : Intercity
+11255;7160905;7164100;grande_vitesse;;périmètre Renfe : Intercity
+11256;7160905;7165000;grande_vitesse;;périmètre Renfe : Intercity
+11257;7160905;7165200;grande_vitesse;;périmètre Renfe : Intercity
+11258;7160905;7165300;grande_vitesse;;périmètre Renfe : Intercity
+11259;7160905;7165304;grande_vitesse;;périmètre Renfe : Intercity
+11260;7160905;7165311;grande_vitesse;;périmètre Renfe : Intercity
+11261;7160905;7165312;grande_vitesse;;périmètre Renfe : Intercity
+11262;7160905;7165318;grande_vitesse;;périmètre Renfe : Intercity
+11263;7160905;7165402;grande_vitesse;;périmètre Renfe : Intercity
+11264;7160905;7165422;grande_vitesse;;périmètre Renfe : Intercity
+11265;7160905;7171801;grande_vitesse;;périmètre Renfe : Intercity
+11266;7160911;7161200;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO, Intercity
+11267;7160911;7161303;grande_vitesse;;périmètre Renfe : Intercity
+11268;7160911;7161304;grande_vitesse;;périmètre Renfe : Intercity
+11269;7160911;7161307;grande_vitesse;;périmètre Renfe : Intercity
+11270;7160911;7162001;grande_vitesse;;périmètre Renfe : AVANT
+11271;7160911;7162002;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO, Intercity
+11272;7160911;7162103;grande_vitesse;;périmètre Renfe : Intercity
+11273;7160911;7164100;grande_vitesse;;périmètre Renfe : Intercity
+11274;7160911;7165000;grande_vitesse;;périmètre Renfe : EUROMED, Intercity
+11275;7160911;7165200;grande_vitesse;;périmètre Renfe : Intercity
+11276;7160911;7165300;grande_vitesse;;périmètre Renfe : EUROMED, Intercity
+11277;7160911;7165304;grande_vitesse;;périmètre Renfe : Intercity
+11278;7160911;7165311;grande_vitesse;;périmètre Renfe : Intercity
+11279;7160911;7165312;grande_vitesse;;périmètre Renfe : Intercity
+11280;7160911;7165318;grande_vitesse;;périmètre Renfe : Intercity
+11281;7160911;7165402;grande_vitesse;;périmètre Renfe : Intercity
+11282;7160911;7165422;grande_vitesse;;périmètre Renfe : Intercity
+11283;7160911;7171801;grande_vitesse;;périmètre Renfe : EUROMED, Intercity
+11284;7160911;7179300;grande_vitesse;;périmètre Renfe : EUROMED
+11285;7161005;7161012;grande_vitesse;;périmètre Renfe : Intercity
+11286;7161005;7161015;grande_vitesse;;périmètre Renfe : Intercity
+11287;7161005;7161200;grande_vitesse;;périmètre Renfe : Intercity
+11288;7161005;7161303;grande_vitesse;;périmètre Renfe : Intercity
+11289;7161005;7161304;grande_vitesse;;périmètre Renfe : Intercity
+11290;7161005;7161307;grande_vitesse;;périmètre Renfe : Intercity
+11291;7161012;7161015;grande_vitesse;;périmètre Renfe : Intercity
+11292;7161012;7161200;grande_vitesse;;périmètre Renfe : Intercity
+11293;7161012;7161303;grande_vitesse;;périmètre Renfe : Intercity
+11294;7161012;7161304;grande_vitesse;;périmètre Renfe : Intercity
+11295;7161012;7161307;grande_vitesse;;périmètre Renfe : Intercity
+11296;7161015;7161200;grande_vitesse;;périmètre Renfe : Intercity
+11297;7161015;7161303;grande_vitesse;;périmètre Renfe : Intercity
+11298;7161015;7161304;grande_vitesse;;périmètre Renfe : Intercity
+11299;7161015;7161307;grande_vitesse;;périmètre Renfe : Intercity
+11300;7161200;7162001;grande_vitesse;;périmètre Renfe : AVANT
+11301;7161200;7162002;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVLO, Intercity
+11302;7161200;7162103;grande_vitesse;;périmètre Renfe : Intercity
+11303;7161200;7164100;grande_vitesse;;périmètre Renfe : Intercity
+11304;7161200;7165000;grande_vitesse;;périmètre Renfe : Intercity
+11305;7161303;7162002;grande_vitesse;;périmètre Renfe : Intercity
+11306;7161303;7162103;grande_vitesse;;périmètre Renfe : Intercity
+11307;7161303;7164100;grande_vitesse;;périmètre Renfe : Intercity
+11308;7161303;7165000;grande_vitesse;;périmètre Renfe : Intercity
+11309;7161304;7162002;grande_vitesse;;périmètre Renfe : Intercity
+11310;7161304;7162103;grande_vitesse;;périmètre Renfe : Intercity
+11311;7161304;7164100;grande_vitesse;;périmètre Renfe : Intercity
+11312;7161304;7165000;grande_vitesse;;périmètre Renfe : Intercity
+11313;7161307;7162002;grande_vitesse;;périmètre Renfe : Intercity
+11314;7161307;7162103;grande_vitesse;;périmètre Renfe : Intercity
+11315;7161307;7164100;grande_vitesse;;périmètre Renfe : Intercity
+11316;7161307;7165000;grande_vitesse;;périmètre Renfe : Intercity
+11317;7162001;7162002;grande_vitesse;;périmètre Renfe : AVANT
+11318;7162002;7162103;grande_vitesse;;périmètre Renfe : Intercity
+11319;7162002;7164100;grande_vitesse;;périmètre Renfe : Intercity
+11320;7162002;7165000;grande_vitesse;;périmètre Renfe : Intercity
+11321;7162103;7164100;grande_vitesse;;périmètre Renfe : Intercity
+11322;7162103;7165000;grande_vitesse;;périmètre Renfe : Intercity
+11323;7164100;7165000;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11324;7164100;7165200;grande_vitesse;;périmètre Renfe : Intercity
+11325;7164100;7165300;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11326;7164100;7165304;grande_vitesse;;périmètre Renfe : Intercity
+11327;7164100;7165311;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11328;7164100;7165312;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11329;7164100;7165318;grande_vitesse;;périmètre Renfe : Intercity
+11330;7164100;7165402;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11331;7164100;7165422;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11332;7164100;7171801;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11333;7165000;7165200;grande_vitesse;;périmètre Renfe : Intercity
+11334;7165000;7165300;grande_vitesse;;périmètre Renfe : ALVIA, EUROMED, Intercity
+11335;7165000;7165304;grande_vitesse;;périmètre Renfe : Intercity
+11336;7165000;7165311;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11337;7165000;7165312;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11338;7165000;7165318;grande_vitesse;;périmètre Renfe : Intercity
+11339;7165000;7165402;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11340;7165000;7165422;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11341;7165000;7171500;grande_vitesse;;périmètre Renfe : Intercity
+11342;7165000;7171801;grande_vitesse;;périmètre Renfe : ALVIA, EUROMED, Intercity
+11343;7165000;7179300;grande_vitesse;;périmètre Renfe : EUROMED
+11344;7165200;7165300;grande_vitesse;;périmètre Renfe : Intercity
+11345;7165200;7165304;grande_vitesse;;périmètre Renfe : Intercity
+11346;7165200;7165311;grande_vitesse;;périmètre Renfe : Intercity
+11347;7165200;7165312;grande_vitesse;;périmètre Renfe : Intercity
+11348;7165200;7165318;grande_vitesse;;périmètre Renfe : Intercity
+11349;7165200;7165402;grande_vitesse;;périmètre Renfe : Intercity
+11350;7165200;7165422;grande_vitesse;;périmètre Renfe : Intercity
+11351;7165200;7171500;grande_vitesse;;périmètre Renfe : Intercity
+11352;7165200;7171801;grande_vitesse;;périmètre Renfe : Intercity
+11353;7165300;7165304;grande_vitesse;;périmètre Renfe : Intercity
+11354;7165300;7165311;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11355;7165300;7165312;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11356;7165300;7165318;grande_vitesse;;périmètre Renfe : Intercity
+11357;7165300;7165402;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11358;7165300;7165422;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11359;7165300;7171500;grande_vitesse;;périmètre Renfe : Intercity
+11360;7165300;7171801;grande_vitesse;;périmètre Renfe : ALVIA, EUROMED, Intercity
+11361;7165300;7179300;grande_vitesse;;périmètre Renfe : EUROMED
+11362;7165304;7165311;grande_vitesse;;périmètre Renfe : Intercity
+11363;7165304;7165312;grande_vitesse;;périmètre Renfe : Intercity
+11364;7165304;7165318;grande_vitesse;;périmètre Renfe : Intercity
+11365;7165304;7165402;grande_vitesse;;périmètre Renfe : Intercity
+11366;7165304;7165422;grande_vitesse;;périmètre Renfe : Intercity
+11367;7165304;7171500;grande_vitesse;;périmètre Renfe : Intercity
+11368;7165304;7171801;grande_vitesse;;périmètre Renfe : Intercity
+11369;7165311;7165312;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11370;7165311;7165318;grande_vitesse;;périmètre Renfe : Intercity
+11371;7165311;7165402;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11372;7165311;7165422;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11373;7165311;7171500;grande_vitesse;;périmètre Renfe : Intercity
+11374;7165311;7171801;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11375;7165312;7165318;grande_vitesse;;périmètre Renfe : Intercity
+11376;7165312;7165402;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11377;7165312;7165422;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11378;7165312;7171500;grande_vitesse;;périmètre Renfe : Intercity
+11379;7165312;7171801;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11380;7165318;7165402;grande_vitesse;;périmètre Renfe : Intercity
+11381;7165318;7165422;grande_vitesse;;périmètre Renfe : Intercity
+11382;7165318;7171801;grande_vitesse;;périmètre Renfe : Intercity
+11383;7165400;7165402;grande_vitesse;;périmètre Renfe : AVANT EXP
+11384;7165400;7165404;grande_vitesse;;périmètre Renfe : AVANT EXP
+11385;7165400;7165405;grande_vitesse;;périmètre Renfe : AVANT EXP
+11386;7165400;7165420;grande_vitesse;;périmètre Renfe : AVANT EXP
+11387;7165400;7165422;grande_vitesse;;périmètre Renfe : AVANT EXP
+11388;7165400;7171801;grande_vitesse;;périmètre Renfe : AVANT EXP
+11389;7165402;7165404;grande_vitesse;;périmètre Renfe : AVANT EXP
+11390;7165402;7165405;grande_vitesse;;périmètre Renfe : AVANT EXP
+11391;7165402;7165420;grande_vitesse;;périmètre Renfe : AVANT EXP
+11392;7165402;7165422;grande_vitesse;;périmètre Renfe : ALVIA, AVANT EXP, Intercity
+11393;7165402;7171500;grande_vitesse;;périmètre Renfe : Intercity
+11394;7165402;7171801;grande_vitesse;;périmètre Renfe : ALVIA, AVANT EXP, Intercity
+11395;7165404;7165405;grande_vitesse;;périmètre Renfe : AVANT EXP
+11396;7165404;7165420;grande_vitesse;;périmètre Renfe : AVANT EXP
+11397;7165404;7165422;grande_vitesse;;périmètre Renfe : AVANT EXP
+11398;7165404;7171801;grande_vitesse;;périmètre Renfe : AVANT EXP
+11399;7165405;7165420;grande_vitesse;;périmètre Renfe : AVANT EXP
+11400;7165405;7165422;grande_vitesse;;périmètre Renfe : AVANT EXP
+11401;7165405;7171801;grande_vitesse;;périmètre Renfe : AVANT EXP
+11402;7165420;7165422;grande_vitesse;;périmètre Renfe : AVANT EXP
+11403;7165420;7171801;grande_vitesse;;périmètre Renfe : AVANT EXP
+11404;7165422;7171801;grande_vitesse;;périmètre Renfe : ALVIA, AVANT EXP, Intercity
+11405;7170600;7171801;grande_vitesse;;périmètre Renfe : AVE
+11406;7170600;7174200;grande_vitesse;;périmètre Renfe : AVE
+11407;7170600;7178200;grande_vitesse;;périmètre Renfe : AVE
+11408;7170600;7178400;grande_vitesse;;périmètre Renfe : AVE
+11409;7170600;7179300;grande_vitesse;;périmètre Renfe : AVE
+11410;7170600;7180100;grande_vitesse;;périmètre Renfe : ALVIA
+11411;7170600;7180108;grande_vitesse;;périmètre Renfe : ALVIA
+11412;7170600;7181100;grande_vitesse;;périmètre Renfe : ALVIA
+11413;7170600;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+11414;7170600;7181109;grande_vitesse;;périmètre Renfe : ALVIA
+11415;7170600;7181110;grande_vitesse;;périmètre Renfe : ALVIA
+11416;7170600;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+11417;7170600;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+11418;7171500;7171801;grande_vitesse;;périmètre Renfe : Intercity
+11419;7171801;7178400;grande_vitesse;;périmètre Renfe : ALVIA, AVANT, AVE, Intercity
+11420;7171801;7179300;grande_vitesse;;périmètre Renfe : AVANT, AVE, AVE INT, EUROMED
+11421;7171801;7180100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11422;7171801;7180108;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11423;7171801;7181002;grande_vitesse;;périmètre Renfe : ALVIA
+11424;7171801;7181100;grande_vitesse;;périmètre Renfe : ALVIA
+11425;7171801;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+11426;7171801;7181200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11427;7171801;7181202;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11428;7174200;7178200;grande_vitesse;;périmètre Renfe : AVE
+11429;7178400;7179300;grande_vitesse;;périmètre Renfe : AVE
+11430;7178400;7180100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11431;7178400;7180108;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11432;7178400;7181002;grande_vitesse;;périmètre Renfe : ALVIA
+11433;7178400;7181100;grande_vitesse;;périmètre Renfe : ALVIA
+11434;7178400;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+11435;7178400;7181200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11436;7178400;7181202;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11437;7180100;7180108;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11438;7180100;7181200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11439;7180100;7181202;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11440;7180108;7181200;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11441;7180108;7181202;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11442;7181002;7181100;grande_vitesse;;périmètre Renfe : ALVIA, Intercity
+11443;7181002;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+11444;7181002;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+11445;7181002;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+11446;7181100;7181108;grande_vitesse;;périmètre Renfe : ALVIA
+11447;7181100;7181109;grande_vitesse;;périmètre Renfe : ALVIA
+11448;7181100;7181110;grande_vitesse;;périmètre Renfe : ALVIA
+11449;7181100;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+11450;7181100;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+11451;7181108;7181109;grande_vitesse;;périmètre Renfe : ALVIA
+11452;7181108;7181110;grande_vitesse;;périmètre Renfe : ALVIA
+11453;7181108;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+11454;7181108;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+11455;7181109;7181110;grande_vitesse;;périmètre Renfe : ALVIA
+11456;7181109;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+11457;7181109;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+11458;7181110;7181200;grande_vitesse;;périmètre Renfe : ALVIA
+11459;7181110;7181202;grande_vitesse;;périmètre Renfe : ALVIA
+11460;7181200;7181202;grande_vitesse;;périmètre Renfe : ALVIA, Intercity

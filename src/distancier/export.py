@@ -14,7 +14,9 @@ log = logging.getLogger(__name__)
 
 COLONNES_DEBUT = ["id", "gare_origine", "code_uic_origine", "pays_origine", "gare_destination",
                   "code_uic_destination", "pays_destination", "itineraire_retenu", "distance_km"]
-COLONNES_FIN = ["dont_km_vitesse_inconnue", "part_lgv_pct", "type_ligne", "lignes_empruntees",
+ECARTEMENTS = ["1668", "1435", "1000", "mixte"]   # mm (ibérique, normal, métrique) ; mixte = plusieurs sur la section
+COLONNES_ECARTEMENT = [f"km_ecartement_{e}" for e in ECARTEMENTS] + ["km_ecartement_inconnu"]
+COLONNES_FIN = ["dont_km_vitesse_inconnue", *COLONNES_ECARTEMENT, "part_lgv_pct", "type_ligne", "lignes_empruntees",
                 "distance_plus_courte_km", "distance_sans_lgv_km", "moteur", "distance_controle_km",
                 "source_controle", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct",
                 "statut", "source", "date_consultation", "remarques"]
@@ -60,6 +62,10 @@ def mettre_en_forme(ligne: dict, vitesses: list[int], rt: dict) -> dict:
     for v in vitesses:
         out[f"dont_km_{v}"] = par_v.get(v, 0.0)
     out["dont_km_vitesse_inconnue"] = par_v.get(None, 0.0)
+    par_e = arrondir_somme(res.ecartements, res.km)
+    for e in ECARTEMENTS:
+        out[f"km_ecartement_{e}"] = par_e.get(e, 0.0)
+    out["km_ecartement_inconnu"] = par_e.get(None, 0.0)
     part = 100 * res.km_lgv(rt["seuil_lgv_kmh"]) / res.km if res.km else 0.0
     out["part_lgv_pct"] = round(part, 1)
     seuil = rt["part_lgv_type_lgv_pct"]

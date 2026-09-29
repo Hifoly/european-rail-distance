@@ -12,6 +12,9 @@ dans Excel), une ligne par relation. Même contenu dans l'onglet « distances »
 | distance_km | distance réelle par le rail, km, 1 décimale |
 | dont_km_320 … dont_km_10 | km à chaque vitesse maximale nominale (une colonne par valeur des sources) |
 | dont_km_vitesse_inconnue | km sans vitesse connue |
+| km_ecartement_1668, _1435, _1000 | km à écartement ibérique, normal et métrique (RINF) |
+| km_ecartement_mixte | km sur des sections à plusieurs écartements (troisième rail, voies de largeurs différentes) |
+| km_ecartement_inconnu | km sans écartement connu (tout le moteur `sncf` : SNCF Réseau ne le publie pas) |
 | part_lgv_pct | part du trajet à v_max ≥ 250 km/h |
 | type_ligne | LGV, mixte ou classique |
 | lignes_empruntees | codes de ligne et km, dans l'ordre du trajet |

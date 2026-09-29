@@ -69,7 +69,7 @@ def telecharger(cfg: dict, pays: list[str] | None = None, jour: str | None = Non
         code = src["pays"][p]
         sections = _paginer(s, src["endpoint"], q_sections, code, src["taille_page"])
         points = _paginer(s, src["endpoint"], q_points, code, src["taille_page"])
-        _ecrire_csv(dossier / f"sections_{p}.csv", sections, ["sol", "longueur", "ligne", "op_debut", "op_fin", "v_max"])
+        _ecrire_csv(dossier / f"sections_{p}.csv", sections, ["sol", "longueur", "ligne", "op_debut", "op_fin", "v_max", "ecartement"])
         _ecrire_csv(dossier / f"points_{p}.csv", points, ["op", "uopid", "nom", "wkt", "lat", "lon", "type"])
         manifeste["pays"][p] = {"sections": len(sections), "points": len(points), "date_consultation": http.maintenant()}
     http.ecrire_manifeste(dossier, manifeste)
@@ -84,6 +84,13 @@ def _position(r: dict):
         return float(r["lon"]), float(r["lat"])
     except (KeyError, TypeError, ValueError):
         return None
+
+
+def ecartement(valeur: str | None) -> str | None:
+    """'1668', '1435', '1000' ; plusieurs écartements sur une section (voies de
+    largeurs différentes ou troisième rail) -> 'mixte' ; non renseigné -> None."""
+    mm = sorted({x.strip() for x in (valeur or "").split("+") if x.strip()})
+    return None if not mm else (mm[0] if len(mm) == 1 else "mixte")
 
 
 def charger(cfg: dict, jour: str | None = None, raccordements=()) -> dict:
@@ -102,7 +109,8 @@ def charger(cfg: dict, jour: str | None = None, raccordements=()) -> dict:
     sections = []
     for p in man["pays"]:
         with open(dossier / f"sections_{p}.csv", encoding="utf-8") as f:
-            sections += list(csv.DictReader(f, delimiter=";"))
+            sections += [dict(r, pays=p) for r in csv.DictReader(f, delimiter=";")]
+    lgv_presumee = cfg["sources"]["rinf"].get("lgv_presumee_ecartement") or {}
     longueurs = [float(r["longueur"]) for r in sections if r["longueur"]]
     # era:length est attendu en mètres ; si la médiane est < 100, les valeurs sont en km
     facteur = 1.0 if longueurs and statistics.median(longueurs) < 100 else 0.001
@@ -123,7 +131,9 @@ def charger(cfg: dict, jour: str | None = None, raccordements=()) -> dict:
             if km < droite:
                 corrigees += droite - km > 0.05
                 km = droite
-        G.add_edge(a, b, km=km, ligne=r.get("ligne") or "", profil=[v],
+        ec = ecartement(r.get("ecartement"))
+        G.add_edge(a, b, km=km, ligne=r.get("ligne") or "", profil=[v], ecartement=ec,
+                   lgv_presumee=v is None and ec is not None and ec == lgv_presumee.get(r["pays"]),
                    sens=(a, b), manuel=None, sol=r["sol"])
     if corrigees:
         log.warning("RINF : %d sections plus courtes de plus de 50 m que la ligne droite entre leurs points, "

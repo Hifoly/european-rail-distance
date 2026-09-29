@@ -51,12 +51,44 @@ Il couvre les 7 pays du projet de façon homogène (la Suisse y contribue).
   chemin s'y engouffrait et RINF sortait 2 à 8 % trop court. Ces sections prennent la longueur de
   la ligne droite (constat du 2026-09-28 ; Bordeaux–Toulouse passe de 238,7 à 256,4 km, PK SNCF 256,4).
 
+**Espagne (constats du 2026-09-29).** 2 520 sections, 15 537 km : 11 227 km à 1 668 mm
+(ibérique), 2 783 km à 1 435 mm (normal), 1 201 km à 1 000 mm (métrique), 326 km mixtes
+(voies d'écartements différents ou troisième rail). L'écartement vient de era:wheelSetGauge
+(libellé en mm) ; les codes de ligne RINF contiennent le numéro de ligne Adif (ESL**050**210000
+= LAV Madrid–Barcelone–frontière, ligne 050). Défauts connus :
+- Adif ne publie pas la vitesse des LAV (era:maximumPermittedSpeed « notYetAvailable ») : 24 % des
+  km sans vitesse, presque toute la grande vitesse. Pour le choix d'itinéraire, les sections
+  espagnoles à 1 435 mm sans vitesse comptent comme LGV (`lgv_presumee_ecartement`) ;
+- trous dans les LAV : ligne 050 coupée entre Alcover-AV et Camp de Tarragona, et entre
+  Barcelona-Sants et Riells ; ligne 080 (Madrid–Valladolid–Burgos) en trois morceaux ; LAV de
+  Galice sans Sanabria AV ni A Gudiña ; Xàtiva, Cádiz et Huelva isolés du reste du réseau ;
+- gares Renfe sans point RINF à leur code Adif : Medina del Campo AV, Sanabria AV,
+  A Gudiña-Porta de Galicia, Puertollano, A Coruña-Turístico.
+
 Les requêtes sont paginées (`taille_page` dans `settings.yaml`). La longueur est attendue
 en mètres ; si la médiane des longueurs est inférieure à 100, le code considère qu'elles
 sont en km et le signale.
 
 **À confirmer au premier lancement** : l'adresse exacte du point d'accès SPARQL et les
 noms de propriétés, qui dépendent de la version de l'ontologie ERA en service.
+
+## Renfe (périmètre espagnol)
+
+Horaires GTFS « alta velocidad, larga y media distancia » (data.renfe.com, jeu
+`horarios-de-alta-velocidad-larga-distancia-y-media-distancia`, fichier sur ssl.renfe.com,
+CC BY 4.0). Sert seulement à définir le périmètre (`distancier perimetre`), jamais à une distance :
+une relation par couple de gares desservies par un même train des produits retenus
+(`produits` dans `settings.yaml`). Les identifiants d'arrêt sont les codes de gare Adif :
+point RINF = « ES » + code, UIC = « 71 » + code. Au 2026-09-29 : 162 gares, 1 460 relations
+domestiques (AVE, AVLO, AVANT, ALVIA, Intercity, EUROMED, et la partie espagnole des AVE
+internationaux).
+
+## Adif (contrôle espagnol, en cours)
+
+Adif ne publie pas de fichier de PK. Sa Declaración sobre la Red 2026 (www.adif.es, PDF) contient
+le catalogue des lignes (annexe F : origine, destination, écartement, électrification, sans PK)
+et une carte (carte 1, calques « distancias AV » et « distancias Adif ») des distances en km
+entiers entre les principales gares et bifurcations.
 
 ## Plus tard
 

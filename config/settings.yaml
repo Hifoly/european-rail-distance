@@ -71,3 +71,21 @@ sources:
       CH: CHE
       PT: PRT
     rayon_recherche_gare_m: 2000   # rattachement gare -> point d'exploitation RINF
+    # Adif ne publie pas dans RINF la vitesse des LAV (« notYetAvailable », constaté le 2026-09-29).
+    # En Espagne, les sections à voie normale (1435 mm) sont les LAV : pour le choix de l'itinéraire
+    # « grande_vitesse » (et « sans_lgv »), une section de ce pays à cet écartement et sans vitesse
+    # compte comme LGV. Les km restent en dont_km_vitesse_inconnue.
+    lgv_presumee_ecartement:
+      ES: "1435"
+
+  renfe:
+    nom: Renfe open data (GTFS alta velocidad, larga y media distancia)
+    # Jeu data.renfe.com « horarios-de-alta-velocidad-larga-distancia-y-media-distancia »,
+    # fichier hébergé sur ssl.renfe.com (vérifié le 2026-09-29), licence CC BY 4.0.
+    gtfs: https://ssl.renfe.com/gtransit/Fichero_AV_LD/google_transit.zip
+    licence: CC BY 4.0
+    # Périmètre espagnol (choix d'Aloïs le 2026-09-29 : domestique, depuis les horaires Renfe) :
+    # grande vitesse et grandes lignes. Exclus : MD, REGIONAL, REG.EXP., PROXIMDAD, TRENCELTA.
+    produits: [AVE, AVLO, AVANT, AVANT EXP, ALVIA, Intercity, EUROMED, AVE INT]
+    prefixes_etrangers: ["87", "94"]   # codes d'arrêt français (87) et portugais (94) : relations exclues
+    premier_id: 10001

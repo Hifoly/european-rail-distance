@@ -1,6 +1,8 @@
 """Collecte par API, avec un faux serveur (aucun accès réseau)."""
 import json
 
+import pytest
+
 from distancier import config
 from distancier.sources import http, rinf, sncf
 
@@ -108,3 +110,41 @@ def test_lignes_complementaires_depuis_le_fichier_des_voies(cfg):
     ajout = [t for t in avec if t.ligne == "C9"]
     assert len(avec) == len(sans) + 1 and len(ajout) == 1
     assert ajout[0].geom.length > 0.05 and ajout[0].pk_fin == 10.0
+
+
+@pytest.mark.parametrize("valeur, attendu", [("1668", "1668"), ("1435+1668", "mixte"), ("1435+1435", "1435"),
+                                             ("", None), (None, None)])
+def test_ecartement_rinf(valeur, attendu):
+    assert rinf.ecartement(valeur) == attendu
+
+
+def test_perimetre_renfe(cfg, tmp_path):
+    """Couples montée/descente d'un GTFS Renfe, produits filtrés, arrêts étrangers exclus."""
+    import zipfile
+    from distancier import perimetre
+    fichiers = {
+        "routes.txt": "route_id,agency_id,route_short_name,route_type\nr1,1,AVE,2\nr2,1,MD,2\n",
+        "trips.txt": "route_id,service_id,trip_id\nr1,s,t1\nr2,s,t2\n",
+        "stops.txt": "stop_id,stop_name,stop_lat,stop_lon\n60000,Madrid,40.4,-3.7\n04040,Zaragoza,41.6,-0.9\n"
+                     "71801,Barcelona,41.4,2.1\n87374,Perpignan,42.7,2.9\n11111,Pueblo,41.0,-1.0\n",
+        "stop_times.txt": "trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type\n"
+                          "t1,8:00:00,8:00:00,60000,1,0,1\nt1,9:00:00,9:05:00,04040,2,0,0\n"
+                          "t1,10:00:00,10:05:00,71801,3,0,0\nt1,11:00:00,11:00:00,87374,4,1,0\n"
+                          "t2,8:00:00,8:00:00,60000,1,0,1\nt2,9:00:00,9:00:00,11111,2,1,0\n",
+    }
+    dossier = config.dossier_source(cfg, "renfe", "2026-09-29")
+    dossier.mkdir(parents=True)
+    with zipfile.ZipFile(dossier / "google_transit.zip", "w") as z:
+        for nom, texte in fichiers.items():
+            z.writestr(nom, texte)
+    (dossier / "manifest.json").write_text("{}")
+    r = perimetre.espagne(cfg)
+    assert (r["gares"], r["relations"]) == (3, 3)   # MD et Perpignan exclus
+    rel = [l for l in perimetre.lire_csv(config.chemin(cfg, "relations")) if int(l["id"]) >= 10001]
+    assert [(l["uic_origine"], l["uic_destination"]) for l in rel] == [
+        ("7104040", "7160000"), ("7104040", "7171801"), ("7160000", "7171801")]
+    gares = {g["uic"]: g for g in perimetre.lire_csv(config.chemin(cfg, "gares"))}
+    assert gares["7104040"]["nom"] == "Zaragoza" and gares["7104040"]["pays"] == "ES"
+    assert gares["87000001"]["pays"] == "FR"                         # gares existantes conservées
+    assert perimetre.espagne(cfg)["relations"] == 3                   # reconstruction idempotente
+    assert len(perimetre.lire_csv(config.chemin(cfg, "relations"))) == 5 + 3

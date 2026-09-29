@@ -1,4 +1,4 @@
-"""Ligne de commande : distancier telecharger | calculer | charger-bdd."""
+"""Ligne de commande : distancier telecharger | perimetre | calculer | charger-bdd."""
 from __future__ import annotations
 
 import argparse
@@ -16,8 +16,11 @@ def main(argv=None) -> int:
     sub = ap.add_subparsers(dest="commande", required=True)
 
     t = sub.add_parser("telecharger", help="récupère les données sources par API")
-    t.add_argument("--source", choices=["sncf", "rinf", "tout"], default="tout")
+    t.add_argument("--source", choices=["sncf", "rinf", "renfe", "tout"], default="tout")
     t.add_argument("--pays", nargs="*", help="pays RINF (FR DE IT ES BE CH PT) ; défaut : tous")
+
+    p = sub.add_parser("perimetre", help="ajoute les gares et relations d'un pays d'après ses horaires")
+    p.add_argument("--pays", choices=["ES"], default="ES")
 
     c = sub.add_parser("calculer", help="calcule les distances des relations et exporte le tableau")
     c.add_argument("--jour-sncf", help="date du téléchargement SNCF à utiliser (défaut : le plus récent)")
@@ -38,6 +41,13 @@ def main(argv=None) -> int:
         if a.source in ("rinf", "tout"):
             from distancier.sources import rinf
             print("RINF ->", rinf.telecharger(cfg, a.pays))
+        if a.source in ("renfe", "tout"):
+            from distancier.sources import renfe
+            print("Renfe ->", renfe.telecharger(cfg))
+    elif a.commande == "perimetre":
+        from distancier import perimetre
+        r = perimetre.espagne(cfg)
+        print(f"{a.pays} : {r['gares']} gares, {r['relations']} relations")
     elif a.commande == "calculer":
         from distancier import calcul, export
         res = calcul.calculer(cfg, a.jour_sncf, a.jour_rinf)
