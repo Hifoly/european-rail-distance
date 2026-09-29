@@ -56,6 +56,44 @@ raccordements:
     de: [6.3831804, 45.673387]
     a: [6.3822336, 45.6648599]
     note: "RINF du 2026-09-28 : la ligne de la Tarentaise (Moûtiers, Bourg-St-Maurice) forme un îlot de 19 points ; son extrémité (FR9900002170) est reliée à Albertville (FR0000002899), à 950 m"
+  # Espagne : sections absentes du RINF (constaté le 2026-09-29), raccord en ligne droite entre les
+  # deux points RINF qui encadrent le trou ; l'existence de la ligne est vérifiée sur la carte 1 Adif.
+  - nom: "Cenicero - Fuenmayor, ligne Miranda de Ebro-Logroño (RINF)"
+    source: rinf
+    de: [-2.6313, 42.4852]
+    a: [-2.5708, 42.4879]
+    note: "RINF du 2026-09-29 : aucune section entre Cenicero (ES81005) et Fuenmayor (ES81006), Miranda-Logroño faisait 293,5 km par détour ; raccord de 4,97 km en ligne droite"
+    valide: "carte 1 Adif (Declaración sobre la Red 2026) : ligne Miranda de Ebro-Logroño continue, 69 km ; RINF avec raccord 65,3 km"
+  - nom: "Benifaió - Silla, ligne Valencia-Xàtiva (RINF)"
+    source: rinf
+    de: [-0.43, 39.2843]
+    a: [-0.415, 39.3618]
+    note: "RINF du 2026-09-29 : Xàtiva forme un îlot de 21 points jusqu'à Benifaió (ES64107) ; Ford (ES64108) n'a aucune section ; raccord Benifaió-Silla (ES64200) de 8,7 km en ligne droite, par Ford"
+    valide: "carte 1 Adif : ligne Silla-Xàtiva continue, 44 km ; RINF avec raccord 45,3 km"
+  - nom: "Alcover-AV - Camp de Tarragona, LAV Madrid-Barcelone (RINF)"
+    source: rinf
+    de: [1.1873, 41.2688]
+    a: [1.2719, 41.1921]
+    note: "RINF du 2026-09-29 : la LAV 050 s'arrête à Alcover-AV (ES04103, une seule section) ; raccord jusqu'à Camp de Tarragona (ES04104) de 11,1 km en ligne droite"
+    valide: "carte 1 Adif : LAV Lleida-Camp de Tarragona continue, 81 km"
+  - nom: "Bif. La Chana - Albolote, ligne Granada-Moreda (RINF)"
+    source: rinf
+    de: [-3.6551, 37.19717]
+    a: [-3.647, 37.234]
+    note: "RINF du 2026-09-29 : aucune section entre Bif. La Chana (ESB0110) et Albolote (ES57006), Granada-Moreda faisait 470,7 km ; raccord de 4,2 km en ligne droite"
+    valide: "carte 1 Adif : ligne Granada-Moreda continue, 57 km ; RINF avec raccord 58,4 km"
+  - nom: "Cortadura - Río Arillo, ligne Sevilla-Cádiz (RINF)"
+    source: rinf
+    de: [-6.2683, 36.4943]
+    a: [-6.22523, 36.45759]
+    note: "RINF du 2026-09-29 : Cádiz forme un îlot de 6 points jusqu'à Cortadura (ES51407) ; raccord jusqu'à Río Arillo (ES51419) de 5,6 km en ligne droite"
+    valide: "carte 1 Adif : ligne Jerez de la Frontera-Cádiz continue, 49 km"
+  - nom: "Madrid Puerta de Atocha - Atocha Cercanías (RINF)"
+    source: rinf
+    de: [-3.6906, 40.4063]
+    a: [-3.6891, 40.4061]
+    note: "RINF du 2026-09-29 : les deux gares d'Atocha ne sont reliées que par un détour de 73 km ; raccord de 0,13 km entre les deux points (même complexe de gares)"
+    valide: "carte 1 Adif : Puerta de Atocha et Atocha Cercanías forment un même nœud"
 
 # Demi-tours interdits : le graphe n'étant pas orienté, un itinéraire peut arriver par un
 # raccordement et repartir en arrière sur la ligne rejointe (rebroussement). Au nœud le plus proche

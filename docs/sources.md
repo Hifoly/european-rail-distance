@@ -61,7 +61,13 @@ Il couvre les 7 pays du projet de façon homogène (la Suisse y contribue).
   espagnoles à 1 435 mm sans vitesse comptent comme LGV (`lgv_presumee_ecartement`) ;
 - trous dans les LAV : ligne 050 coupée entre Alcover-AV et Camp de Tarragona, et entre
   Barcelona-Sants et Riells ; ligne 080 (Madrid–Valladolid–Burgos) en trois morceaux ; LAV de
-  Galice sans Sanabria AV ni A Gudiña ; Xàtiva, Cádiz et Huelva isolés du reste du réseau ;
+  Galice sans Sanabria AV ni A Gudiña ; Xàtiva, Cádiz et Huelva isolés du reste du réseau.
+  Six trous sont comblés par des raccords en ligne droite dans `corrections.yaml` (2026-09-29,
+  existence de la ligne vérifiée sur la carte 1 Adif) : Alcover-AV–Camp de Tarragona (11,1 km),
+  Cenicero–Fuenmayor (Miranda–Logroño, 5,0 km), Benifaió–Silla (Xàtiva, 8,7 km), Bif. La Chana–
+  Albolote (Granada–Moreda, 4,2 km), Cortadura–Río Arillo (Cádiz, 5,6 km), Puerta de Atocha–
+  Atocha Cercanías (0,1 km). Restent sans raccord : Xàtiva–La Encina (Moixent sans section, trou de
+  47 km), Huelva, Venta de Baños–Valladolid et Reus–Plana (détours RINF), traités par la carte Adif ;
 - gares Renfe sans point RINF à leur code Adif : Medina del Campo AV, Sanabria AV,
   A Gudiña-Porta de Galicia, Puertollano, A Coruña-Turístico.
 
