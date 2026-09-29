@@ -50,6 +50,19 @@ class Raccordement:
     note: str = ""
 
 
+@dataclass
+class VirageInterdit:
+    """Au nœud le plus proche de `point`, interdit de passer de la ligne `de` à la branche de
+    la ligne `vers` qui repart dans la même direction (demi-tour) ; l'autre branche reste permise.
+    Avec `separer`, les deux lignes ne sont plus reliées du tout à ce nœud (fausse jonction)."""
+    nom: str
+    point: tuple[float, float]
+    de: str
+    vers: str
+    note: str = ""
+    separer: bool = False
+
+
 def longueur_km(geom_wgs84: LineString) -> float:
     xs, ys = geom_wgs84.xy
     return GEOD.line_length(xs, ys) / 1000
@@ -98,7 +111,7 @@ class Grille:
 def construire_graphe(troncons: list[Troncon], vitesses: list[TronconVitesse], crs: int = 3035,
                       tolerance_noeud_m: float = 50, pas_echantillonnage_vitesse_m: float = 100,
                       tolerance_vitesse_m: float = 25, raccordements: list[Raccordement] = (),
-                      **_) -> nx.MultiGraph:
+                      virages_interdits: list[VirageInterdit] = (), **_) -> nx.MultiGraph:
     vers_m = Transformer.from_crs(4326, crs, always_xy=True).transform
     vers_deg = Transformer.from_crs(crs, 4326, always_xy=True).transform
     tol = tolerance_noeud_m
@@ -170,10 +183,64 @@ def construire_graphe(troncons: list[Troncon], vitesses: list[TronconVitesse], c
     for k, c in enumerate(grille.reps):
         if k in G:
             G.nodes[k]["xy"] = c
+    for vi in virages_interdits:
+        interdire_virage(G, vi, vers_m(*vi.point), tol)
     composantes = sorted((len(c) for c in nx.connected_components(G)), reverse=True)
     log.info("graphe : %d nœuds, %d arêtes, %d composantes (plus grandes : %s)",
              G.number_of_nodes(), G.number_of_edges(), len(composantes), composantes[:5])
     return G
+
+
+def _cap(geom: LineString, xy) -> float:
+    """Direction (radians) de l'arête en partant du nœud `xy`, mesurée sur ses 200 premiers mètres."""
+    c = list(geom.coords)
+    if math.dist(c[0], xy) > math.dist(c[-1], xy):
+        c = c[::-1]
+    ligne = LineString(c)
+    p = ligne.interpolate(min(200.0, ligne.length / 2))
+    return math.atan2(p.y - c[0][1], p.x - c[0][0])
+
+
+def interdire_virage(G: nx.MultiGraph, vi: VirageInterdit, point_m, tol: float) -> None:
+    """Le graphe n'est pas orienté : un plus court chemin peut arriver par un raccordement et
+    repartir en arrière sur la ligne rejointe, ce qu'aucun train ne fait sans rebroussement.
+    Les arêtes de `vi.de` sont déplacées sur un nœud jumeau, relié seulement (par des arêtes
+    dupliquées, marquées `doublon`) aux branches de `vi.vers` qui partent à plus de 90°."""
+    n = min((k for k in G.nodes if "xy" in G.nodes[k]), key=lambda k: math.dist(G.nodes[k]["xy"], point_m))
+    xy = G.nodes[n]["xy"]
+    if math.dist(xy, point_m) > tol:
+        log.warning("virage interdit « %s » : aucun nœud à moins de %.0f m", vi.nom, tol)
+        return
+    aretes = [(u, v, k, d) for u, v, k, d in G.edges(n, keys=True, data=True) if u != v]
+    entrees = [a for a in aretes if a[3]["ligne"] == vi.de]
+    sorties = [a for a in aretes if a[3]["ligne"] == vi.vers]
+    if not entrees or not sorties:
+        log.warning("virage interdit « %s » : lignes %s / %s absentes du nœud", vi.nom, vi.de, vi.vers)
+        return
+    if vi.separer:   # un seul jumeau pour toutes les arêtes de `de`, sans aucune branche de `vers`
+        groupes = [(entrees, [])]
+    else:
+        groupes = []
+        for a in entrees:
+            cap_a = _cap(a[3]["geom"], xy)
+            groupes.append(([a], [b for b in sorties
+                                  if abs((math.degrees(_cap(b[3]["geom"], xy) - cap_a) + 180) % 360 - 180) >= 90]))
+    for groupe, permises in groupes:
+        jumeau = max(k for k in G.nodes if isinstance(k, int)) + 1
+        G.add_node(jumeau, xy=xy)
+
+        def deplacer(u, v, d, **extra):
+            autre = v if u == n else u
+            sens = tuple(jumeau if x == n else x for x in d["sens"])
+            G.add_edge(jumeau, autre, **{**d, "sens": sens, **extra})
+
+        for a in groupe:
+            G.remove_edge(a[0], a[1], a[2])
+            deplacer(a[0], a[1], a[3])
+        for b in permises:
+            deplacer(b[0], b[1], b[3], doublon=vi.nom)
+        log.info("virage interdit « %s » : %s -> %s, %d branche(s) permise(s) sur %d",
+                 vi.nom, vi.de, vi.vers, len(permises), len(sorties))
 
 
 def km_par_vitesse(arete: dict, debut: float = 0.0, fin: float = 1.0) -> dict:

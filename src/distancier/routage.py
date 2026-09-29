@@ -52,8 +52,13 @@ class Routeur:
         for _, _, d in G.edges(data=True):
             d["vitesses"] = km_par_vitesse(d)
             d["part_lgv"] = self._part_lgv(d)
-        self._aretes = [(u, v, k, d) for u, v, k, d in G.edges(keys=True, data=True) if "geom" in d and not d.get("manuel")]
+        self._aretes = [(u, v, k, d) for u, v, k, d in G.edges(keys=True, data=True) if "geom" in d and not d.get("manuel") and not d.get("doublon")]
         self._arbre = STRtree([a[3]["geom"] for a in self._aretes]) if self._aretes else None
+        # arêtes dupliquées par un virage interdit (reseau.interdire_virage), par géométrie d'origine
+        self._doublons = collections.defaultdict(list)
+        for u, v, d in G.edges(data=True):
+            if d.get("doublon"):
+                self._doublons[id(d["geom"])].append(d)
         crs = G.graph.get("crs")
         self._vers_m = Transformer.from_crs(4326, crs, always_xy=True).transform if crs else None
         self._rattachements: dict = {}
@@ -80,6 +85,9 @@ class Routeur:
         debut, fin = d["sens"]
         self._ajouter(tag, debut, d, 0.0, t)
         self._ajouter(tag, fin, d, t, 1.0)
+        for dd in self._doublons.get(id(g), ()):   # la gare est aussi sur les copies de l'arête
+            self._ajouter(tag, dd["sens"][0], dd, 0.0, t)
+            self._ajouter(tag, dd["sens"][1], dd, t, 1.0)
         # deux gares sur la même arête : relier directement
         for autre, (i2, t2) in self._rattachements.items():
             if i2 == i and autre in self.G:

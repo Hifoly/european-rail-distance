@@ -157,3 +157,34 @@ def test_plafond_du_detour_lgv(cfg):
     assert r["moteur"] == "sncf"
     assert r["resultat"].km == pytest.approx(km(P, X, Q), rel=1e-3)
     assert any("plus court chemin retenu" in x for x in r["remarques"])
+
+
+def test_virage_interdit_supprime_le_demi_tour():
+    import networkx as nx
+    from shapely.geometry import LineString
+    from distancier.reseau import Troncon, VirageInterdit, construire_graphe
+    from distancier.routage import Routeur
+
+    # Ligne classique C nord-sud ; raccord R qui arrive du nord-est et rejoint C en J (48,0) en direction du sud.
+    c = Troncon("C", LineString([(2.0, 48.1), (2.0, 48.0), (2.0, 47.9)]))
+    r = Troncon("R", LineString([(2.0, 48.0), (2.01, 48.02), (2.1, 48.1)]))
+    G = construire_graphe([c, r], [])
+    rt = Routeur(G)
+    rt.rattacher("E", 2.1, 48.1)        # bout du raccord
+    rt.rattacher("N", 2.0, 48.09)       # sur C, au nord de J
+    rt.rattacher("S", 2.0, 47.91)       # sur C, au sud de J
+    avant = {d: rt.chemin("E", d).km for d in "NS"}
+    rt.detacher("E", "N", "S")
+
+    vi = VirageInterdit("test", (2.0, 48.0), "R", "C")
+    G = construire_graphe([c, r], [], virages_interdits=[vi])
+    rt = Routeur(G)
+    for tag, lon, lat in (("E", 2.1, 48.1), ("N", 2.0, 48.09), ("S", 2.0, 47.91)):
+        rt.rattacher(tag, lon, lat)
+    assert rt.chemin("E", "S").km == pytest.approx(avant["S"])     # vers le sud : permis
+    # vers le nord : plus de demi-tour en J, il ne reste que le rebroussement au bout sud de C
+    assert rt.chemin("E", "N").km > avant["N"] + 2 * 9.0
+    assert rt.chemin("N", "S").km == pytest.approx(20.0, abs=0.1)                # C reste continue
+
+    G = construire_graphe([c, r], [], virages_interdits=[VirageInterdit("t", (2.0, 48.0), "R", "C", separer=True)])
+    assert nx.number_connected_components(G) == 2

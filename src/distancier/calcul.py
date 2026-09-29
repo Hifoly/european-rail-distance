@@ -13,7 +13,7 @@ import networkx as nx
 import yaml
 
 from distancier import config
-from distancier.reseau import Raccordement, construire_graphe
+from distancier.reseau import Raccordement, VirageInterdit, construire_graphe
 from distancier.routage import Resultat, Routeur
 
 log = logging.getLogger(__name__)
@@ -37,7 +37,10 @@ def charger_corrections(cfg: dict) -> dict:
     compl = {str(x["code"] if isinstance(x, dict) else x) for x in c.get("lignes_complementaires") or []}
     lignes_gares = {str(u): tuple(str(l) for l in (ls if isinstance(ls, list) else [ls]))
                     for u, ls in (c.get("lignes_gares") or {}).items()}
-    return {"raccordements": racc, "valides": valides, "lignes_complementaires": compl, "lignes_gares": lignes_gares,
+    virages = [VirageInterdit(v["nom"], tuple(v["point"]), str(v["de"]), str(v["vers"]), v.get("note", ""),
+                              bool(v.get("separer")))
+               for v in c.get("virages_interdits") or []]
+    return {"raccordements": racc, "valides": valides, "virages_interdits": virages, "lignes_complementaires": compl, "lignes_gares": lignes_gares,
             "lignes_exclues": {str(x) for x in c.get("lignes_exclues") or []}}
 
 
@@ -58,15 +61,16 @@ class MoteurSncf:
         troncons = [t for t in d["troncons"] if t.ligne not in corrections["lignes_exclues"]]
         params = dict(cfg["reseau"], crs=cfg["crs_metrique"])
         racc = corrections["raccordements"]["sncf"]
+        virages = corrections.get("virages_interdits", [])
         cle = hashlib.sha1(json.dumps([params, [r.__dict__ for r in racc], sorted(corrections["lignes_exclues"]),
-                                       sorted(self.complementaires)],
+                                       sorted(self.complementaires)] + ([[v.__dict__ for v in virages]] if virages else []),
                                       sort_keys=True, default=str).encode()).hexdigest()[:10]
         cache = config.chemin(cfg, "intermediaire") / f"graphe_sncf_{d['jour']}_{cle}.pkl"
         if cache.exists():
             G = pickle.loads(cache.read_bytes())
         else:
             log.info("construction du graphe SNCF (quelques minutes)…")
-            G = construire_graphe(troncons, d["vitesses"], raccordements=racc, **params)
+            G = construire_graphe(troncons, d["vitesses"], raccordements=racc, virages_interdits=virages, **params)
             cache.parent.mkdir(parents=True, exist_ok=True)
             cache.write_bytes(pickle.dumps(G))
         self.routeur = Routeur(G, **cfg["routage"], **cfg["reseau"])
