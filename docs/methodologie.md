@@ -15,6 +15,14 @@
 4. **Gares.** Chaque gare est rattachée au point le plus proche de la voie (à moins de
    300 m), de préférence sur une des lignes où SNCF Réseau la situe. Au-delà de 100 m, une
    remarque le signale.
+5. **Demi-tours.** Le graphe n'est pas orienté : un plus court chemin peut arriver par un
+   raccordement et repartir en arrière sur la ligne rejointe, ce qu'un train ne fait pas sans
+   rebroussement. `virages_interdits` (`corrections.yaml`) interdit ce passage à un nœud donné :
+   les arêtes du raccordement passent sur un nœud jumeau relié seulement aux branches qui partent
+   à plus de 90° (copies des arêtes, où les gares sont aussi rattachées) ; avec `separer`, les
+   deux lignes ne sont plus reliées du tout à ce nœud. Ex. raccordement de Migné-Auxances
+   (2026-09-29) : Tours–Futuroscope passait par la LGV jusqu'au nord de Poitiers puis remontait
+   6 km (102,1 km) ; il sort désormais à La Celle-Saint-Avant (92,2 km, RINF 92,3).
 
 ## Moteur « rinf » (graphe topologique)
 
@@ -50,7 +58,7 @@ nouvelles à grande vitesse) : LGV au-delà de 95 %, classique sous 5 %, mixte e
 | statut | condition |
 |---|---|
 | `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près ; pour une relation calculée sur SNCF, deux contrôles RINF sont calculés (itinéraire RINF autonome, et itinéraire suivant les lignes SNCF, même mode, lignes hors itinéraire pénalisées ×5) ; le plus proche est retenu et la remarque dit lequel |
-| `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près |
+| `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près (ou 0,5 km) ; ce contrôle prime sur l'alerte RINF (choix d'Aloïs le 2026-09-29, ex. Calais-Ville–Calais-Fréthun : SNCF 7,7 km, PK 7,8 km, RINF 9,4 km par les voies de la gare LGV) |
 | `à vérifier` | raccordement manuel emprunté et non validé sur carte (clé `valide` de `corrections.yaml`), repli sur RINF (voir ci-dessous), écart avec le contrôle supérieur à `seuil_alerte_pct` (10 %, trou probable dans un des réseaux), ou statut forcé dans `relations.csv` |
 | `estimé` | aucun contrôle concluant |
 | `erreur : …` | gare inconnue, source absente ou pas d'itinéraire |

@@ -19,6 +19,26 @@ raccordements:
     a: [1.613114, 50.721714]
     note: "extrémité de tracé à 280m de l'autre ligne dans formes-des-lignes-du-rfn (consulté le 2026-09-28), corrige les détours constatés au contrôle RINF"
     valide: "OpenStreetMap/OpenRailwayMap, 2026-09-29 : voie principale continue de 282 m (lignes Longueau-Boulogne et Boulogne-Calais)"
+  - nom: "Bifurcation de Lille (Jct 278000/295000), ligne 295000 sur ligne 278000"
+    source: sncf
+    de: [3.093573, 50.64389]
+    a: [3.093811, 50.643815]
+    note: "les deux tracés se touchent à 16 m sans que l'un y finisse, le graphe ne les reliait donc pas ; Lille-Flandres - Croix-Wasquehal passait par le raccordement 278306 (8,1 km contre 7,3 km). Constaté le 2026-09-29"
+    valide: "SNCF fichier des voies (2026-09-29) : aiguillages J0021/J0023 de la ligne 295000 (PK 2,15 à 2,59) et J0020 de la ligne 278000 (PK 2,10) au même endroit ; RINF : point de jonction FR0000000274 « Jct 278000/295000 » à 2 et 16 m des deux tracés"
+  # Raccords hors des couples actuels (point 6), repris seulement quand le fichier des voies SNCF
+  # a une voie continue entre les deux bouts. Diagnostic du 2026-09-29.
+  - nom: "Cherbourg, fin du tracé de la ligne 366000 sur le raccordement maritime 366106"
+    source: sncf
+    de: [-1.618256, 49.624393]
+    a: [-1.61836, 49.626277]
+    note: "extrémité du tracé 366000 à 210 m de la ligne 366106 dans formes-des-lignes-du-rfn (consulté le 2026-09-29)"
+    valide: "SNCF fichier des voies (2026-09-29) : voies V1 et V2 de la ligne 366000 continues entre les deux bouts, 255 et 257 m"
+  - nom: "Troyes, fin du tracé de la ligne 006000 sur la ligne 005300"
+    source: sncf
+    de: [4.03785, 48.312993]
+    a: [4.044407, 48.315626]
+    note: "extrémité du tracé 006000 à 567 m de la ligne 005300 dans formes-des-lignes-du-rfn (consulté le 2026-09-29) ; RINF : jonction FR0000001904 « 005300-1/006000-3 » à 254 m"
+    valide: "SNCF fichier des voies (2026-09-29) : voie unique de la ligne 006000 continue entre les deux bouts, 587 m"
 #  - nom: Raccordement de Pasilly (LGV Sud-Est > ligne Paris-Dijon)
 #    source: sncf              # moteur concerné (sncf ou rinf)
 #    de: [lon, lat]
@@ -29,12 +49,34 @@ raccordements:
     source: rinf
     de: [7.567592, 47.577565]
     a: [7.5725294, 47.5703063]
-    note: "RINF du 2026-09-28 : aucune section entre le point frontière EU00138 et le réseau suisse ; relié à Basel St. Johann (CH00016)"
+    note: "RINF du 2026-09-28 : aucune section entre le point frontière EU00138 et le réseau suisse ; relié à Basel St. Johann (CH00016). Au 2026-09-29, le point suisse CH00052 « Basel Grenze (FR) » est au même endroit que EU00138 mais n'a aucune section non plus"
+    valide: "SNCF formes-des-lignes-du-rfn (2026-09-29) : le tracé de la ligne 115000 continue après la frontière jusqu'à 46 m de Basel St. Johann, sur 0,953 km, contre 0,888 km en ligne droite pour le raccord (écart de 65 m)"
   - nom: "Albertville - ligne de la Tarentaise (RINF)"
     source: rinf
     de: [6.3831804, 45.673387]
     a: [6.3822336, 45.6648599]
     note: "RINF du 2026-09-28 : la ligne de la Tarentaise (Moûtiers, Bourg-St-Maurice) forme un îlot de 19 points ; son extrémité (FR9900002170) est reliée à Albertville (FR0000002899), à 950 m"
+
+# Demi-tours interdits : le graphe n'étant pas orienté, un itinéraire peut arriver par un
+# raccordement et repartir en arrière sur la ligne rejointe (rebroussement). Au nœud le plus proche
+# de « point », on interdit de passer de la ligne « de » à la branche de « vers » qui repart dans la
+# même direction ; l'autre branche reste permise. « separer: true » : aucune liaison entre les deux
+# lignes à ce nœud (fausse jonction créée par la tolérance de soudure de 150 m).
+virages_interdits:
+  # Raccordement de Migné-Auxances (570360, LGV SEA vers Poitiers) : il longe la ligne 570000 sur
+  # 1 km avant de la rejoindre au nord de Poitiers, et son tracé est coupé à moins de 150 m d'elle,
+  # d'où une fausse jonction au nœud nord. Tours - Futuroscope passait par la LGV, le raccord, puis
+  # remontait de 6 km vers Futuroscope (102,1 km) au lieu de sortir au raccordement de
+  # La Celle-Saint-Avant (570350). Constaté le 2026-09-29.
+  - nom: "Raccordement de Migné-Auxances, fausse jonction nord"
+    point: [0.35282, 46.61947]
+    de: "570360"
+    vers: "570000"
+    separer: true
+  - nom: "Raccordement de Migné-Auxances, jonction sud"
+    point: [0.35026, 46.61003]
+    de: "570360"
+    vers: "570000"
 
 # Lignes SNCF à exclure du graphe (code_ligne), par exemple un tracé erroné.
 lignes_exclues:

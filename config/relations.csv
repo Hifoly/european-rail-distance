@@ -349,7 +349,7 @@ id;uic_origine;uic_destination;itineraire;statut_force;remarque
 369;87182063;87191007;grande_vitesse;;
 370;87765008;87753657;grande_vitesse;;
 371;87765008;87762906;grande_vitesse;;
-372;87765008;87753004;grande_vitesse;;
+372;87765008;87753004;sans_lgv;;dessertes TER par la ligne classique : itinéraire sans LGV (même choix qu'Arles - Montélimar, 2026-09-29)
 373;87765008;87686006;grande_vitesse;;
 374;87765008;87761007;grande_vitesse;;
 375;87765008;87764001;grande_vitesse;;
@@ -934,7 +934,7 @@ id;uic_origine;uic_destination;itineraire;statut_force;remarque
 1114;87753657;87753004;grande_vitesse;;
 1115;87753657;87686006;grande_vitesse;;
 1116;87753657;87761007;grande_vitesse;;
-1117;87753657;87764001;grande_vitesse;;
+1117;87753657;87764001;sans_lgv;;dessertes TER par la ligne classique : itinéraire sans LGV (choix d'Aloïs le 2026-09-29)
 1118;87753657;87765107;grande_vitesse;;
 1120;87286302;87271007;grande_vitesse;;
 1121;87286302;87342014;grande_vitesse;;
