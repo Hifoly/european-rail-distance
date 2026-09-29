@@ -25,6 +25,20 @@ raccordements:
     a: [3.093811, 50.643815]
     note: "les deux tracés se touchent à 16 m sans que l'un y finisse, le graphe ne les reliait donc pas ; Lille-Flandres - Croix-Wasquehal passait par le raccordement 278306 (8,1 km contre 7,3 km). Constaté le 2026-09-29"
     valide: "SNCF fichier des voies (2026-09-29) : aiguillages J0021/J0023 de la ligne 295000 (PK 2,15 à 2,59) et J0020 de la ligne 278000 (PK 2,10) au même endroit ; RINF : point de jonction FR0000000274 « Jct 278000/295000 » à 2 et 16 m des deux tracés"
+  # Raccords hors des couples actuels (point 6), repris seulement quand le fichier des voies SNCF
+  # a une voie continue entre les deux bouts. Diagnostic du 2026-09-29.
+  - nom: "Cherbourg, fin du tracé de la ligne 366000 sur le raccordement maritime 366106"
+    source: sncf
+    de: [-1.618256, 49.624393]
+    a: [-1.61836, 49.626277]
+    note: "extrémité du tracé 366000 à 210 m de la ligne 366106 dans formes-des-lignes-du-rfn (consulté le 2026-09-29)"
+    valide: "SNCF fichier des voies (2026-09-29) : voies V1 et V2 de la ligne 366000 continues entre les deux bouts, 255 et 257 m"
+  - nom: "Troyes, fin du tracé de la ligne 006000 sur la ligne 005300"
+    source: sncf
+    de: [4.03785, 48.312993]
+    a: [4.044407, 48.315626]
+    note: "extrémité du tracé 006000 à 567 m de la ligne 005300 dans formes-des-lignes-du-rfn (consulté le 2026-09-29) ; RINF : jonction FR0000001904 « 005300-1/006000-3 » à 254 m"
+    valide: "SNCF fichier des voies (2026-09-29) : voie unique de la ligne 006000 continue entre les deux bouts, 587 m"
 #  - nom: Raccordement de Pasilly (LGV Sud-Est > ligne Paris-Dijon)
 #    source: sncf              # moteur concerné (sncf ou rinf)
 #    de: [lon, lat]
