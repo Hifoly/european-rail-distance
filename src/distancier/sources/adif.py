@@ -13,7 +13,9 @@ s'écarte le moins (somme des distances à vol d'oiseau aux deux bouts / longueu
 au prorata de ces distances : distance « approchée », qui sert à détecter un détour du RINF
 mais jamais à passer une relation en « vérifié ».
 
-Le graphe est topologique, sans vitesse ni écartement. Pour l'itinéraire « grande_vitesse »,
+La carte 3 de la même Declaración (« velocidad máxima », type de voie) a été relue tronçon par
+tronçon le 2026-09-29 dans config/adif/carte3_2026.csv : une vitesse maximale et un écartement
+par tronçon de la carte 1 (vides quand la carte ne les donne pas). Pour l'itinéraire « grande_vitesse »,
 les tronçons du calque AV (lignes d'Adif Alta Velocidad) comptent comme LGV.
 """
 from __future__ import annotations
@@ -47,11 +49,16 @@ def _lire(chemin: Path) -> list[dict]:
 def charger(cfg: dict) -> dict:
     src = cfg["sources"]["adif"]
     racine = cfg["_racine"]
+    carte3 = {}   # (de, a, calque) -> ligne de la carte 3 (vitesse maximale, écartement)
+    if src.get("vitesses"):
+        carte3 = {(r["de"], r["a"], r["calque"]): r for r in _lire(racine / src["vitesses"])}
     G = nx.MultiGraph()
     for r in _lire(racine / src["troncons"]):
-        G.add_edge(r["de"], r["a"], km=float(r["km"]), ligne=f"Adif {r['calque']}", profil=[None],
-                   ecartement=None, lgv_presumee=r["calque"] == "AV", sens=(r["de"], r["a"]), manuel=None,
-                   note=r["note"])
+        c3 = carte3.get((r["de"], r["a"], r["calque"]), {})
+        G.add_edge(r["de"], r["a"], km=float(r["km"]), ligne=f"Adif {r['calque']}",
+                   profil=[int(c3["vitesse"]) if c3.get("vitesse") else None],
+                   ecartement=c3.get("ecartement") or None, lgv_presumee=r["calque"] == "AV",
+                   sens=(r["de"], r["a"]), manuel=None, note=r["note"])
     points = {}   # uopid RINF ou code UIC -> nœud de la carte
     coords = {}   # nœud -> (lon, lat), coordonnées du point RINF (ou de la gare), pour l'interpolation
     for r in _lire(racine / src["noeuds"]):

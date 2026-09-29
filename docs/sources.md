@@ -107,6 +107,14 @@ en repli quand le RINF n'a pas de chemin) :
 - Relectures après comparaison au RINF : jonctions de Pontevedra/Redondela/Vigo, Utrera,
   Sagunt, Tarragona–Sant Vicenç, Oviedo–Gijón ; Guillarei–Tui et Tarragona–Torredembarra retirés.
 
+- `config/adif/carte3_2026.csv` : carte 3 du même PDF (page 7, « velocidad máxima » et type de
+  voie, calques « Velocidades Adif / Velocidad AV » et « Vias Adif / Vias AV »), relue à l'image
+  tronçon par tronçon le 2026-09-29 : vitesse maximale (246 tronçons sur 284) et écartement
+  d'après la légende des voies (279 sur 284 ; `mixte` = 3e rail ou voies des deux écartements).
+  Une lecture automatique préalable (étiquettes et couleurs rapprochées des tronçons) concordait
+  avec le RINF à 91 % pour l'écartement et 77 % pour la vitesse : insuffisant, d'où la relecture.
+  À noter : les LAV d'Estrémadure, Ourense–Santiago et l'axe atlantique sont à 1 668 mm.
+
 Limites connues : la carte ne chiffre que les grands nœuds (622 relations sur 1 460 ont une gare
 placée par approximation) ; l'Asturies (branches Villabona et Avilés) et Avilés ne sont pas
 chiffrés ; La Isla–Mérida (6 km) et Los Rosales–Sevilla (27 km) sont plus courts que le vol

@@ -262,3 +262,31 @@ def test_adif_deux_gares_sur_le_meme_troncon(tmp_path):
     adif = calcul.MoteurAdif(cfg, None, {})
     km = adif.calculer(g1, g2, "plus_court")[0].km
     assert 60 < km < 120   # et non Aranjuez -> Madrid -> Alcázar
+
+
+def test_carte3_et_vitesse_adif_sur_lav_rinf(tmp_path):
+    """Carte 3 : vitesse et écartement par tronçon ; report de la vitesse sur les LAV RINF sans vitesse."""
+    import networkx as nx
+    from types import SimpleNamespace
+    from distancier import calcul
+    from distancier.routage import Routeur
+    cfg = _cfg_adif(tmp_path)
+    (tmp_path / "carte3.csv").write_text("de;a;calque;vitesse;ecartement;note\nMadrid;Bif;AV;300;1435;\n"
+                                         "Bif;Sevilla;AV;250;1435;\nBif;Cordoba;Adif;;1668;\n", encoding="utf-8")
+    cfg["sources"]["adif"]["vitesses"] = "carte3.csv"
+    adif = calcul.MoteurAdif(cfg, None, {})
+    res = adif.calculer(GARES_ES["7160000"], GARES_ES["7151003"], "plus_court")[0]
+    assert res.vitesses == {300: 100, 250: 371} and res.ecartements == {"1435": 471}
+    assert adif.vitesses == [250, 300]
+
+    G = nx.MultiGraph()   # RINF : Madrid -X- (100,4 km, LAV sans vitesse) ; X-Y classique à 160
+    G.add_edge("ES60000", "X", km=60.0, profil=[None], lgv_presumee=True, ligne="L050", ecartement="1435")
+    G.add_edge("X", "ESBIF", km=40.4, profil=[None], lgv_presumee=True, ligne="L050", ecartement="1435")
+    G.add_edge("ESBIF", "Y", km=10.0, profil=[160], lgv_presumee=False, ligne="L100", ecartement="1668")
+    rinf = SimpleNamespace(routeur=Routeur(G), vitesses=[160])
+    adif.points["ESBIF"] = "Bif"
+    km = calcul.vitesses_adif_sur_rinf(rinf, adif)
+    assert km == pytest.approx(100.4)
+    r = rinf.routeur.chemin("ES60000", "Y", "plus_court")
+    assert r.vitesses == {300: pytest.approx(100.4), 160: 10.0} and r.km_vitesse_adif == pytest.approx(100.4)
+    assert 300 in rinf.vitesses

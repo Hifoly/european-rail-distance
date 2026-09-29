@@ -37,6 +37,7 @@ def cfg(tmp_path):
     for cle in ("donnees_brutes", "intermediaire", "sorties"):
         c["chemins"][cle] = str(tmp_path / cle)
     c["chemins"]["corrections"] = str(tmp_path / "corrections.yaml")
+    c["controles"] = {}   # données simulées françaises : pas de carte Adif (testée à part)
 
     sncf = tmp_path / "donnees_brutes" / "sncf" / "2026-01-01"
     sncf.mkdir(parents=True)

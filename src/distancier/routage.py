@@ -34,6 +34,7 @@ class Resultat:
     ecartements: dict = field(default_factory=dict)  # {'1668', '1435', '1000', 'mixte' ou None: km}
     aretes: int = 0                                  # nombre d'arêtes du graphe parcourues
     approche: bool = False                           # extrémité placée par interpolation (carte Adif)
+    km_vitesse_adif: float = 0.0                     # km RINF dont la vitesse vient de la carte Adif
 
     def km_lgv(self, seuil: int) -> float:
         return sum(k for v, k in self.vitesses.items() if v is not None and v >= seuil)
@@ -145,6 +146,8 @@ class Routeur:
             res.aretes += 1
             vit.update(d["vitesses"])
             ecart[d.get("ecartement")] += d["km"]
+            if d.get("vitesse_adif"):
+                res.km_vitesse_adif += d["km"]
             if res.lignes and res.lignes[-1][0] == d["ligne"]:
                 res.lignes[-1] = (d["ligne"], res.lignes[-1][1] + d["km"])
             else:

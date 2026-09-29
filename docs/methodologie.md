@@ -66,6 +66,20 @@ jamais à passer une relation en `vérifié`.
 Tolérance : chaque tronçon traversé ajoute `marge_arrondi_km` (0,5 km) au seuil en km, car la
 carte arrondit au km.
 
+Vitesse et écartement : la carte 3 de la même Declaración (vitesse maximale et type de voie) est
+relue tronçon par tronçon dans `config/adif/carte3_2026.csv` : une vitesse maximale (celle affichée
+pour tout le tronçon, donc plus grossière que le RINF) et un écartement par tronçon. Une relation
+calculée sur la carte Adif a donc vitesse et écartement de la même source.
+
+**Vitesse Adif sur les LAV du RINF** (choix d'Aloïs le 2026-09-29, `vitesses_lav_sur_rinf`) :
+Adif ne publie pas la vitesse des LAV dans le RINF. Pour chaque tronçon AV de la carte (ou
+enchaînement à travers une bifurcation sans point RINF, de même vitesse) entre deux points RINF,
+le plus court chemin RINF entre ces points, s'il a la même longueur à 10 % près, reçoit la vitesse
+de la carte 3 sur ses sections LAV sans vitesse. Les km restent ceux du RINF ; la relation porte
+la remarque « vitesse Adif (carte 3) sur X km de LAV sans vitesse RINF ». Au 2026-09-29 : 1 455 km
+de sections RINF complétés, 527 relations concernées ; part des km espagnols à vitesse connue
+43 % -> 96 %, à écartement connu 69 % -> 100 %.
+
 ## Répartition par écartement
 
 `km_ecartement_<mm>` = km du trajet par écartement nominal des voies de la section (RINF,

@@ -14,7 +14,7 @@ import networkx as nx
 import yaml
 
 from distancier import config
-from distancier.reseau import Raccordement, VirageInterdit, construire_graphe
+from distancier.reseau import Raccordement, VirageInterdit, construire_graphe, km_par_vitesse
 from distancier.routage import Resultat, Routeur
 
 log = logging.getLogger(__name__)
@@ -148,7 +148,7 @@ class MoteurAdif:
         src = cfg["sources"]["adif"]
         self.points, self.coords = d["points"], d["coords"]
         self.source, self.date = adif.SOURCE, adif.DATE
-        self.vitesses = []
+        self.vitesses = sorted({v for _, _, e in d["graphe"].edges(data=True) for v in e["profil"] if v is not None})
         # km entiers : chaque tronçon traversé peut être arrondi de 0,5 km
         self.marge_arete_km = float(src.get("marge_arrondi_km", 0.5))
         self.detour_max = float(src.get("interpolation_detour_max", 1.6))
@@ -210,6 +210,63 @@ class MoteurAdif:
             self.coords.pop("D", None)
 
 
+def vitesses_adif_sur_rinf(rinf: "MoteurRinf", adif: MoteurAdif, tolerance_pct: float = 10.0) -> float:
+    """Reporte la vitesse de la carte 3 Adif sur les sections RINF de LAV sans vitesse (choix d'Aloïs
+    le 2026-09-29). Pour chaque tronçon (ou enchaînement de tronçons) AV de la carte entre deux points
+    RINF, le plus court chemin RINF entre ces points (longueur à `tolerance_pct` près de celle de la carte)
+    donne les sections concernées ; seules celles sans vitesse et présumées LAV sont complétées, et
+    marquées `vitesse_adif`. Renvoie les km RINF complétés."""
+    G = rinf.routeur.G
+    uopid = {}
+    for cle, noeud in adif.points.items():
+        if cle in G:
+            uopid.setdefault(noeud, cle)
+    A = adif.routeur.G
+    # Tronçons AV à reporter : ceux dont les deux bouts sont des points RINF, et les enchaînements de
+    # tronçons AV à travers une bifurcation sans point RINF (ex. Cuenca - Bif. Motilla - Requena), de
+    # même vitesse, un tronçon non chiffré de moins de 15 km pouvant s'y glisser.
+    troncons = []
+    def etendre(chaine, noeuds):
+        u, v = noeuds[0], noeuds[-1]
+        vits = {d["profil"][0] for d in chaine} - {None}
+        muets = sum(d["km"] for d in chaine if d["profil"][0] is None)
+        if len(vits) > 1 or muets > 15:
+            return
+        if u in uopid and v in uopid:
+            if vits:
+                troncons.append((u, v, sum(d["km"] for d in chaine), vits.pop()))
+            return
+        if len(chaine) >= 4 or v in uopid:
+            return
+        for w, dd in A[v].items():
+            for d in dd.values():
+                if d.get("lgv_presumee") and not d.get("temporaire") and w not in noeuds:
+                    etendre(chaine + [d], noeuds + [w])
+    for u, v, d in A.edges(data=True):
+        if d.get("lgv_presumee") and not d.get("temporaire"):
+            for a, b in ((u, v), (v, u)):
+                if a in uopid:
+                    etendre([d], [a, b])
+    total = 0.0
+    for u, v, km_carte, vit in troncons:
+        try:
+            noeuds = nx.shortest_path(G, uopid[u], uopid[v], weight=lambda a, b, dd: min(x["km"] for x in dd.values()))
+        except nx.NetworkXNoPath:
+            continue
+        aretes = [min(G[a][b].values(), key=lambda x: x["km"]) for a, b in zip(noeuds[:-1], noeuds[1:])]
+        km = sum(a["km"] for a in aretes)
+        if km_carte <= 0 or abs(km / km_carte - 1) > tolerance_pct / 100:
+            continue
+        for a in aretes:
+            if a["profil"] == [None] and a.get("lgv_presumee") and not a.get("vitesse_adif"):
+                a["profil"] = [vit]
+                a["vitesses"] = km_par_vitesse(a)
+                a["vitesse_adif"] = True
+                total += a["km"]
+    rinf.vitesses = sorted(set(rinf.vitesses) | set(adif.vitesses))
+    return total
+
+
 # --- calcul ------------------------------------------------------------------------
 
 def referentiel_gares(cfg: dict) -> dict[str, dict]:
@@ -235,6 +292,9 @@ def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = No
             log.warning("moteur %s indisponible : %s", nom, e)
     if "adif" in (cfg.get("controles") or {}).values() and "adif" in cfg["sources"]:
         moteurs["adif"] = MoteurAdif(cfg, None, corrections)
+        if cfg["sources"]["adif"].get("vitesses_lav_sur_rinf") and "rinf" in moteurs:
+            km = vitesses_adif_sur_rinf(moteurs["rinf"], moteurs["adif"])
+            log.info("vitesse Adif reportée sur %.0f km de LAV RINF sans vitesse", km)
     if not moteurs:
         raise RuntimeError("aucune donnée source : lancer d'abord « distancier telecharger »")
 
@@ -357,6 +417,8 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
             nom_principal, principal, repli, res = nom_ctl, moteurs[nom_ctl], True, ctl_pays
     ligne["moteur"] = nom_principal
     ligne["remarques"] += notes
+    if res.km_vitesse_adif > 0:
+        ligne["remarques"].append(f"vitesse Adif (carte 3) sur {res.km_vitesse_adif:.1f} km de LAV sans vitesse RINF")
     ligne["resultat"] = res
     ligne["source"] = principal.source
     ligne["date_consultation"] = principal.date

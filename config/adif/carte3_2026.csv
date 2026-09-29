@@ -1,0 +1,285 @@
+de;a;calque;vitesse;ecartement;note
+Ferrol;Betanzos-Infesta;Adif;90;1668;
+A Coruña;Betanzos-Infesta;Adif;105;1668;
+Betanzos-Infesta;Lugo;Adif;160;1668;
+A Coruña;Santiago de Compostela;Adif;200;1668;
+Santiago de Compostela;Bif. Angueira;AV;160;1668;
+Bif. Angueira;Vilagarcía de Arousa;AV;135;1668;
+Bif. Angueira;Bif. Vilagarcía sud;AV;200;1668;
+Bif. Vilagarcía sud;Vilagarcía de Arousa;AV;;1668;non chiffré
+Vilagarcía de Arousa;Pontevedra;AV;200;1668;
+Pontevedra;Bif. Pontevedra-Vigo;AV;200;1668;
+Bif. Pontevedra-Vigo;Redondela;AV;200;1668;lecture incertaine
+Redondela;Vigo Guixar;AV;105;1668;
+Bif. Pontevedra-Vigo;Vigo Urzáiz;AV;200;1668;
+Redondela;Guillarei;Adif;160;1668;
+Guillarei;Ourense;Adif;155;1668;
+Santiago de Compostela;Ourense;Adif;300;1668;LAV Ourense-Santiago à 1 668 mm
+Santiago de Compostela;Ourense;Adif;125;1668;
+Lugo;Monforte de Lemos;Adif;160;1668;
+Ourense;Monforte de Lemos;Adif;155;1668;
+Monforte de Lemos;Toral de los Vados;Adif;120;1668;
+Toral de los Vados;Ponferrada;Adif;160;1668;
+Ponferrada;Astorga;Adif;135;1668;
+Ourense;Taboadela;AV;90;1435;
+Taboadela;Pedralba;Adif;140;1668;
+Pedralba;Puebla de Sanabria;Adif;140;1668;lecture incertaine
+Pedralba;Sanabria AV;AV;;1435;non chiffré
+Ourense;Sanabria AV;AV;300;1435;
+Oviedo;Pola de Lena;Adif;130;1668;
+Pola de Lena;La Robla;Adif;105;1668;
+Pola de Lena;Campomanes AV;AV;160;1668;
+Campomanes AV;La Robla AV;AV;200;mixte;
+La Robla AV;Bif. Pajares;AV;160;mixte;lecture incertaine
+Bif. Pajares;León;AV;160;1668;
+Astorga;Bif. León ouest;Adif;155;1668;
+Bif. León ouest;León;Adif;;1668;vitesse non attribuée (90 ou 100)
+León;Torneros;Adif;;;non lu
+Alar del Rey;Reinosa;Adif;130;1668;
+Reinosa;Bárcena;Adif;95;1668;
+Bárcena;Santander;Adif;160;1668;
+León;Palencia;Adif;160;1668;
+León;Palencia;AV;300;1435;
+Palencia;Venta de Baños;Adif;160;1668;
+Palencia;Bif. Venta de Baños;AV;;1435;non chiffré
+Venta de Baños;Valladolid Campo Grande;Adif;160;1668;
+Bif. Venta de Baños;Valladolid Campo Grande;AV;300;1435;
+Bif. Venta de Baños;Burgos Rosa Manzano;AV;300;1435;
+Magaz;Burgos Rosa Manzano;Adif;160;1668;
+Venta de Baños;Magaz;Adif;140;1668;
+Valladolid Campo Grande;Medina del Campo;Adif;160;1668;
+Valladolid Campo Grande;Bif. Medina;AV;300;1435;
+Burgos Rosa Manzano;Bif. Aranda;Adif;;1668;non chiffré
+Bif. Aranda;Aranda de Duero;Adif;100;1668;
+Sanabria AV;Zamora;AV;300;1435;240 à l'approche de Zamora
+Puebla de Sanabria;Zamora;Adif;145;1668;
+Zamora;Medina del Campo AV;AV;300;1435;
+Medina del Campo AV;Bif. Medina;AV;300;1435;
+Zamora;Medina del Campo;Adif;140;1668;
+Medina del Campo;Salamanca;Adif;155;1668;
+Medina del Campo;Ávila;Adif;160;1668;
+Salamanca;Ávila;Adif;155;1668;
+Salamanca;Fuentes de Oñoro;Adif;140;1668;
+Ávila;Villalba de Guadarrama;Adif;150;1668;
+Plasencia;Bif. San Esteban;AV;135;1668;
+Bif. San Esteban;Bif. El Chaparral;AV;110;1668;lecture incertaine
+Bif. San Esteban;Arroyo de la Herrera;AV;;1668;non chiffré
+Bif. El Chaparral;Monfragüe;AV;110;1668;
+Bif. El Chaparral;Bif. Mirabel est;AV;155;1668;lecture incertaine
+Mirabel;Bif. Mirabel est;AV;80;1668;
+Bif. Mirabel est;Monfragüe;AV;155;1668;
+Mirabel;Bif. Casa de la Torre;AV;120;1668;
+Bif. Casa de la Torre;Cáceres;AV;;1668;non chiffré
+Arroyo de la Herrera;Bif. El Palmeral;AV;200;1668;LAV d'Estrémadure à 1 668 mm
+Bif. El Palmeral;Bif. Casa de la Torre;AV;;1668;non chiffré
+Cáceres;Bif. Romanos;AV;;1668;non chiffré
+Cáceres;Valencia de Alcántara;Adif;120;1668;
+Bif. Romanos;Bif. La Granja;AV;200;1668;LAV d'Estrémadure à 1 668 mm
+Badajoz;Bif. San Nicolás;AV;200;1668;
+Bif. San Nicolás;Montijo;AV;200;1668;
+Montijo;Bif. La Granja;AV;200;1668;lecture incertaine
+Bif. La Granja;Aljucén;AV;;1668;non chiffré
+Bif. San Nicolás;Bif. La Isla;AV;200;1668;
+Bif. La Granja;Bif. La Isla;AV;;1668;non chiffré
+Bif. La Isla;Mérida;AV;100;1668;lecture incertaine
+Aljucén;Mérida;AV;100;1668;
+Mérida;Almorchón;Adif;160;1668;
+Mérida;Zafra;Adif;155;1668;
+Zafra;Jerez de los Caballeros;Adif;70;1668;
+Zafra;Fregenal de la Sierra;Adif;120;1668;
+Fregenal de la Sierra;Calañas;Adif;100;1668;
+Calañas;Bif. Huelva;Adif;115;1668;
+Zafra;Llerena;Adif;120;1668;
+Llerena;Los Rosales;Adif;100;1668;
+Los Rosales;Lora del Río;Adif;160;1668;
+Lora del Río;Córdoba;Adif;160;1668;
+Los Rosales;Sevilla Santa Justa;Adif;155;1668;
+Sevilla Santa Justa;Bif. Sevilla nord;Adif;;1668;non chiffré
+Bif. Sevilla nord;Bif. Huelva;Adif;140;1668;
+Córdoba;Sevilla Santa Justa;AV;250;1435;
+Sevilla Santa Justa;Dos Hermanas;Adif;160;1668;
+Mirabueno;Alhondiguilla-Villaviciosa;Adif;70;1668;
+Huelva;Bif. Huelva;Adif;90;1668;
+Dos Hermanas;Bif. Utrera;Adif;140;1668;
+Bif. Utrera;Utrera;Adif;;1668;non chiffré
+Bif. Utrera;Osuna;Adif;160;1668;120 après Arahal
+Utrera;Lebrija;Adif;200;1668;
+Lebrija;Jerez de la Frontera;Adif;200;1668;
+Jerez de la Frontera;Cádiz;Adif;200;1668;
+Ronda;Algeciras;Adif;140;1668;
+Ronda;Bobadilla;Adif;120;1668;
+Córdoba;Puente Genil-Herrera;AV;300;1435;
+Puente Genil-Herrera;Antequera-Santa Ana;AV;300;1435;
+Antequera-Santa Ana;Antequera AV;AV;300;1435;
+Antequera AV;Loja;AV;300;1435;
+Loja;Granada;AV;300;1435;
+Antequera-Santa Ana;Málaga María Zambrano;AV;300;1435;220 à l'approche de Málaga
+Osuna;Pedrera;Adif;160;1668;
+Pedrera;Fuente de Piedra;Adif;160;1668;lecture incertaine
+Fuente de Piedra;Bobadilla;Adif;160;1668;
+Bobadilla;Málaga María Zambrano;Adif;160;1668;
+Málaga María Zambrano;Fuengirola;Adif;125;1668;
+Málaga María Zambrano;Málaga Centro Alameda;Adif;50;1668;
+Granada;Moreda;Adif;140;1668;
+Ciudad Real;Puertollano;AV;270;1435;
+Puertollano;Villanueva de Córdoba-Los Pedroches;AV;270;1435;
+Villanueva de Córdoba-Los Pedroches;Córdoba;AV;250;1435;
+Ciudad Real;Puertollano;Adif;50;1668;
+Ciudad Real;Ciudad Real Miguérez;Adif;;1668;non chiffré
+Ciudad Real Miguérez;Manzanares;Adif;140;1668;
+Puertollano;Almorchón;Adif;135;1668;125 et 135 selon le tronçon
+Almorchón;Alhondiguilla-Villaviciosa;Adif;60;1668;
+Mirabueno;Córdoba;Adif;;1668;non chiffré
+Manzanares;Santa Cruz de Mudela;Adif;160;1668;
+Santa Cruz de Mudela;Vadollano;Adif;130;1668;
+Vadollano;Linares-Baeza;Adif;160;1668;
+Linares-Baeza;Espelúy;Adif;135;1668;
+Espelúy;Córdoba;Adif;140;1668;
+Espelúy;Jaén;Adif;160;1668;
+Linares-Baeza;Moreda;Adif;140;1668;
+Córdoba;Fuente de Piedra;Adif;155;1668;
+Moreda;Huéneja-Dólar;Adif;140;1668;
+Huéneja-Dólar;Doña María Ocaña;Adif;;1668;non chiffré
+Doña María Ocaña;Gérgal;Adif;160;1668;
+Gérgal;Almería;Adif;100;1668;
+Lorca-Sutullena;Águilas;Adif;140;1668;sans service commercial
+Albacete-Los Llanos;Chinchilla de Montearagón;Adif;160;1668;lecture incertaine
+Chinchilla de Montearagón;La Encina;Adif;160;1668;
+La Encina;Villena;Adif;160;1668;
+Villena;Alacant Terminal;Adif;160;1668;
+Chinchilla de Montearagón;Murcia Mercancías;Adif;160;1668;
+Murcia Mercancías;Murcia del Carmen;Adif;155;1668;
+Murcia Mercancías;Lorca-Sutullena;Adif;140;1668;
+Albacete-Los Llanos;Alacant Terminal;AV;300;1435;240 à l'approche d'Alacant
+Elche AV;Orihuela-Miguel Hernández;AV;220;1435;
+Orihuela-Miguel Hernández;Beniel;AV;200;1435;lecture incertaine
+Beniel;El Reguerón;AV;200;1435;lecture incertaine
+El Reguerón;Murcia del Carmen;Adif;120;mixte;lecture incertaine
+Alacant Terminal;El Reguerón;Adif;160;1668;
+El Reguerón;Cartagena;AV;;1668;vitesse non lue
+Cuenca;Valencia S.I.;Adif;120;1668;140 à l'approche de Valencia
+Cuenca Fernando Zóbel;Bif. Motilla;AV;300;1435;
+Bif. Motilla;Requena-Utiel;AV;300;1435;
+Requena-Utiel;València Joaquín Sorolla;AV;300;1435;
+València Joaquín Sorolla;Sagunt;AV;160;mixte;voie normale et voie ibérique côte à côte, lecture incertaine
+Sagunt;Castelló de la Plana;AV;160;mixte;voie normale et voie ibérique côte à côte, lecture incertaine
+Castelló de la Plana;Benicarló-Peñíscola;AV;220;1668;
+Xirivella-L'Alter;Valencia S.I.;Adif;85;1668;
+Valencia S.I.;Bif. Valencia sud;Adif;60;1668;
+València Estació del Nord;Bif. Valencia sud;Adif;;1668;non chiffré
+Bif. Valencia sud;Silla;Adif;160;1668;
+Silla;Cullera;Adif;140;1668;
+Cullera;Gandia;Adif;140;1668;
+Silla;Xàtiva;Adif;160;1668;
+Xàtiva;Moixent;Adif;160;1668;
+Moixent;La Encina;Adif;160;1668;
+Bif. Motilla;Albacete-Los Llanos;AV;300;1435;
+Madrid Chamartín;Villalba de Guadarrama;Adif;120;1668;
+Madrid Chamartín;Colmenar Viejo;Adif;130;1668;
+Villalba de Guadarrama;Cercedilla;Adif;90;1668;
+Cercedilla;Segovia;Adif;100;1668;
+Madrid Atocha Cercanías;Guadalajara;Adif;160;1668;
+Madrid Puerta de Atocha;Guadalajara-Yebes;AV;300;1435;
+Madrid Atocha Cercanías;Humanes;Adif;;1668;vitesse non lue
+Humanes;Villaluenga-Yuncler;Adif;155;1668;lecture incertaine
+Villaluenga-Yuncler;Monfragüe;Adif;155;1668;
+Villaluenga-Yuncler;Algodor;Adif;80;1668;
+Madrid Atocha Cercanías;Aranjuez;Adif;160;1668;
+Aranjuez;Castillejo-Añover;Adif;160;1668;
+Castillejo-Añover;Algodor;Adif;140;1668;
+Aranjuez;Cuenca;Adif;120;1668;
+Madrid Puerta de Atocha;Bif. Toledo;AV;;1435;vitesse non lue (240 ou 160 près d'Atocha)
+Bif. Toledo;La Sagra;AV;;1435;non chiffré
+La Sagra;Toledo;AV;220;1435;
+Madrid Puerta de Atocha;Bif. Levante;AV;;1435;non chiffré
+Bif. Levante;Bif. Levante 2;AV;;1435;non chiffré
+Bif. Levante 2;Cuenca Fernando Zóbel;AV;300;1435;
+La Sagra;Ciudad Real;AV;300;1435;
+Madrid Puerta de Atocha;Madrid Atocha Cercanías;Adif;;1668;même gare
+Bif. Medina;Segovia-Guiomar;AV;300;1435;
+Segovia-Guiomar;Madrid Chamartín;AV;300;1435;
+Aranda de Duero;Colmenar Viejo;Adif;130;1668;
+Soria;Torralba;Adif;155;1668;
+Torralba;Guadalajara;Adif;160;1668;
+Guadalajara-Yebes;Calatayud;AV;300;1435;
+Burgos Rosa Manzano;Miranda de Ebro;Adif;160;1668;
+Miranda de Ebro;Orduña;Adif;135;1668;
+Orduña;Bilbao Abando Indalecio Prieto;Adif;140;1668;
+Miranda de Ebro;Vitoria-Gasteiz;Adif;155;1668;
+Vitoria-Gasteiz;Altsasu;Adif;160;1668;
+Altsasu;Hernani;Adif;135;1668;lecture incertaine
+Hernani;Donostia-San Sebastián;AV;;1668;non chiffré
+Donostia-San Sebastián;Irun;Adif;135;1668;
+Altsasu;Pamplona/Iruña;Adif;140;1668;
+Pamplona/Iruña;Castejón de Ebro;Adif;140;1668;
+Miranda de Ebro;Logroño;Adif;110;1668;
+Logroño;Castejón de Ebro;Adif;140;1668;
+Castejón de Ebro;Tudela de Navarra;Adif;160;1668;
+Tudela de Navarra;Bif. Casetas;Adif;160;1668;
+Bif. Casetas;Casetas;Adif;;1668;non chiffré
+Casetas;Zaragoza Delicias;Adif;;1668;non chiffré
+Calatayud;Zaragoza Delicias;AV;300;1435;
+Ariza;Calatayud;Adif;155;1668;
+Calatayud;Ricla;Adif;140;1668;
+Ricla;Casetas;Adif;160;1668;
+Zaragoza Delicias;Tardienta;Adif;200;1435;ligne Zaragoza-Huesca à voie normale
+Zaragoza Delicias;Miraflores;Adif;;1668;non chiffré
+Miraflores;Teruel;Adif;200;1668;
+Canfranc;Ayerbe;Adif;105;1668;
+Ayerbe;Huesca;Adif;155;;écartement non lu
+Tardienta;Huesca;Adif;160;mixte;lecture incertaine
+Zaragoza Delicias;Zuera;Adif;160;1668;
+Zuera;Tardienta;Adif;160;1668;
+Tardienta;Lleida Pirineus;Adif;160;1668;
+Zaragoza Delicias;Lleida Pirineus;AV;300;1435;
+La Cartuja;Mora la Nova;Adif;140;1668;
+Mora la Nova;Reus;Adif;130;1668;
+Lleida Pirineus;Plana-Picamoixons;Adif;160;1668;
+Lleida Pirineus;Camp de Tarragona;AV;300;1435;
+Plana-Picamoixons;Reus;Adif;140;1668;
+Lleida Pirineus;Manresa;Adif;155;1668;
+Miraflores;La Cartuja;Adif;;1668;non chiffré
+Camp de Tarragona;Barcelona Sants;AV;300;1435;
+Plana-Picamoixons;Sant Vicenç de Calders;Adif;160;1668;
+Sant Vicenç de Calders;Barcelona Sants;Adif;160;1668;
+Reus;Tarragona;Adif;135;1668;
+Benicarló-Peñíscola;Vinaròs;AV;220;1668;
+Vinaròs;L'Aldea-Amposta-Tortosa;AV;220;1668;
+L'Aldea-Amposta-Tortosa;L'Ametlla de Mar;AV;220;1668;
+L'Ametlla de Mar;Cambrils;AV;200;1668;
+Cambrils;Bif. La Boella;AV;;;non lu
+Bif. La Boella;Camp de Tarragona;AV;160;;lecture incertaine
+Tortosa;L'Aldea-Amposta-Tortosa;Adif;155;1668;
+Barcelona Sants;Girona;AV;255;1435;
+Girona;Figueres-Vilafant;AV;290;1435;
+Figueres-Vilafant;Frontière LFP;AV;290;1435;
+Maçanet-Massanes;Sils;Adif;160;1668;
+Sils;Caldes de Malavella;Adif;160;1668;
+Caldes de Malavella;Girona;Adif;160;1668;
+Girona;Flaçà;Adif;140;1668;
+Flaçà;Figueres;Adif;140;1668;
+Figueres;Llançà;Adif;;1668;vitesse non lue
+Llançà;Portbou;Adif;;1668;vitesse non lue
+Barcelona Estació de França;Arenys de Mar;Adif;140;1668;
+Arenys de Mar;Maçanet-Massanes;Adif;130;1668;
+Mollet-Sant Fost;Maçanet-Massanes;Adif;160;1668;
+Vic;Torelló;Adif;125;1668;
+Torelló;Ripoll;Adif;90;1668;
+Ripoll;La Tour de Carol;Adif;100;1668;
+Mollet-Sant Fost;Vic;Adif;140;1668;
+Barcelona Sants;Barcelona Estació de França;Adif;;1668;non chiffré
+Palencia;Alar del Rey;Adif;160;1668;
+Teruel;Mora de Rubielos;Adif;100;1668;
+Mora de Rubielos;Masadas Blancas;Adif;140;1668;
+Masadas Blancas;Caudiel;Adif;;1668;non chiffré
+Castillejo-Añover;Alcázar de San Juan;Adif;160;1668;
+Alcázar de San Juan;Albacete-Los Llanos;Adif;200;1668;
+Alcázar de San Juan;Manzanares;Adif;160;1668;
+Ariza;Torralba;Adif;160;1668;
+Caudiel;Sagunt;Adif;95;1668;
+València Estació del Nord;València Joaquín Sorolla;Adif;;1668;non chiffré
+Oviedo;Gijón;Adif;;1668;vitesse non attribuée
+Madrid Chamartín;Madrid Atocha Cercanías;Adif;135;1668;lecture incertaine
+Tarragona;Sant Vicenç de Calders;Adif;160;1668;
+Tarragona;Salou-Port Aventura;Adif;140;1668;
+Salou-Port Aventura;Bif. La Boella;Adif;;;non chiffré
