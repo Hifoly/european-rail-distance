@@ -166,3 +166,99 @@ def test_perimetre_renfe(cfg, tmp_path):
     assert gares["87000001"]["pays"] == "FR"                         # gares existantes conservées
     assert perimetre.espagne(cfg)["relations"] == 3                   # reconstruction idempotente
     assert len(perimetre.lire_csv(config.chemin(cfg, "relations"))) == 5 + 3
+
+
+# --- contrôle Adif (Espagne) -----------------------------------------------------------
+
+def _cfg_adif(tmp_path):
+    from distancier.config import charger
+    cfg = charger()
+    cfg["_racine"] = tmp_path
+    (tmp_path / "troncons.csv").write_text(
+        "de;a;km;calque;note\nMadrid;Bif;100;AV;\nBif;Sevilla;371;AV;\nBif;Cordoba;50;Adif;\n", encoding="utf-8")
+    (tmp_path / "noeuds.csv").write_text(
+        "nom;uopid_rinf;uic;lat;lon\nMadrid;ES60000;;40.40;-3.69\nSevilla;ES51003;;37.39;-5.97\n"
+        "Cordoba;;7150100;37.89;-4.79\nBif;;;;\n", encoding="utf-8")
+    cfg["sources"]["adif"] = {"troncons": "troncons.csv", "noeuds": "noeuds.csv", "marge_arrondi_km": 0.5}
+    cfg["controles"] = {"ES": "adif"}
+    return cfg
+
+
+class _RinfFactice:
+    nom, source, date, complementaires = "rinf", "RINF test", "2026-09-29", set()
+
+    def __init__(self, km):
+        self.km = km
+
+    def calculer(self, go, gd, mode, lignes=None):
+        import networkx as nx
+        from distancier.routage import Resultat
+        if self.km is None:
+            raise nx.NetworkXNoPath("pas de chemin")
+        return Resultat(km=self.km, lignes=[("L", self.km)], vitesses={None: self.km}, aretes=3), []
+
+
+GARES_ES = {
+    "7160000": {"uic": "7160000", "nom": "Madrid", "pays": "ES", "uopid_rinf": "ES60000", "note": ""},
+    "7151003": {"uic": "7151003", "nom": "Sevilla", "pays": "ES", "uopid_rinf": "ES51003", "note": ""},
+    "7150100": {"uic": "7150100", "nom": "Cordoba", "pays": "ES", "uopid_rinf": "", "note": ""},
+}
+
+
+@pytest.mark.parametrize("km_rinf,moteur,statut", [
+    (470.0, "rinf", "vérifié (ADIF)"),      # 0,2 % d'écart
+    (465.0, "rinf", "estimé"),             # 1,3 % : hors seuil, sous l'alerte
+    (560.0, "adif", "à vérifier"),         # détour RINF > 10 % : distance Adif
+    (None, "adif", "à vérifier"),          # pas de chemin RINF : distance Adif
+])
+def test_controle_et_repli_adif(tmp_path, km_rinf, moteur, statut):
+    from distancier import calcul
+    cfg = _cfg_adif(tmp_path)
+    moteurs = {"rinf": _RinfFactice(km_rinf), "adif": calcul.MoteurAdif(cfg, None, {})}
+    rel = {"id": "1", "uic_origine": "7160000", "uic_destination": "7151003", "itineraire": "grande_vitesse"}
+    ligne = calcul._relation(rel, GARES_ES, moteurs, cfg, cfg["routage"])
+    assert ligne["moteur"] == moteur and ligne["statut"] == statut
+    if moteur == "adif":
+        assert ligne["resultat"].km == 471 and "sans contrôle RINF" in ligne["remarques"][0]
+    else:
+        assert ligne["distance_controle_km"] == 471 and ligne["source_controle"] == "adif"
+
+
+def test_adif_gare_par_uic_et_marge_arrondi(tmp_path):
+    from distancier import calcul
+    cfg = _cfg_adif(tmp_path)
+    moteurs = {"rinf": _RinfFactice(148.6), "adif": calcul.MoteurAdif(cfg, None, {})}
+    rel = {"id": "2", "uic_origine": "7160000", "uic_destination": "7150100", "itineraire": "grande_vitesse"}
+    ligne = calcul._relation(rel, GARES_ES, moteurs, cfg, cfg["routage"])
+    # 150 km sur 2 tronçons : 1,4 km d'écart < 0,5 + 2 × 0,5 km d'arrondi
+    assert ligne["distance_controle_km"] == 150 and ligne["statut"] == "vérifié (ADIF)"
+
+
+def test_adif_gare_absente_placee_sur_la_carte(tmp_path):
+    """Gare hors carte : placée sur le tronçon voisin, contrôle « approché » qui ne vérifie jamais."""
+    from distancier import calcul
+    cfg = _cfg_adif(tmp_path)
+    (tmp_path / "troncons.csv").write_text(
+        "de;a;km;calque;note\nMadrid;Sevilla;471;AV;\nMadrid;Cordoba;400;Adif;\n", encoding="utf-8")
+    gares = {**GARES_ES, "7160911": {"uic": "7160911", "nom": "Ciudad Real AV", "pays": "ES", "uopid_rinf": "ES37200",
+                                     "note": "", "lat": 38.99, "lon": -3.92}}
+    adif = calcul.MoteurAdif(cfg, None, {})
+    res, notes = adif.calculer(gares["7160000"], gares["7160911"], "grande_vitesse")
+    assert res.approche and "placée entre Madrid et Sevilla" in notes[0] and 150 < res.km < 190
+    moteurs = {"rinf": _RinfFactice(res.km), "adif": adif}
+    rel = {"id": "3", "uic_origine": "7160000", "uic_destination": "7160911", "itineraire": "grande_vitesse"}
+    ligne = calcul._relation(rel, gares, moteurs, cfg, cfg["routage"])
+    assert ligne["statut"] == "estimé" and "contrôle ADIF approché" in " ".join(ligne["remarques"])
+    assert "O" not in adif.routeur.G   # nœud temporaire retiré
+
+
+def test_adif_deux_gares_sur_le_meme_troncon(tmp_path):
+    from distancier import calcul
+    cfg = _cfg_adif(tmp_path)
+    (tmp_path / "troncons.csv").write_text("de;a;km;calque;note\nMadrid;Sevilla;471;Adif;\nSevilla;Cordoba;130;Adif;\n",
+                                          encoding="utf-8")
+    g1 = {"uic": "1", "nom": "Aranjuez", "pays": "ES", "uopid_rinf": "", "lat": 40.03, "lon": -3.60}
+    g2 = {"uic": "2", "nom": "Alcázar", "pays": "ES", "uopid_rinf": "", "lat": 39.39, "lon": -3.21}
+    adif = calcul.MoteurAdif(cfg, None, {})
+    km = adif.calculer(g1, g2, "plus_court")[0].km
+    assert 60 < km < 120   # et non Aranjuez -> Madrid -> Alcázar

@@ -48,6 +48,24 @@ sans vitesse compte comme LGV pour le choix d'itinéraire (`lgv_presumee_ecartem
 `part_lgv_pct`. Le graphe ne tient pas compte de l'écartement : il passe d'un réseau à l'autre
 aux points communs, ce qu'un train ne fait qu'à un changeur d'écartement.
 
+## Moteur « adif » (carte Adif, Espagne)
+
+Contrôle des relations espagnoles (`controles: {ES: adif}` dans `settings.yaml`), à la place
+du second moteur. Graphe transcrit de la carte 1 de la Declaración sobre la Red 2026 d'Adif
+(`config/adif/carte1_2026.csv`, km entiers entre gares principales et bifurcations ; voir
+`docs/sources.md`). Une gare est associée à un nœud par son `uopid_rinf` ou son code UIC
+(`config/adif/noeuds.csv`).
+
+Une gare absente de la carte (gare intermédiaire, ex. Veguellina, Talavera de la Reina) est
+placée sur le tronçon dont elle s'écarte le moins : rapport (distance à vol d'oiseau aux deux
+bouts) / (longueur à vol d'oiseau du tronçon) sous `interpolation_detour_max` (1,6), gare « AV »
+de préférence sur un tronçon du calque AV, les autres sur les lignes classiques ; ses km sont
+répartis au prorata. Cette distance est **approchée** : elle sert à détecter un trou du RINF,
+jamais à passer une relation en `vérifié`.
+
+Tolérance : chaque tronçon traversé ajoute `marge_arrondi_km` (0,5 km) au seuil en km, car la
+carte arrondit au km.
+
 ## Répartition par écartement
 
 `km_ecartement_<mm>` = km du trajet par écartement nominal des voies de la section (RINF,
@@ -69,6 +87,7 @@ nouvelles à grande vitesse) : LGV au-delà de 95 %, classique sous 5 %, mixte e
 
 | statut | condition |
 |---|---|
+| `vérifié (ADIF)` | Espagne : la carte Adif donne la même distance à 1 % près ou à 0,5 km + 0,5 km par tronçon de carte traversé, les deux gares étant des nœuds de la carte |
 | `vérifié (RINF)` / `vérifié (SNCF)` | l'autre moteur donne la même distance à 1 % près ; pour une relation calculée sur SNCF, deux contrôles RINF sont calculés (itinéraire RINF autonome, et itinéraire suivant les lignes SNCF, même mode, lignes hors itinéraire pénalisées ×5) ; le plus proche est retenu et la remarque dit lequel |
 | `vérifié (PK SNCF)` | ≥ 95 % du trajet sur une ligne, et l'écart des PK des deux gares sur cette ligne est à 1 % près (ou 0,5 km) ; ce contrôle prime sur l'alerte RINF (choix d'Aloïs le 2026-09-29, ex. Calais-Ville–Calais-Fréthun : SNCF 7,7 km, PK 7,8 km, RINF 9,4 km par les voies de la gare LGV) |
 | `à vérifier` | raccordement manuel emprunté et non validé sur carte (clé `valide` de `corrections.yaml`), repli sur RINF (voir ci-dessous), écart avec le contrôle supérieur à `seuil_alerte_pct` (10 %, trou probable dans un des réseaux), ou statut forcé dans `relations.csv` |
@@ -86,6 +105,15 @@ La Teste (branche Lamothe–Arcachon absente).
 contrôle, et la relation est `à vérifier` (ex. Douai–Valenciennes : SNCF 68,0 km par détour, RINF
 35,4 km ; la ligne Douai–Somain–Valenciennes est absente des tracés au 2026-09-28). Quand c'est
 RINF qui est plus long, la distance SNCF est gardée et la relation est `à vérifier`.
+
+**Espagne : repli et détour sur la carte Adif.** Le RINF espagnol a des trous (LAV incomplètes,
+lignes coupées : voir `docs/sources.md`). Quand le RINF n'a pas de chemin, ou que sa distance
+dépasse celle de la carte Adif de plus de `seuil_alerte_pct` (10 %, ou
+`seuil_alerte_approche_pct` = 30 % si une gare est placée par approximation sur la carte), la
+distance Adif est retenue, sans contrôle RINF, et la relation est `à vérifier`. Elle n'a alors ni
+vitesse ni écartement (colonnes `dont_km_vitesse_inconnue` et `km_ecartement_inconnu`). Ex. au
+2026-09-29 : León–Veguellina RINF 810,8 km (ligne León–Astorga coupée), carte Adif 34,3 km
+approchés ; Madrid-Chamartín–A Coruña RINF 673,9 km, carte 594 km.
 
 ## Résultats de référence (POC du 2026-09-28)
 

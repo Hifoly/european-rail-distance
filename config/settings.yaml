@@ -26,6 +26,8 @@ routage:
   seuil_verification_pct: 1.0  # écart max entre deux sources pour passer « vérifié »
   seuil_verification_km: 0.5   # ... ou écart absolu max (trajets courts), choix d'Aloïs le 2026-09-28
   seuil_alerte_pct: 10.0       # au-delà, écart avec le contrôle => « à vérifier » (trou probable)
+  seuil_alerte_approche_pct: 30.0  # Espagne : détour RINF au-delà duquel la distance Adif approchée
+                                   # (gare placée sur la carte) remplace le RINF
   # plafond_detour_lgv_pct: 5.0  # itinéraire LGV > plus court chemin + x % : plus court chemin retenu.
   #   Désactivé : à 5 %, 86 relations perdaient leur itinéraire TGV (Rennes-Marseille par la province).
   part_ligne_controle_pk_pct: 95  # contrôle par PK si >= 95 % du trajet est sur une seule ligne
@@ -42,6 +44,12 @@ moteurs:
   BE: rinf
   CH: rinf
   PT: rinf
+
+# Contrôle propre à un pays, à la place du second moteur (relations dont les deux gares
+# sont dans ce pays). Il sert aussi de repli quand le RINF n'a pas de chemin ou fait un
+# détour de plus de seuil_alerte_pct : la relation passe alors « à vérifier ».
+controles:
+  ES: adif
 
 sources:
   sncf:
@@ -92,3 +100,14 @@ sources:
     produits: [AVE, AVLO, AVANT, AVANT EXP, ALVIA, Intercity, EUROMED, AVE INT]
     prefixes_etrangers: ["87", "94"]   # codes d'arrêt français (87) et portugais (94) : relations exclues
     premier_id: 10001
+
+  adif:
+    nom: Adif, Declaración sobre la Red 2026 (carte 1, distances en km entiers)
+    url: https://www.adif.es/documents/20124/51142867/20260227_03_DR_Adif_2026_Mapas.pdf/d75ddbec-1272-ee73-c0f5-be1f732ae8a6
+    troncons: config/adif/carte1_2026.csv   # transcrit à la main le 2026-09-29
+    noeuds: config/adif/noeuds.csv
+    marge_arrondi_km: 0.5   # tolérance ajoutée par tronçon traversé (km entiers)
+    # gare absente de la carte : placée sur le tronçon voisin si (dA + dB) / AB, à vol d'oiseau,
+    # reste sous ce rapport (1,6 : lignes de montagne, baie de Cadix) ;
+    # distance approchée, jamais « vérifiée »
+    interpolation_detour_max: 1.6

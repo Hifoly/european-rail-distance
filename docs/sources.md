@@ -83,12 +83,34 @@ point RINF = « ES » + code, UIC = « 71 » + code. Au 2026-09-29 : 162 gares, 
 domestiques (AVE, AVLO, AVANT, ALVIA, Intercity, EUROMED, et la partie espagnole des AVE
 internationaux).
 
-## Adif (contrôle espagnol, en cours)
+## Adif (contrôle espagnol)
 
 Adif ne publie pas de fichier de PK. Sa Declaración sobre la Red 2026 (www.adif.es, PDF) contient
 le catalogue des lignes (annexe F : origine, destination, écartement, électrification, sans PK)
-et une carte (carte 1, calques « distancias AV » et « distancias Adif ») des distances en km
-entiers entre les principales gares et bifurcations.
+et une carte (fichier « 20260227_03_DR_Adif_2026_Mapas.pdf », page 5, carte 1, calques
+« distancias AV » et « distancias Adif ») des distances en km entiers entre les principales
+gares et bifurcations. Consultée le 2026-09-29.
+
+Transcription (choix d'Aloïs le 2026-09-29 : graphe Adif en contrôle de toutes les relations et
+en repli quand le RINF n'a pas de chemin) :
+
+- `config/adif/carte1_2026.csv` : un tronçon par ligne (`de ; a ; km ; calque ; note`), 284
+  tronçons ; `calque` = AV (Adif Alta Velocidad) ou Adif (réseau conventionnel). Texte et tracés
+  extraits du PDF (pymupdf, calques OCG), relus à l'image et appariés à la main dans les nœuds.
+- `note` signale ce qui n'est pas lu tel quel sur la carte : « lecture incertaine » (chiffre
+  ambigu ou attribution douteuse), « non chiffré, estimé » (jonction dessinée sans chiffre), et
+  quelques km estimés d'après le RINF quand la carte ne chiffre pas un lien (tunnel de Recoletos
+  Chamartín–Atocha 8 km, València Nord–Joaquín Sorolla 2 km, coupure à Sagunt de Valencia–Castelló).
+- `config/adif/noeuds.csv` : nœud de la carte -> point RINF (`uopid_rinf`) ou code UIC (gares
+  absentes du RINF : Sanabria AV, Medina del Campo AV, Puertollano…), et coordonnées du point
+  RINF (servent seulement à placer les gares absentes de la carte).
+- Relectures après comparaison au RINF : jonctions de Pontevedra/Redondela/Vigo, Utrera,
+  Sagunt, Tarragona–Sant Vicenç, Oviedo–Gijón ; Guillarei–Tui et Tarragona–Torredembarra retirés.
+
+Limites connues : la carte ne chiffre que les grands nœuds (622 relations sur 1 460 ont une gare
+placée par approximation) ; l'Asturies (branches Villabona et Avilés) et Avilés ne sont pas
+chiffrés ; La Isla–Mérida (6 km) et Los Rosales–Sevilla (27 km) sont plus courts que le vol
+d'oiseau entre les points RINF (lecture ou attribution à revoir).
 
 ## Plus tard
 

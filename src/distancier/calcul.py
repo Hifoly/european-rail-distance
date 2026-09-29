@@ -7,6 +7,7 @@ import json
 import logging
 import math
 import pickle
+import re
 from pathlib import Path
 
 import networkx as nx
@@ -136,6 +137,79 @@ class MoteurRinf:
         return self.routeur.chemin(o, d, mode, lignes), n1 + n2
 
 
+class MoteurAdif:
+    """Distances de la carte Adif (km entiers entre nœuds) : contrôle et repli en Espagne."""
+    nom = "adif"
+
+    def __init__(self, cfg: dict, jour: str | None, corrections: dict):
+        from distancier.sources import adif
+        self._geo = adif.geodesique_km
+        d = adif.charger(cfg)
+        src = cfg["sources"]["adif"]
+        self.points, self.coords = d["points"], d["coords"]
+        self.source, self.date = adif.SOURCE, adif.DATE
+        self.vitesses = []
+        # km entiers : chaque tronçon traversé peut être arrondi de 0,5 km
+        self.marge_arete_km = float(src.get("marge_arrondi_km", 0.5))
+        self.detour_max = float(src.get("interpolation_detour_max", 1.6))
+        self._places = {}   # gare placée -> (tronçon, bout de référence, position 0-1)
+        self.routeur = Routeur(d["graphe"], **cfg["routage"])
+
+    def _placer(self, tag: str, g: dict) -> str:
+        """Place une gare absente de la carte sur le tronçon dont elle s'écarte le moins."""
+        if g.get("lon") is None:
+            raise LookupError(f"{g['nom']} absente de la carte Adif (sans coordonnées)")
+        p = (g["lon"], g["lat"])
+        av = re.search(r"\bAV\b|Alta Velocidad", g["nom"]) is not None
+        meilleur = None
+        for u, v, k, d in self.routeur.G.edges(keys=True, data=True):
+            if u not in self.coords or v not in self.coords or d["km"] <= 0 or d.get("temporaire"):
+                continue
+            du, dv = self._geo(self.coords[u], p), self._geo(p, self.coords[v])
+            duv = self._geo(self.coords[u], self.coords[v])
+            if duv <= 0 or duv > d["km"] * 1.02 + 2:   # coordonnées incohérentes avec les km de la carte
+                continue
+            # gare « AV » sur le calque AV, les autres sur les lignes classiques (LAV et ligne classique voisines)
+            penalite = 0.1 if bool(d.get("lgv_presumee")) != av else 0.0
+            rapport = (du + dv) / duv
+            if rapport > self.detour_max:
+                continue
+            cle = (rapport + penalite, d["km"])
+            if meilleur is None or cle < meilleur[0]:
+                meilleur = (cle, u, v, d, du / (du + dv))
+        if meilleur is None:
+            raise LookupError(f"{g['nom']} absente de la carte Adif (aucun tronçon voisin)")
+        _, u, v, d, t = meilleur
+        self.routeur._ajouter(tag, u, d, 0.0, t)
+        self.routeur._ajouter(tag, v, d, t, 1.0)
+        # deux gares sur le même tronçon : relier directement
+        for autre, (d2, u2, t2) in self._places.items():
+            if d2 is d and autre in self.routeur.G:
+                t2 = t2 if u2 == u else 1.0 - t2
+                self.routeur._ajouter(tag, autre, d, min(t, t2), max(t, t2))
+        self._places[tag] = (d, u, t)
+        self.coords[tag] = p
+        return f"{g['nom']} absente de la carte Adif : placée entre {u} et {v} (distance approchée)"
+
+    def calculer(self, go: dict, gd: dict, mode: str, lignes=None) -> tuple[Resultat, list[str]]:
+        noeuds, notes = [], []
+        try:
+            for tag, g in (("O", go), ("D", gd)):
+                n = self.points.get(g.get("uopid_rinf") or "") or self.points.get(g["uic"])
+                if n is None:
+                    notes.append(self._placer(tag, g))
+                    n = tag
+                noeuds.append(n)
+            res = self.routeur.chemin(noeuds[0], noeuds[1], mode)
+            res.approche = bool(notes)
+            return res, notes
+        finally:
+            self.routeur.detacher("O", "D")
+            self._places.clear()
+            self.coords.pop("O", None)
+            self.coords.pop("D", None)
+
+
 # --- calcul ------------------------------------------------------------------------
 
 def referentiel_gares(cfg: dict) -> dict[str, dict]:
@@ -159,6 +233,8 @@ def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = No
             moteurs[nom] = classe(cfg, jour, corrections)
         except FileNotFoundError as e:
             log.warning("moteur %s indisponible : %s", nom, e)
+    if "adif" in (cfg.get("controles") or {}).values() and "adif" in cfg["sources"]:
+        moteurs["adif"] = MoteurAdif(cfg, None, corrections)
     if not moteurs:
         raise RuntimeError("aucune donnée source : lancer d'abord « distancier telecharger »")
 
@@ -177,10 +253,20 @@ def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = No
             "sources": {n: {"description": m.source, "date_consultation": m.date} for n, m in moteurs.items()}}
 
 
-def _concorde(km: float, controle: float, ecart_pct: float, rt: dict) -> bool:
+def _concorde(km: float, controle: float, ecart_pct: float, rt: dict, marge_km: float = 0.0) -> bool:
     """Deux distances concordent si l'écart est sous le seuil en % OU sous le seuil en km
-    (trajets courts : la position de la gare sur la voie varie de quelques centaines de mètres)."""
-    return abs(ecart_pct) <= rt["seuil_verification_pct"] or abs(km - controle) <= rt.get("seuil_verification_km", 0)
+    (trajets courts : la position de la gare sur la voie varie de quelques centaines de mètres).
+    `marge_km` s'ajoute au seuil en km (arrondi des km entiers de la carte Adif)."""
+    return abs(ecart_pct) <= rt["seuil_verification_pct"] \
+        or abs(km - controle) <= rt.get("seuil_verification_km", 0) + marge_km
+
+
+def _moteur_controle(cfg: dict, moteurs: dict, go: dict, gd: dict) -> str | None:
+    """Moteur de contrôle propre au pays (section `controles`), si les deux gares y sont."""
+    nom = (cfg.get("controles") or {}).get(go["pays"])
+    if nom and nom == (cfg.get("controles") or {}).get(gd["pays"]) and nom in moteurs:
+        return nom
+    return None
 
 
 def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None) -> dict:
@@ -203,12 +289,26 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
     if principal is None:
         return {**ligne, "statut": f"erreur : données {nom_principal} non téléchargées"}
     repli = False
+    nom_ctl = None if nom_principal == "sncf" else _moteur_controle(cfg, moteurs, go, gd)
+    echec_sncf = None
     try:
         res, notes = principal.calculer(go, gd, rel["itineraire"])
     except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e:
-        # Gare hors du réseau SNCF (ligne absente des tracés) : repli sur RINF, sans contrôle.
-        if nom_principal != "sncf" or "rinf" not in moteurs:
+        if nom_ctl is not None:
+            # Trou du RINF (ex. LAV espagnoles incomplètes) : distance du moteur de contrôle, sans contrôle.
+            try:
+                res, notes = moteurs[nom_ctl].calculer(go, gd, rel["itineraire"])
+            except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e2:
+                return {**ligne, "statut": f"erreur : RINF : {e} ; {nom_ctl.upper()} : {e2}"}
+            notes.insert(0, f"calcul RINF impossible ({e}) : distance {nom_ctl.upper()}, sans contrôle RINF")
+            nom_principal, principal, repli = nom_ctl, moteurs[nom_ctl], True
+        elif nom_principal != "sncf" or "rinf" not in moteurs:
             return {**ligne, "statut": f"erreur : {e}"}
+        else:
+            echec_sncf = e
+    if echec_sncf is not None:
+        e = echec_sncf
+        # Gare hors du réseau SNCF (ligne absente des tracés) : repli sur RINF, sans contrôle.
         nom_principal, principal, repli = "rinf", moteurs["rinf"], True
         try:
             res, notes = principal.calculer(go, gd, rel["itineraire"])
@@ -240,6 +340,21 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
             notes = [f"détour SNCF de {detour:+.1f} % ({res.km:.1f} km, ligne probablement absente des tracés) : "
                      f"distance RINF, sans contrôle SNCF"] + moteurs["rinf"].calculer(go, gd, rel["itineraire"])[1]
             nom_principal, principal, repli, res = "rinf", moteurs["rinf"], True, ctl_rinf
+    # Détour RINF nettement plus long que le contrôle du pays (carte Adif) : trou probable du RINF.
+    ctl_pays, notes_ctl = None, []
+    if not repli and nom_ctl is not None:
+        try:
+            ctl_pays, notes_ctl = moteurs[nom_ctl].calculer(go, gd, rel["itineraire"])
+        except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError):
+            pass
+        # distance Adif approchée (gare placée sur la carte) : repli seulement au-delà d'un seuil plus large
+        seuil = rt.get("seuil_alerte_approche_pct" if ctl_pays is not None and ctl_pays.approche
+                       else "seuil_alerte_pct", math.inf)
+        if ctl_pays is not None and ctl_pays.km > 0 and res.km > ctl_pays.km * (1 + seuil / 100):
+            detour = 100 * (res.km / ctl_pays.km - 1)
+            notes = [f"détour RINF de {detour:+.1f} % ({res.km:.1f} km, ligne probablement absente du RINF) : "
+                     f"distance {nom_ctl.upper()}, sans contrôle RINF"] + notes_ctl
+            nom_principal, principal, repli, res = nom_ctl, moteurs[nom_ctl], True, ctl_pays
     ligne["moteur"] = nom_principal
     ligne["remarques"] += notes
     ligne["resultat"] = res
@@ -255,10 +370,13 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
         ligne["remarques"].append(f"itinéraire LGV privilégié ; le plus court chemin fait {ligne['distance_plus_courte_km']} km")
 
     verifie, alerte = [], False
-    autre = None if repli else moteurs.get("rinf" if nom_principal == "sncf" else "sncf")
-    if autre is not None and (autre.nom == "rinf" or tous_sncf):
+    autre = None if repli else moteurs.get(nom_ctl or ("rinf" if nom_principal == "sncf" else "sncf"))
+    if autre is not None and (autre.nom in ("rinf", nom_ctl) or tous_sncf):
         try:
-            ctl = ctl_rinf if autre.nom == "rinf" and ctl_rinf is not None else autre.calculer(go, gd, rel["itineraire"])[0]
+            if autre.nom == nom_ctl and ctl_pays is not None:
+                ctl = ctl_pays
+            else:
+                ctl = ctl_rinf if autre.nom == "rinf" and ctl_rinf is not None else autre.calculer(go, gd, rel["itineraire"])[0]
             if autre.nom == "rinf" and nom_principal == "sncf":
                 # Second contrôle RINF sur le même itinéraire (lignes empruntées côté SNCF, même mode) :
                 # les vitesses des deux sources diffèrent, chaque moteur peut choisir un autre itinéraire.
@@ -275,7 +393,15 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
             ecart = 100 * (res.km / ctl.km - 1)
             ligne.update(distance_controle_km=round(ctl.km, 1), source_controle=autre.nom,
                          ecart_controle_pct=round(ecart, 2))
-            if _concorde(res.km, ctl.km, ecart, rt):
+            marge = getattr(autre, "marge_arete_km", 0.0) * ctl.aretes
+            if ctl.approche:
+                # gare placée par interpolation sur la carte : sert à détecter un trou, pas à vérifier
+                ligne["remarques"].append(f"contrôle {autre.nom.upper()} approché : "
+                                          + " ; ".join(notes_ctl or autre.calculer(go, gd, rel["itineraire"])[1]))
+                if abs(ecart) > rt.get("seuil_alerte_pct", math.inf):
+                    alerte = True
+                    ligne["remarques"].append(f"écart de {ecart:+.1f} % avec {autre.nom.upper()} : trou probable dans un des réseaux")
+            elif _concorde(res.km, ctl.km, ecart, rt, marge):
                 verifie.append(f"vérifié ({autre.nom.upper()})")
             elif abs(ecart) > rt.get("seuil_alerte_pct", math.inf):
                 alerte = True

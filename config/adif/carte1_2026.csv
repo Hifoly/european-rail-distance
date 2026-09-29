@@ -1,0 +1,285 @@
+de;a;km;calque;note
+Ferrol;Betanzos-Infesta;43;Adif;
+A Coruña;Betanzos-Infesta;26;Adif;
+Betanzos-Infesta;Lugo;92;Adif;
+A Coruña;Santiago de Compostela;61;Adif;
+Santiago de Compostela;Bif. Angueira;15;AV;
+Bif. Angueira;Vilagarcía de Arousa;28;AV;
+Bif. Angueira;Bif. Vilagarcía sud;26;AV;branche directe, jonction juste au sud de Vilagarcía
+Bif. Vilagarcía sud;Vilagarcía de Arousa;0;AV;jonction dessinée contre la gare
+Vilagarcía de Arousa;Pontevedra;26;AV;
+Pontevedra;Bif. Pontevedra-Vigo;10;AV;jonction sans nom sur la carte (au nord de Bif. Redondela)
+Bif. Pontevedra-Vigo;Redondela;8;AV;
+Redondela;Vigo Guixar;10;AV;lecture incertaine
+Bif. Pontevedra-Vigo;Vigo Urzáiz;18;AV;
+Redondela;Guillarei;26;Adif;
+Guillarei;Ourense;95;Adif;
+Santiago de Compostela;Ourense;88;Adif;LAV à 1 668 mm (pointillé)
+Santiago de Compostela;Ourense;130;Adif;ligne classique
+Lugo;Monforte de Lemos;71;Adif;nœud sans étiquette sur la carte
+Ourense;Monforte de Lemos;46;Adif;
+Monforte de Lemos;Toral de los Vados;95;Adif;
+Toral de los Vados;Ponferrada;15;Adif;
+Ponferrada;Astorga;76;Adif;
+Ourense;Taboadela;16;AV;
+Taboadela;Pedralba;121;Adif;
+Pedralba;Puebla de Sanabria;7;Adif;
+Pedralba;Sanabria AV;11;AV;
+Ourense;Sanabria AV;111;AV;LAV, part d'Ourense (à confirmer : ou de Taboadela AV)
+Oviedo;Pola de Lena;31;Adif;
+Pola de Lena;La Robla;83;Adif;rampe de Pajares
+Pola de Lena;Campomanes AV;6;AV;
+Campomanes AV;La Robla AV;41;AV;variante de Pajares
+La Robla AV;Bif. Pajares;3;AV;
+Bif. Pajares;León;26;AV;
+Astorga;Bif. León ouest;45;Adif;
+Bif. León ouest;León;3;Adif;lecture incertaine (nœud de León)
+León;Torneros;9;Adif;
+Alar del Rey;Reinosa;50;Adif;
+Reinosa;Bárcena;34;Adif;
+Bárcena;Santander;54;Adif;
+León;Palencia;113;Adif;
+León;Palencia;115;AV;
+Palencia;Venta de Baños;12;Adif;
+Palencia;Bif. Venta de Baños;13;AV;
+Venta de Baños;Valladolid Campo Grande;37;Adif;
+Bif. Venta de Baños;Valladolid Campo Grande;38;AV;
+Bif. Venta de Baños;Burgos Rosa Manzano;87;AV;
+Magaz;Burgos Rosa Manzano;80;Adif;
+Venta de Baños;Magaz;9;Adif;lecture incertaine
+Valladolid Campo Grande;Medina del Campo;42;Adif;
+Valladolid Campo Grande;Bif. Medina;45;AV;vers Olmedo
+Burgos Rosa Manzano;Bif. Aranda;0;Adif;jonction contre la gare
+Bif. Aranda;Aranda de Duero;96;Adif;
+Sanabria AV;Zamora;102;AV;
+Puebla de Sanabria;Zamora;107;Adif;
+Zamora;Medina del Campo AV;77;AV;
+Medina del Campo AV;Bif. Medina;22;AV;
+Zamora;Medina del Campo;90;Adif;
+Medina del Campo;Salamanca;77;Adif;
+Medina del Campo;Ávila;86;Adif;à confirmer au sud
+Salamanca;Ávila;111;Adif;
+Salamanca;Fuentes de Oñoro;125;Adif;
+Ávila;Villalba de Guadarrama;83;Adif;
+Plasencia;Bif. San Esteban;8;AV;
+Bif. San Esteban;Bif. El Chaparral;3;AV;
+Bif. San Esteban;Arroyo de la Herrera;5;AV;
+Bif. El Chaparral;Monfragüe;6;AV;
+Bif. El Chaparral;Bif. Mirabel est;3;AV;lecture incertaine
+Mirabel;Bif. Mirabel est;10;AV;lecture incertaine
+Bif. Mirabel est;Monfragüe;4;AV;
+Mirabel;Bif. Casa de la Torre;58;AV;
+Bif. Casa de la Torre;Cáceres;8;AV;
+Arroyo de la Herrera;Bif. El Palmeral;61;AV;
+Bif. El Palmeral;Bif. Casa de la Torre;2;AV;
+Cáceres;Bif. Romanos;4;AV;
+Cáceres;Valencia de Alcántara;88;Adif;
+Bif. Romanos;Bif. La Granja;61;AV;
+Badajoz;Bif. San Nicolás;16;AV;lecture incertaine (16/20/32 autour de Montijo)
+Bif. San Nicolás;Montijo;20;AV;lecture incertaine
+Montijo;Bif. La Granja;17;AV;
+Bif. La Granja;Aljucén;1;AV;non chiffré, estimé
+Bif. San Nicolás;Bif. La Isla;32;AV;
+Bif. La Granja;Bif. La Isla;1;AV;non chiffré, estimé
+Bif. La Isla;Mérida;6;AV;lecture incertaine (11 km à vol d'oiseau entre les points RINF)
+Aljucén;Mérida;6;AV;
+Mérida;Almorchón;121;Adif;à confirmer à l'est
+Mérida;Zafra;65;Adif;
+Zafra;Jerez de los Caballeros;47;Adif;
+Zafra;Fregenal de la Sierra;47;Adif;
+Fregenal de la Sierra;Calañas;83;Adif;
+Calañas;Bif. Huelva;51;Adif;
+Zafra;Llerena;40;Adif;
+Llerena;Los Rosales;99;Adif;
+Los Rosales;Lora del Río;20;Adif;
+Lora del Río;Córdoba;74;Adif;
+Los Rosales;Sevilla Santa Justa;27;Adif;27 km jusqu'à la jonction de Sevilla, lecture incertaine (31 km à vol d'oiseau)
+Sevilla Santa Justa;Bif. Sevilla nord;1;Adif;
+Bif. Sevilla nord;Bif. Huelva;108;Adif;
+Córdoba;Sevilla Santa Justa;127;AV;
+Sevilla Santa Justa;Dos Hermanas;15;Adif;
+Mirabueno;Alhondiguilla-Villaviciosa;37;Adif;
+Huelva;Bif. Huelva;4;Adif;
+Dos Hermanas;Bif. Utrera;17;Adif;
+Bif. Utrera;Utrera;0;Adif;non chiffré (jonction dessinée contre la gare)
+Bif. Utrera;Osuna;71;Adif;
+Utrera;Lebrija;42;Adif;
+Lebrija;Jerez de la Frontera;30;Adif;
+Jerez de la Frontera;Cádiz;49;Adif;
+Ronda;Algeciras;106;Adif;
+Ronda;Bobadilla;70;Adif;
+Córdoba;Puente Genil-Herrera;76;AV;
+Puente Genil-Herrera;Antequera-Santa Ana;35;AV;
+Antequera-Santa Ana;Antequera AV;17;AV;
+Antequera AV;Loja;46;AV;
+Loja;Granada;51;AV;
+Antequera-Santa Ana;Málaga María Zambrano;58;AV;
+Osuna;Pedrera;22;Adif;gare sans étiquette sur la carte
+Pedrera;Fuente de Piedra;18;Adif;
+Fuente de Piedra;Bobadilla;11;Adif;
+Bobadilla;Málaga María Zambrano;70;Adif;
+Málaga María Zambrano;Fuengirola;30;Adif;
+Málaga María Zambrano;Málaga Centro Alameda;1;Adif;
+Granada;Moreda;57;Adif;à confirmer au nord
+Ciudad Real;Puertollano;39;AV;
+Puertollano;Villanueva de Córdoba-Los Pedroches;76;AV;
+Villanueva de Córdoba-Los Pedroches;Córdoba;58;AV;
+Ciudad Real;Puertollano;39;Adif;ligne classique
+Ciudad Real;Ciudad Real Miguérez;3;Adif;
+Ciudad Real Miguérez;Manzanares;61;Adif;
+Puertollano;Almorchón;118;Adif;
+Almorchón;Alhondiguilla-Villaviciosa;93;Adif;
+Mirabueno;Córdoba;1;Adif;non chiffré, estimé
+Manzanares;Santa Cruz de Mudela;42;Adif;
+Santa Cruz de Mudela;Vadollano;67;Adif;
+Vadollano;Linares-Baeza;9;Adif;
+Linares-Baeza;Espelúy;26;Adif;
+Espelúy;Córdoba;101;Adif;
+Espelúy;Jaén;33;Adif;via jonction (2 km non comptés)
+Linares-Baeza;Moreda;117;Adif;à confirmer au sud
+Córdoba;Fuente de Piedra;118;Adif;
+Moreda;Huéneja-Dólar;45;Adif;
+Huéneja-Dólar;Doña María Ocaña;26;Adif;
+Doña María Ocaña;Gérgal;11;Adif;
+Gérgal;Almería;42;Adif;
+Lorca-Sutullena;Águilas;54;Adif;sans service commercial
+Albacete-Los Llanos;Chinchilla de Montearagón;20;Adif;
+Chinchilla de Montearagón;La Encina;78;Adif;
+La Encina;Villena;20;Adif;
+Villena;Alacant Terminal;59;Adif;
+Chinchilla de Montearagón;Murcia Mercancías;141;Adif;
+Murcia Mercancías;Murcia del Carmen;6;Adif;
+Murcia Mercancías;Lorca-Sutullena;58;Adif;
+Albacete-Los Llanos;Alacant Terminal;165;AV;via Villena AV (km intermédiaire non chiffré)
+Elche AV;Orihuela-Miguel Hernández;25;AV;
+Orihuela-Miguel Hernández;Beniel;6;AV;
+Beniel;El Reguerón;10;AV;
+El Reguerón;Murcia del Carmen;6;Adif;
+Alacant Terminal;El Reguerón;72;Adif;ligne classique par Elche
+El Reguerón;Cartagena;59;AV;
+Cuenca;Valencia S.I.;199;Adif;ligne classique par Requena
+Cuenca Fernando Zóbel;Bif. Motilla;53;AV;
+Bif. Motilla;Requena-Utiel;79;AV;
+Requena-Utiel;València Joaquín Sorolla;70;AV;
+València Joaquín Sorolla;Sagunt;32;AV;Sagunt non chiffré sur la carte : 73 km Valencia-Castelló répartis au prorata du RINF, estimé
+Sagunt;Castelló de la Plana;41;AV;Sagunt non chiffré sur la carte : 73 km Valencia-Castelló répartis au prorata du RINF, estimé
+Castelló de la Plana;Benicarló-Peñíscola;71;AV;
+Xirivella-L'Alter;Valencia S.I.;2;Adif;
+Valencia S.I.;Bif. Valencia sud;4;Adif;
+València Estació del Nord;Bif. Valencia sud;0;Adif;non chiffré
+Bif. Valencia sud;Silla;12;Adif;
+Silla;Cullera;25;Adif;
+Cullera;Gandia;26;Adif;
+Silla;Xàtiva;44;Adif;
+Xàtiva;Moixent;25;Adif;
+Moixent;La Encina;22;Adif;lecture incertaine
+Bif. Motilla;Albacete-Los Llanos;73;AV;
+Madrid Chamartín;Villalba de Guadarrama;38;Adif;
+Madrid Chamartín;Colmenar Viejo;26;Adif;
+Villalba de Guadarrama;Cercedilla;20;Adif;
+Cercedilla;Segovia;43;Adif;à confirmer au nord
+Madrid Atocha Cercanías;Guadalajara;57;Adif;
+Madrid Puerta de Atocha;Guadalajara-Yebes;64;AV;
+Madrid Atocha Cercanías;Humanes;22;Adif;lecture incertaine
+Humanes;Villaluenga-Yuncler;27;Adif;
+Villaluenga-Yuncler;Monfragüe;202;Adif;
+Villaluenga-Yuncler;Algodor;17;Adif;
+Madrid Atocha Cercanías;Aranjuez;48;Adif;
+Aranjuez;Castillejo-Añover;15;Adif;
+Castillejo-Añover;Algodor;11;Adif;
+Aranjuez;Cuenca;152;Adif;
+Madrid Puerta de Atocha;Bif. Toledo;29;AV;
+Bif. Toledo;La Sagra;25;AV;lecture incertaine 
+La Sagra;Toledo;21;AV;
+Madrid Puerta de Atocha;Bif. Levante;5;AV;lecture incertaine
+Bif. Levante;Bif. Levante 2;6;AV;lecture incertaine
+Bif. Levante 2;Cuenca Fernando Zóbel;161;AV;
+La Sagra;Ciudad Real;117;AV;
+Madrid Puerta de Atocha;Madrid Atocha Cercanías;0;Adif;même gare
+Bif. Medina;Segovia-Guiomar;66;AV;
+Segovia-Guiomar;Madrid Chamartín;67;AV;
+Aranda de Duero;Colmenar Viejo;159;Adif;
+Soria;Torralba;94;Adif;
+Torralba;Guadalajara;99;Adif;
+Guadalajara-Yebes;Calatayud;157;AV;
+Burgos Rosa Manzano;Miranda de Ebro;84;Adif;
+Miranda de Ebro;Orduña;63;Adif;
+Orduña;Bilbao Abando Indalecio Prieto;40;Adif;
+Miranda de Ebro;Vitoria-Gasteiz;33;Adif;
+Vitoria-Gasteiz;Altsasu;43;Adif;
+Altsasu;Hernani;85;Adif;
+Hernani;Donostia-San Sebastián;3;AV;non chiffré, estimé
+Donostia-San Sebastián;Irun;17;Adif;
+Altsasu;Pamplona/Iruña;52;Adif;
+Pamplona/Iruña;Castejón de Ebro;87;Adif;
+Miranda de Ebro;Logroño;69;Adif;
+Logroño;Castejón de Ebro;76;Adif;
+Castejón de Ebro;Tudela de Navarra;16;Adif;
+Tudela de Navarra;Bif. Casetas;62;Adif;
+Bif. Casetas;Casetas;6;Adif;
+Casetas;Zaragoza Delicias;12;Adif;via C.I.M.
+Calatayud;Zaragoza Delicias;86;AV;
+Ariza;Calatayud;40;Adif;
+Calatayud;Ricla;36;Adif;lecture incertaine
+Ricla;Casetas;47;Adif;lecture incertaine
+Zaragoza Delicias;Tardienta;57;Adif;ligne 1 668 mm dite AV (pointillé)
+Zaragoza Delicias;Miraflores;5;Adif;lecture incertaine
+Miraflores;Teruel;177;Adif;
+Canfranc;Ayerbe;100;Adif;
+Ayerbe;Huesca;38;Adif;
+Tardienta;Huesca;22;Adif;
+Zaragoza Delicias;Zuera;30;Adif;lecture incertaine
+Zuera;Tardienta;27;Adif;
+Tardienta;Lleida Pirineus;131;Adif;
+Zaragoza Delicias;Lleida Pirineus;141;AV;
+La Cartuja;Mora la Nova;179;Adif;
+Mora la Nova;Reus;48;Adif;
+Lleida Pirineus;Plana-Picamoixons;69;Adif;
+Lleida Pirineus;Camp de Tarragona;81;AV;
+Plana-Picamoixons;Reus;21;Adif;
+Lleida Pirineus;Manresa;118;Adif;via Aguja km 185,747 
+Miraflores;La Cartuja;5;Adif;lecture incertaine
+Camp de Tarragona;Barcelona Sants;100;AV;
+Plana-Picamoixons;Sant Vicenç de Calders;36;Adif;
+Sant Vicenç de Calders;Barcelona Sants;60;Adif;par la côte (Garraf) 
+Reus;Tarragona;18;Adif;lecture incertaine
+Benicarló-Peñíscola;Vinaròs;6;AV;
+Vinaròs;L'Aldea-Amposta-Tortosa;38;AV;
+L'Aldea-Amposta-Tortosa;L'Ametlla de Mar;22;AV;lecture incertaine
+L'Ametlla de Mar;Cambrils;31;AV;lecture incertaine
+Cambrils;Bif. La Boella;12;AV;lecture incertaine
+Bif. La Boella;Camp de Tarragona;5;AV;non chiffré, estimé
+Tortosa;L'Aldea-Amposta-Tortosa;13;Adif;
+Barcelona Sants;Girona;94;AV;
+Girona;Figueres-Vilafant;34;AV;
+Figueres-Vilafant;Frontière LFP;3;AV;
+Maçanet-Massanes;Sils;8;Adif;
+Sils;Caldes de Malavella;6;Adif;
+Caldes de Malavella;Girona;16;Adif;
+Girona;Flaçà;16;Adif;
+Flaçà;Figueres;25;Adif;
+Figueres;Llançà;19;Adif;
+Llançà;Portbou;7;Adif;
+Barcelona Estació de França;Arenys de Mar;44;Adif;lecture incertaine (départ Sants ou França)
+Arenys de Mar;Maçanet-Massanes;37;Adif;
+Mollet-Sant Fost;Maçanet-Massanes;51;Adif;lecture incertaine
+Vic;Torelló;16;Adif;
+Torelló;Ripoll;21;Adif;
+Ripoll;La Tour de Carol;52;Adif;
+Mollet-Sant Fost;Vic;74;Adif;lecture incertaine
+Barcelona Sants;Barcelona Estació de França;3;Adif;non chiffré, estimé
+Palencia;Alar del Rey;79;Adif;
+Teruel;Mora de Rubielos;47;Adif;
+Mora de Rubielos;Masadas Blancas;30;Adif;
+Masadas Blancas;Caudiel;9;Adif;
+Castillejo-Añover;Alcázar de San Juan;84;Adif;
+Alcázar de San Juan;Albacete-Los Llanos;131;Adif;
+Alcázar de San Juan;Manzanares;49;Adif;
+Ariza;Torralba;47;Adif;
+Caudiel;Sagunt;52;Adif;jonction de Sagunt (lecture incertaine)
+València Estació del Nord;València Joaquín Sorolla;2;Adif;gares voisines non reliées sur la carte : 2 km estimés d'après le RINF
+Oviedo;Gijón;32;Adif;lecture incertaine (Asturies : chiffres des branches Villabona et Avilés non attribués)
+Madrid Chamartín;Madrid Atocha Cercanías;8;Adif;tunnel de Recoletos non chiffré sur la carte : 8 km estimés d'après le RINF (7,7 km)
+Tarragona;Sant Vicenç de Calders;25;Adif;
+Tarragona;Salou-Port Aventura;10;Adif;
+Salou-Port Aventura;Bif. La Boella;2;Adif;lecture incertaine (raccordement de Vila-seca)

@@ -32,6 +32,8 @@ class Resultat:
     vitesses: dict = field(default_factory=dict)     # {v_max ou None: km}
     manuels: list = field(default_factory=list)      # raccordements manuels empruntés
     ecartements: dict = field(default_factory=dict)  # {'1668', '1435', '1000', 'mixte' ou None: km}
+    aretes: int = 0                                  # nombre d'arêtes du graphe parcourues
+    approche: bool = False                           # extrémité placée par interpolation (carte Adif)
 
     def km_lgv(self, seuil: int) -> float:
         return sum(k for v, k in self.vitesses.items() if v is not None and v >= seuil)
@@ -103,7 +105,7 @@ class Routeur:
         vit = km_par_vitesse(d, a, b)
         km = d["km"] * (b - a)
         attrs = dict(km=km, ligne=d["ligne"], vitesses=vit, manuel=d.get("manuel"), ecartement=d.get("ecartement"),
-                     temporaire=True)
+                     lgv_presumee=d.get("lgv_presumee"), temporaire=True)
         attrs["part_lgv"] = self._part_lgv(attrs)
         self.G.add_edge(tag, noeud, **attrs)
 
@@ -140,6 +142,7 @@ class Routeur:
             d = min((d for d in self.G[u][v].values() if self._cout(d, mode, lignes) is not None),
                     key=lambda d: self._cout(d, mode, lignes))
             res.km += d["km"]
+            res.aretes += 1
             vit.update(d["vitesses"])
             ecart[d.get("ecartement")] += d["km"]
             if res.lignes and res.lignes[-1][0] == d["ligne"]:
