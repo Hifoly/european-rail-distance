@@ -211,3 +211,13 @@ def test_pk_sncf_priment_sur_l_alerte_rinf(cfg):
     assert r["controle_pk_km"] == pytest.approx(74.4)        # ...mais les PK confirment SNCF
     assert r["statut"] == "vérifié (PK SNCF)"
     assert any("PK SNCF" in x and "RINF" in x for x in r["remarques"])
+
+
+def test_repartitions_pour_la_base():
+    from distancier.db import repartitions
+    r = {"id": "1", "distance_km": "100.0", "dont_km_300": "80.0", "dont_km_160": "0.0",
+         "dont_km_vitesse_inconnue": "20.0", "km_ecartement_1435": "70.0", "km_ecartement_1668": "",
+         "km_ecartement_mixte": "5.0", "km_ecartement_inconnu": "25.0"}
+    vit, ecart = repartitions(r)
+    assert vit == [(300, 80.0), (None, 20.0)]
+    assert ecart == [("1435", 70.0), ("mixte", 5.0), (None, 25.0)]

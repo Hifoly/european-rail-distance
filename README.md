@@ -73,8 +73,8 @@ distancier charger-bdd data/output/distances_<date>.csv
 ```
 
 Le schéma est dans [sql/schema.sql](sql/schema.sql) : une table `relation` (une ligne par
-relation et par calcul), une table `relation_vitesse` (format long, une ligne par
-vitesse) et une vue `relation_courante` sur le dernier calcul.
+relation et par calcul), les tables `relation_vitesse` et `relation_ecartement` (format long,
+une ligne par vitesse ou par écartement) et une vue `relation_courante` sur le dernier calcul.
 
 ## Arborescence
 

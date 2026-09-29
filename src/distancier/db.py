@@ -16,6 +16,23 @@ COLS = ["id", "code_uic_origine", "code_uic_destination", "itineraire_retenu", "
         "statut", "source", "date_consultation", "remarques"]
 
 
+def repartitions(r: dict) -> tuple[list, list]:
+    """Colonnes dont_km_* et km_ecartement_* d'une ligne exportée, en format long :
+    ([(v_max ou None, km)], [(écartement ou None, km)]), km nuls omis."""
+    vit, ecart = [], []
+    for c, v in r.items():
+        km = float(v or 0) if c.startswith(("dont_km_", "km_ecartement_")) else 0
+        if km <= 0:
+            continue
+        if c.startswith("dont_km_"):
+            cle = c.removeprefix("dont_km_")
+            vit.append((None if cle == "vitesse_inconnue" else int(cle), km))
+        else:
+            cle = c.removeprefix("km_ecartement_")
+            ecart.append((None if cle == "inconnu" else cle, km))
+    return vit, ecart
+
+
 def _val(c, v):
     if v == "":
         return None
@@ -32,7 +49,6 @@ def charger(cfg: dict, fichier_csv: Path, dsn: str | None = None) -> int:
     meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
     with open(fichier_csv, encoding="utf-8-sig", newline="") as f:
         lignes = [r for r in csv.DictReader(f, delimiter=";") if r.get("distance_km")]
-    vitesses = [c for c in (lignes[0].keys() if lignes else []) if c.startswith("dont_km_")]
 
     with psycopg.connect(dsn) as cx, cx.cursor() as cur:
         cur.execute((racine / "sql" / "schema.sql").read_text(encoding="utf-8"))
@@ -63,10 +79,11 @@ def charger(cfg: dict, fichier_csv: Path, dsn: str | None = None) -> int:
             cur.execute(f"INSERT INTO distancier.relation (calcul_id, id, uic_origine, uic_destination, "
                         f"{', '.join(COLS[3:])}) VALUES ({', '.join(['%s'] * (len(COLS) + 1))})",
                         [calcul_id] + [_val(c, r[c]) for c in COLS])
-            for c in vitesses:
-                km = float(r[c] or 0)
-                if km > 0:
-                    v = c.removeprefix("dont_km_")
-                    cur.execute("INSERT INTO distancier.relation_vitesse VALUES (%s, %s, %s, %s)",
-                                (calcul_id, r["id"], None if v == "vitesse_inconnue" else int(v), km))
+            vit, ecart = repartitions(r)
+            for v, km in vit:
+                cur.execute("INSERT INTO distancier.relation_vitesse VALUES (%s, %s, %s, %s)",
+                            (calcul_id, r["id"], v, km))
+            for e, km in ecart:
+                cur.execute("INSERT INTO distancier.relation_ecartement VALUES (%s, %s, %s, %s)",
+                            (calcul_id, r["id"], e, km))
     return calcul_id

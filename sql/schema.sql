@@ -1,6 +1,6 @@
 -- Schéma PostgreSQL / PostGIS du distancier.
 -- Chaque exécution de « distancier charger-bdd » crée un calcul ; les relations et
--- leur répartition par vitesse y sont rattachées (historique conservé).
+-- leur répartition par vitesse et par écartement y sont rattachées (historique conservé).
 CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE SCHEMA IF NOT EXISTS distancier;
 
@@ -50,6 +50,16 @@ CREATE TABLE IF NOT EXISTS distancier.relation_vitesse (
     calcul_id   int NOT NULL,
     id          int NOT NULL,
     v_max_kmh   int,
+    km          numeric(8,1) NOT NULL,
+    FOREIGN KEY (calcul_id, id) REFERENCES distancier.relation(calcul_id, id) ON DELETE CASCADE
+);
+
+-- Format long : une ligne par relation et par écartement nominal (km_ecartement_*) ;
+-- ecartement = '1668', '1435', '1000', 'mixte' ou NULL (inconnu).
+CREATE TABLE IF NOT EXISTS distancier.relation_ecartement (
+    calcul_id   int NOT NULL,
+    id          int NOT NULL,
+    ecartement  text,
     km          numeric(8,1) NOT NULL,
     FOREIGN KEY (calcul_id, id) REFERENCES distancier.relation(calcul_id, id) ON DELETE CASCADE
 );
