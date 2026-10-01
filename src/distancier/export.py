@@ -15,7 +15,8 @@ log = logging.getLogger(__name__)
 COLONNES_DEBUT = ["id", "gare_origine", "code_uic_origine", "pays_origine", "gare_destination",
                   "code_uic_destination", "pays_destination", "itineraire_retenu", "distance_km"]
 COLONNES_FIN = ["dont_km_vitesse_inconnue", "part_lgv_pct", "type_ligne", "lignes_empruntees",
-                "distance_plus_courte_km", "distance_sans_lgv_km", "distance_tgv_commercial_km", "desserte_tgv", "moteur", "distance_controle_km",
+                "distance_au_plus_court_km", "distance_tgv_commercial_km", "desserte_tgv",
+                "distance_plus_courte_km", "distance_sans_lgv_km", "moteur", "distance_controle_km",
                 "source_controle", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct",
                 "statut", "source", "date_consultation", "remarques"]
 

@@ -30,10 +30,11 @@ CREATE TABLE IF NOT EXISTS distancier.relation (
     part_lgv_pct            numeric(5,1),
     type_ligne              text,
     lignes_empruntees       text,
-    distance_plus_courte_km numeric(8,1),
-    distance_sans_lgv_km    numeric(8,1),
+    distance_au_plus_court_km numeric(8,1),
     distance_tgv_commercial_km numeric(8,1),
     desserte_tgv            text,
+    distance_plus_courte_km numeric(8,1),
+    distance_sans_lgv_km    numeric(8,1),
     moteur                  text,
     distance_controle_km    numeric(8,1),
     source_controle         text,
@@ -47,6 +48,7 @@ CREATE TABLE IF NOT EXISTS distancier.relation (
     PRIMARY KEY (calcul_id, id)
 );
 -- bases créées avant l'itinéraire « TGV commercial »
+ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS distance_au_plus_court_km numeric(8,1);
 ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS distance_tgv_commercial_km numeric(8,1);
 ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS desserte_tgv text;
 

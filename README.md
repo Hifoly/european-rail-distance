@@ -46,13 +46,14 @@ Le premier calcul construit le graphe SNCF (environ 30 s) puis le garde en cache
 
 Si une source n'a pas encore été téléchargée, les relations qui en dépendent sortent
 avec un statut `erreur : …` et les autres sont calculées normalement. Sans horaires SNCF,
-seules les colonnes `distance_tgv_commercial_km` et `desserte_tgv` restent vides.
+`distance_tgv_commercial_km` et `desserte_tgv` restent vides et `distance_km` est la distance au plus court.
 
-**Distance TGV commerciale.** `distance_km` reste la distance par le rail (plus court chemin
-LGV privilégiée). `distance_tgv_commercial_km` donne en plus les km que roule le TGV direct le
-plus fréquent entre les deux gares : on suit ses arrêts (horaires SNCF), chaque tronçon d'arrêt à
-arrêt étant calculé en itinéraire grande vitesse sur le même moteur. Un TGV province-province
-passe ainsi par Massy, Marne-la-Vallée ou Roissy. Relations françaises seulement.
+**Distance retenue.** `distance_km` est la distance du TGV direct le plus fréquent entre les deux
+gares quand il existe (`distance_tgv_commercial_km`, choix d'Aloïs le 2026-10-01), sinon la
+distance par le rail `distance_au_plus_court_km`. Le TGV est suivi d'arrêt en arrêt (horaires
+SNCF) ; chaque tronçon est calculé et contrôlé comme une relation, en itinéraire grande vitesse.
+Un TGV province-province passe ainsi par Massy, Marne-la-Vallée ou Roissy. Relations françaises
+seulement ; sans horaires téléchargés, `distance_km` = `distance_au_plus_court_km`.
 
 ## Ce qu'on modifie au quotidien
 

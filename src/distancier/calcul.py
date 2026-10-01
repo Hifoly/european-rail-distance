@@ -1,6 +1,7 @@
 """Orchestration : référentiel de gares, moteurs de calcul, tableau des relations."""
 from __future__ import annotations
 
+import collections
 import csv
 import hashlib
 import json
@@ -151,12 +152,13 @@ def referentiel_gares(cfg: dict) -> dict[str, dict]:
 
 class TgvCommercial:
     """Itinéraire « TGV commercial » : la relation suit les arrêts du TGV direct le plus fréquent
-    des horaires SNCF, chaque tronçon entre deux arrêts étant calculé en itinéraire grande vitesse."""
+    des horaires SNCF. Chaque tronçon d'arrêt à arrêt est une relation à part entière (itinéraire
+    grande vitesse, mêmes contrôles et même statut), calculée une fois puis gardée en cache."""
 
     def __init__(self, dessertes, source: str, date: str, gares: dict, gares_sncf: dict):
         self.dessertes, self.source, self.date = dessertes, source, date
         self.gares, self.gares_sncf = gares, gares_sncf
-        self._troncons: dict[tuple, float | str] = {}
+        self._troncons: dict[tuple, dict | str] = {}
 
     def gare(self, uic: str) -> dict | None:
         g = self.gares.get(uic)
@@ -164,48 +166,114 @@ class TgvCommercial:
             return g
         ref = self.gares_sncf.get(uic)
         if ref and ref["lon"] is not None:
-            return {"uic": uic, "nom": (g or ref)["nom"], "lon": ref["lon"], "lat": ref["lat"], "pks": ref["pks"]}
+            return {"uic": uic, "nom": (g or ref)["nom"], "pays": "FR", "uopid_rinf": (g or {}).get("uopid_rinf", ""),
+                    "note": "", "lon": ref["lon"], "lat": ref["lat"], "pks": ref["pks"]}
         return None
 
-    def troncon(self, moteur, a: str, b: str) -> float | str:
-        """km de a à b en grande vitesse, ou le motif de l'échec."""
-        cle = (moteur.nom, a, b)
-        if cle not in self._troncons:
+    def troncon(self, a: str, b: str, calcul) -> dict | str:
+        """Ligne de résultat du tronçon a -> b, ou le motif de l'échec. `calcul(rel, gares)` calcule une relation."""
+        if (a, b) not in self._troncons:
             ga, gb = self.gare(a), self.gare(b)
             if ga is None or gb is None:
-                self._troncons[cle] = f"arrêt UIC {a if ga is None else b} absent du jeu SNCF des gares"
+                self._troncons[(a, b)] = f"arrêt UIC {a if ga is None else b} absent du jeu SNCF des gares"
             else:
-                try:
-                    self._troncons[cle] = moteur.calculer(dict(ga), dict(gb), "grande_vitesse")[0].km
-                except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e:
-                    self._troncons[cle] = f"{ga['nom']} - {gb['nom']} : {e}"
-        return self._troncons[cle]
+                rel = {"id": "", "uic_origine": a, "uic_destination": b, "itineraire": "grande_vitesse"}
+                t = calcul(rel, {a: dict(ga), b: dict(gb)})
+                self._troncons[(a, b)] = t if "resultat" in t else f"{ga['nom']} - {gb['nom']} : {t['statut']}"
+        return self._troncons[(a, b)]
 
     def nom(self, uic: str) -> str:
         g = self.gares.get(uic) or self.gares_sncf.get(uic)
         return g["nom"] if g else uic
 
 
-def _tgv_commercial(ligne: dict, go: dict, gd: dict, moteur, tgv: TgvCommercial) -> None:
-    trouve = tgv.dessertes.desserte(go["uic"], gd["uic"])
+# remarques de tronçon reprises sur la relation (les autres sont des informations de routine)
+_REMARQUES_ROUTINE = ("itinéraire LGV privilégié", "contrôle RINF sur les lignes")
+
+
+def _assembler(troncons: list[dict]) -> Resultat:
+    res = Resultat(km=0.0)
+    vit = collections.Counter()
+    for t in troncons:
+        r = t["resultat"]
+        res.km += r.km
+        vit.update(r.vitesses)
+        for ligne, km in r.lignes:
+            if res.lignes and res.lignes[-1][0] == ligne:
+                res.lignes[-1] = (ligne, res.lignes[-1][1] + km)
+            else:
+                res.lignes.append((ligne, km))
+        res.manuels += [m for m in r.manuels if m not in res.manuels]
+    res.vitesses = dict(vit)
+    return res
+
+
+def _statut_troncons(troncons: list[dict]) -> str:
+    statuts = [t["statut"] for t in troncons]
+    if "à vérifier" in statuts:
+        return "à vérifier"
+    if all(s.startswith("vérifié (") for s in statuts):
+        moyens = sorted({s[len("vérifié ("):-1] for s in statuts})
+        return f"vérifié ({' et '.join(moyens)})"
+    return "estimé"
+
+
+def _tgv_commercial(ligne: dict, rel: dict, tgv: TgvCommercial, calcul) -> None:
+    """Remplace la distance de `ligne` par celle du TGV direct le plus fréquent, si elle existe."""
+    go, gd = ligne["code_uic_origine"], ligne["code_uic_destination"]
+    trouve = tgv.dessertes.desserte(go, gd)
     if trouve is None:
         ligne["desserte_tgv"] = "aucun TGV direct"
         return
     arrets, n = trouve
-    total = 0.0
+    troncons = []
     for a, b in zip(arrets[:-1], arrets[1:]):
-        km = tgv.troncon(moteur, a, b)
-        if isinstance(km, str):
-            ligne["remarques"].append(f"distance TGV commerciale impossible : {km}")
+        if len(arrets) == 2 and rel["itineraire"] == "grande_vitesse":
+            t = ligne                              # même calcul que la relation elle-même
+        else:
+            t = tgv.troncon(a, b, calcul)
+        if isinstance(t, str):
+            ligne["remarques"].append(f"distance TGV commerciale impossible : {t}")
             return
-        total += km
-    ligne["distance_tgv_commercial_km"] = round(total, 1)
-    ligne["desserte_tgv"] = " > ".join(tgv.nom(u) for u in arrets) + f" ({n} train{'s' if n > 1 else ''})"
-    ligne["source"] += f" ; desserte TGV : {tgv.source}, consulté le {tgv.date}"
-    res = ligne["resultat"]
-    if res.km > 0 and total > res.km * 1.01:
-        ligne["remarques"].append(f"le TGV direct fait un détour de {100 * (total / res.km - 1):+.1f} % "
-                                  f"({round(total, 1)} km par ses arrêts)")
+        troncons.append(t)
+    moteurs = {t["moteur"] for t in troncons}
+    if len(moteurs) > 1:   # un moteur par relation : pas de distance assemblée de deux sources
+        ligne["remarques"].append("distance TGV commerciale non retenue : tronçons calculés sur des moteurs "
+                                  "différents (" + ", ".join(sorted(moteurs)) + ")")
+        return
+    res = _assembler(troncons)
+    desserte = " > ".join(tgv.nom(u) for u in arrets) + f" ({n} train{'s' if n > 1 else ''})"
+    ligne["distance_tgv_commercial_km"] = round(res.km, 1)
+    ligne["desserte_tgv"] = desserte
+    if troncons == [ligne]:
+        ligne["source"] += f" ; desserte TGV : {tgv.source}, consulté le {tgv.date}"
+        return
+
+    # distance_km devient celle du TGV : vitesses, lignes, contrôles et statut suivent les tronçons
+    au_plus_court = ligne["resultat"].km
+    remarques = [r for r in ligne["remarques"] if not r.startswith(_REMARQUES_ROUTINE)]
+    remarques.append(f"distance du TGV direct le plus fréquent ({desserte}) ; "
+                     f"au plus court : {au_plus_court:.1f} km")
+    if au_plus_court > 0 and res.km > au_plus_court * 1.01:
+        remarques.append(f"le TGV fait un détour de {100 * (res.km / au_plus_court - 1):+.1f} % par ses arrêts")
+    for t in troncons:
+        nom = f"{t['gare_origine']} - {t['gare_destination']}"
+        remarques += [f"{nom} : {r}" for r in t["remarques"]
+                      if not r.startswith(_REMARQUES_ROUTINE) and f"{nom} : {r}" not in remarques]
+    for cle in ("distance_controle_km", "source_controle", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct"):
+        ligne.pop(cle, None)
+    sources_ctl = {t.get("source_controle") for t in troncons}
+    if len(sources_ctl) == 1 and None not in sources_ctl:
+        ctl = sum(t["distance_controle_km"] for t in troncons)
+        ligne.update(distance_controle_km=round(ctl, 1), source_controle=sources_ctl.pop(),
+                     ecart_controle_pct=round(100 * (res.km / ctl - 1), 2) if ctl else "")
+    if all(t.get("controle_pk_km") for t in troncons):
+        pk = sum(t["controle_pk_km"] for t in troncons)
+        ligne.update(controle_pk_km=round(pk, 1), ecart_pk_pct=round(100 * (res.km / pk - 1), 2))
+    ligne.update(itineraire_retenu="tgv_commercial", resultat=res, remarques=remarques, moteur=moteurs.pop(),
+                 date_consultation=troncons[0]["date_consultation"],
+                 source=troncons[0]["source"] + f" ; desserte TGV : {tgv.source}, consulté le {tgv.date}")
+    ligne["statut"] = rel["statut_force"] if rel.get("statut_force") else _statut_troncons(troncons)
 
 
 def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = None,
@@ -257,6 +325,19 @@ def _concorde(km: float, controle: float, ecart_pct: float, rt: dict) -> bool:
 
 def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None,
               tgv: TgvCommercial | None = None) -> dict:
+    """Une relation : itinéraire sur le réseau (distance au plus court), puis, si un TGV direct la
+    dessert, distance_km = distance de ce TGV d'arrêt en arrêt."""
+    ligne = _relation_reseau(rel, gares, moteurs, cfg, rt, valides)
+    if "resultat" not in ligne:
+        return ligne
+    ligne["distance_au_plus_court_km"] = round(ligne["resultat"].km, 1)
+    if tgv is not None and ligne["moteur"] == "sncf":
+        _tgv_commercial(ligne, rel, tgv,
+                        lambda r, g: _relation_reseau(r, g, moteurs, cfg, rt, valides))
+    return ligne
+
+
+def _relation_reseau(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None) -> dict:
     go, gd = gares.get(rel["uic_origine"]), gares.get(rel["uic_destination"])
     ligne = {"id": rel["id"], "itineraire_retenu": rel["itineraire"], "remarques": []}
     if rel.get("remarque"):
@@ -326,8 +407,6 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
     if rel["itineraire"] == "grande_vitesse" and ligne["distance_plus_courte_km"] != "" \
             and ligne["distance_plus_courte_km"] < res.km - 0.5:
         ligne["remarques"].append(f"itinéraire LGV privilégié ; le plus court chemin fait {ligne['distance_plus_courte_km']} km")
-    if tgv is not None and nom_principal == "sncf":
-        _tgv_commercial(ligne, go, gd, principal, tgv)
 
     verifie, alerte = [], False
     autre = None if repli else moteurs.get("rinf" if nom_principal == "sncf" else "sncf")

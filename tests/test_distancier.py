@@ -226,25 +226,53 @@ def test_tgv_commercial_suit_les_arrets_du_tgv_le_plus_frequent(cfg):
                 "T3": ("OUIGO", [p, q]),
                 "R1": ("TER", [p, q]), "R2": ("TER", [p, q]), "R3": ("TER", [p, q])})  # pas des TGV
     res = calcul.calculer(cfg)
-    r = par_id(res)
+    r = par_id(res)[1]
     detour = km(P, X, S) + km(S, X, Q)
-    assert r[1]["distance_tgv_commercial_km"] == pytest.approx(detour, abs=0.1)
-    assert r[1]["desserte_tgv"] == "Pville > Sville > Qville (2 trains)"
-    assert r[1]["resultat"].km == pytest.approx(km(P, M, Q), rel=1e-3)        # distance_km inchangée
-    assert "le TGV direct fait un détour" in " ".join(r[1]["remarques"])
-    assert "desserte TGV : Horaires SNCF" in r[1]["source"] and "2026-01-03" in r[1]["source"]
-    assert r[3]["distance_tgv_commercial_km"] == pytest.approx(km(P, X, S), abs=0.1)
+    # distance_km = distance du TGV, la distance par le rail reste dans distance_au_plus_court_km
+    assert r["resultat"].km == pytest.approx(detour, rel=1e-3)
+    assert r["distance_tgv_commercial_km"] == pytest.approx(detour, abs=0.1)
+    assert r["distance_au_plus_court_km"] == pytest.approx(km(P, M, Q), abs=0.1)
+    assert r["itineraire_retenu"] == "tgv_commercial"
+    assert r["desserte_tgv"] == "Pville > Sville > Qville (2 trains)"
+    # vitesses, lignes et contrôles suivent les tronçons P-S et S-Q
+    assert r["resultat"].vitesses[160] == pytest.approx(km(P, X) + km(X, Q), rel=0.01)
+    assert r["resultat"].vitesses[None] == pytest.approx(2 * km(X, S), rel=0.01)
+    assert [l for l, _ in r["resultat"].lignes] == ["C1", "C3", "C1"]
+    assert r["source_controle"] == "rinf"
+    assert r["distance_controle_km"] == pytest.approx(37.25 + 2 * 55.6 + 37.25, abs=0.2)
+    assert r["statut"] == "vérifié (RINF)"
+    assert "le TGV fait un détour" in " ".join(r["remarques"])
+    assert "desserte TGV : Horaires SNCF" in r["source"] and "2026-01-03" in r["source"]
     assert res["sources"]["gtfs_sncf"]["date_consultation"] == "2026-01-03"
 
+    r3 = par_id(res)[3]                       # P-S en plus court : le TGV direct fait le même trajet
+    assert r3["resultat"].km == pytest.approx(km(P, X, S), rel=1e-3)
+    assert r3["distance_au_plus_court_km"] == pytest.approx(km(P, X, S), abs=0.1)
+
     with open(export.ecrire(res, cfg, Path(cfg["chemins"]["sorties"]), "test")[0], encoding="utf-8-sig") as f:
-        lignes = {l["id"]: l for l in csv.DictReader(f, delimiter=";")}
-    assert float(lignes["1"]["distance_tgv_commercial_km"]) == pytest.approx(detour, abs=0.1)
+        l = {x["id"]: x for x in csv.DictReader(f, delimiter=";")}["1"]
+    assert float(l["distance_km"]) == pytest.approx(detour, abs=0.1)
+    somme = sum(float(l[c]) for c in ("dont_km_300", "dont_km_160", "dont_km_vitesse_inconnue"))
+    assert somme == pytest.approx(float(l["distance_km"]), abs=1e-6)
+    assert l["type_ligne"] == "classique"
 
 
 def test_tgv_commercial_sans_tgv_direct_ni_horaires(cfg):
     r = par_id(calcul.calculer(cfg))
     assert "distance_tgv_commercial_km" not in r[1] and "desserte_tgv" not in r[1]   # horaires non téléchargés
+    assert r[1]["distance_au_plus_court_km"] == pytest.approx(r[1]["resultat"].km, abs=0.05)
     _gtfs(cfg, {"T1": ("TGV INOUI", ["87000001", "87000003"])})
     r = par_id(calcul.calculer(cfg))
     assert r[1]["desserte_tgv"] == "aucun TGV direct"
     assert "distance_tgv_commercial_km" not in r[1]
+    assert r[1]["itineraire_retenu"] == "grande_vitesse"
+
+
+@pytest.mark.parametrize("statuts,attendu", [
+    (["vérifié (RINF)", "vérifié (RINF)"], "vérifié (RINF)"),
+    (["vérifié (RINF)", "vérifié (PK SNCF)"], "vérifié (PK SNCF et RINF)"),
+    (["vérifié (RINF)", "estimé"], "estimé"),
+    (["estimé", "à vérifier", "vérifié (RINF)"], "à vérifier"),
+])
+def test_statut_d_une_distance_tgv_par_ses_troncons(statuts, attendu):
+    assert calcul._statut_troncons([{"statut": s} for s in statuts]) == attendu
