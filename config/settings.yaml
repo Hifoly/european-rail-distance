@@ -79,4 +79,4 @@ sources:
     nom: Horaires théoriques SNCF (GTFS)
     url: https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip
     # produits lus dans l'identifiant d'arrêt « StopPoint:OCE<produit>-<UIC> »
-    produits_tgv: [TGV INOUI, OUIGO, TGV Lyria, ICE]
+    produits_tgv: [TGV INOUI, OUIGO, Lyria, ICE]   # noms relevés dans le GTFS le 2026-10-01
