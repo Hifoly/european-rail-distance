@@ -21,9 +21,19 @@ COLONNES_FIN = ["dont_km_vitesse_inconnue", "part_lgv_pct", "type_ligne", "ligne
                 "source_controle", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct",
                 "statut", "source", "date_consultation", "remarques"]
 
+# tableau par relation, sous-relation, montée et descente du plan de transport (distancier calculer --par-sous-relation)
+COLONNES_SRELA_DEBUT = ["id", "relation", "sous_relation", "montee_iata", "descente_iata", "gare_origine",
+                        "code_uic_origine", "gare_destination", "code_uic_destination", "itineraire_retenu", "distance_km"]
+COLONNES_SRELA_FIN = ["dont_km_vitesse_inconnue", "part_lgv_pct", "type_ligne", "lignes_empruntees",
+                      "distance_au_plus_court_km", "desserte_score", "part_desserte_pct", "circulations_annee",
+                      "troncons_sans_lgv", "temps_theorique", "temps_theorique_350", "temps_score", "temps_score_350",
+                      "distance_plus_courte_km", "distance_sans_lgv_km", "moteur", "distance_controle_km",
+                      "source_controle", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct",
+                      "statut", "source", "date_consultation", "remarques"]
 
-def colonnes(vitesses: list[int]) -> list[str]:
-    return COLONNES_DEBUT + [f"dont_km_{v}" for v in vitesses] + COLONNES_FIN
+
+def colonnes(vitesses: list[int], debut: list[str] = COLONNES_DEBUT, fin: list[str] = COLONNES_FIN) -> list[str]:
+    return debut + [f"dont_km_{v}" for v in vitesses] + fin
 
 
 def arrondir_somme(valeurs: dict, total: float, decimales: int = 1) -> dict:
@@ -70,11 +80,13 @@ def mettre_en_forme(ligne: dict, vitesses: list[int], rt: dict) -> dict:
     return out
 
 
-def ecrire(resultat: dict, cfg: dict, dossier: Path, suffixe: str | None = None) -> list[Path]:
+def ecrire(resultat: dict, cfg: dict, dossier: Path, suffixe: str | None = None, par_sous_relation: bool = False) -> list[Path]:
     dossier.mkdir(parents=True, exist_ok=True)
     suffixe = suffixe or date.today().isoformat()
+    if par_sous_relation:
+        suffixe = f"srela_{suffixe}"
     vitesses = resultat["vitesses"]
-    cols = colonnes(vitesses)
+    cols = colonnes(vitesses, *((COLONNES_SRELA_DEBUT, COLONNES_SRELA_FIN) if par_sous_relation else ()))
     lignes = [mettre_en_forme(l, vitesses, cfg["routage"]) for l in resultat["relations"]]
     fichiers = []
 

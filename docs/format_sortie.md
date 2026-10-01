@@ -38,3 +38,24 @@ Fichiers associés :
   relation et par vitesse (id, gares, v_max_kmh, km, part_pct, source, date_consultation),
   pratique pour les tableaux croisés et SQL ;
 - `calcul_<date>.json` : sources, dates et paramètres utilisés pour ce calcul.
+
+## Tableau par relation et sous-relation (`distancier calculer --par-sous-relation`)
+
+`data/output/distances_srela_<date>.csv` (et `.xlsx`, `distances_par_vitesse_srela_<date>.csv`,
+`calcul_srela_<date>.json`) : une ligne par relation, sous-relation, montée et descente du plan de
+transport TGV (`data/Extract_score.xlsx`, année de `sources.score.annee`), dans le sens du train.
+Mêmes colonnes que le tableau principal, avec ces différences :
+
+| Colonne | Contenu |
+|---|---|
+| relation, sous_relation | libellés d'Extract_score (ex. « PARIS-SUD-OUEST TGV », « PARIS - HENDAYE_TGV ») |
+| montee_iata, descente_iata | gares de montée et de descente (codes d'Extract_score, reliés aux UIC par `couples_montee_descente_FR_UIC.csv`) |
+| itineraire_retenu | `desserte_score` : distance de la desserte la plus fréquente, d'arrêt en arrêt |
+| distance_km | somme des tronçons entre arrêts consécutifs de cette desserte. Chaque tronçon passe par la LGV ou par la ligne classique (plus court chemin sans LGV) selon le temps de parcours des trains de la sous-relation : la ligne classique est retenue si ce temps (médiane pondérée, du départ à l'arrivée) atteint la moyenne géométrique des deux temps théoriques |
+| desserte_score, part_desserte_pct | arrêts de la desserte la plus fréquente de la sous-relation entre la montée et la descente, et sa part des circulations (poids nombre_jour × compteur ; un train = un train_uid, soit un numéro sur une periode_label) |
+| circulations_annee | somme des poids des trains de la ligne sur l'année |
+| troncons_sans_lgv | tronçons passés par la ligne classique (vide si aucun) |
+| temps_score | temps médian de cette sous-relation dans ce sens (pondéré nombre_jour × compteur) |
+| distance_au_plus_court_km, distance_plus_courte_km, distance_sans_lgv_km | relation directe de la montée à la descente, comme dans le tableau principal |
+
+Pas de `temps_pratique`, `distance_tgv_commercial_km` ni `desserte_tgv` (horaires SNCF) dans ce tableau.

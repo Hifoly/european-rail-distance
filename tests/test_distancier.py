@@ -377,3 +377,62 @@ def test_temps_pratique_sur_tous_les_tgv_directs():
     assert arrets == ("A", "B") and n == 2
     assert duree == 12                     # médiane de 10, 12 et 30 min, desserte par X comprise
 
+
+
+def _extract_score(cfg, trains):
+    """Plan de transport simulé : {train_uid: (relation, sous_relation, poids, [(iata, arrivée, départ en min)…])}.
+    Une ligne par couple montée-descente du train, comme dans Extract_score."""
+    from openpyxl import Workbook
+    _csv(Path(cfg["sources"]["score"]["couples"]), [
+        {"arret_montee_iata": "FRPPP", "arret_montee_uic": "87000001", "arret_descente_iata": "FRQQQ", "arret_descente_uic": "87000002"},
+        {"arret_montee_iata": "FRSSS", "arret_montee_uic": "87000003", "arret_descente_iata": "FRQQQ", "arret_descente_uic": "87000002"}])
+    wb = Workbook()
+    ws = wb.active
+    ws.append(["train_uid", "annee", "relation", "sous_relation", "arret_montee_iata", "arret_descente_iata",
+               "ordre_montee", "ordre_descente", "depart_service_seconds", "arrivee_service_seconds",
+               "duree_commerciale_minutes", "nombre_jour", "compteur"])
+    for uid, (rel, srel, poids, arrets) in trains.items():
+        for i, (m, _, dep) in enumerate(arrets):
+            for j, (d, arr, _) in enumerate(arrets[i + 1:], i + 1):
+                ws.append([uid, 2025, rel, srel, m, d, i + 1, j + 1, 28800 + 60 * dep, 28800 + 60 * arr, arr - dep, poids, 1])
+    wb.save(cfg["sources"]["score"]["fichier"])
+
+
+def test_par_sous_relation_desserte_et_ligne_classique_selon_le_temps(cfg):
+    _extract_score(cfg, {
+        "2025_A_lundi_1": ("PARIS-Q", "P - Q_TGV", 10, [("FRPPP", None, 0), ("FRQQQ", 17, None)]),
+        "2025_A_lundi_4": ("PARIS-Q", "P - Q_TGV", 2, [("FRPPP", None, 0), ("FRSSS", 30, 32), ("FRQQQ", 60, None)]),
+        # même gares, mais 30 min de P à Q : plus proche de la ligne classique (28 min) que de la LGV (16 min)
+        "2025_A_lundi_2": ("OUIGO", "P - Q / CLASSIQUE", 5, [("FRPPP", None, 0), ("FRQQQ", 30, None)]),
+        "2025_A_lundi_9": ("OUIGO", "P - Z", 5, [("FRPPP", None, 0), ("FRZZZ", 30, None)]),
+    })
+    res = calcul.calculer_sous_relations(cfg)
+    r = {(l["sous_relation"], l["montee_iata"], l["descente_iata"]): l for l in res["relations"]}
+
+    tgv = r[("P - Q_TGV", "FRPPP", "FRQQQ")]
+    assert tgv["itineraire_retenu"] == "desserte_score"
+    assert tgv["desserte_score"] == "Pville > Qville (83 % des circulations)"   # 10 contre 2
+    assert tgv["resultat"].km == pytest.approx(km(P, M, Q), rel=1e-3)
+    assert tgv["distance_au_plus_court_km"] == pytest.approx(km(P, M, Q), abs=0.1)
+    assert tgv["temps_score"] == 17 and tgv["troncons_sans_lgv"] == ""
+    assert tgv["temps_score_350"] == round(17 - (tgv["temps_theorique"] - tgv["temps_theorique_350"]), 1)
+
+    cl = r[("P - Q / CLASSIQUE", "FRPPP", "FRQQQ")]
+    assert cl["resultat"].km == pytest.approx(km(P, X, Q), rel=1e-3)
+    assert set(cl["resultat"].vitesses) == {160}
+    assert cl["troncons_sans_lgv"] == "Pville - Qville"
+    assert "ligne classique retenue (trains en 30 min" in " ".join(cl["remarques"])
+    assert cl["distance_au_plus_court_km"] == pytest.approx(km(P, M, Q), abs=0.1)
+    assert cl["temps_score_350"] == cl["temps_score"] == 30                # pas de LGV : rien à gagner
+
+    srel_s = r[("P - Q_TGV", "FRSSS", "FRQQQ")]                            # couple porté par le seul train 4
+    assert srel_s["resultat"].km == pytest.approx(km(S, X, Q), rel=1e-3)
+    assert r[("P - Z", "FRPPP", "FRZZZ")]["statut"].startswith("erreur : IATA FRZZZ absent")
+
+    fichiers = export.ecrire(res, cfg, Path(cfg["chemins"]["sorties"]), "test", par_sous_relation=True)
+    assert fichiers[0].name == "distances_srela_test.csv"
+    with open(fichiers[0], encoding="utf-8-sig") as f:
+        lignes = list(csv.DictReader(f, delimiter=";"))
+    assert list(lignes[0])[:5] == ["id", "relation", "sous_relation", "montee_iata", "descente_iata"]
+    l = next(x for x in lignes if x["sous_relation"] == "P - Q / CLASSIQUE")
+    assert float(l["dont_km_160"]) == pytest.approx(float(l["distance_km"]))

@@ -23,6 +23,8 @@ def main(argv=None) -> int:
     c.add_argument("--jour-sncf", help="date du téléchargement SNCF à utiliser (défaut : le plus récent)")
     c.add_argument("--jour-rinf", help="date du téléchargement RINF à utiliser (défaut : le plus récent)")
     c.add_argument("--jour-gtfs", help="date du téléchargement des horaires SNCF à utiliser (défaut : le plus récent)")
+    c.add_argument("--par-sous-relation", action="store_true",
+                   help="une ligne par relation, sous-relation, montée et descente du plan de transport (Extract_score)")
 
     b = sub.add_parser("charger-bdd", help="charge un tableau exporté dans PostgreSQL/PostGIS")
     b.add_argument("fichier", type=Path, help="data/output/distances_AAAA-MM-JJ.csv")
@@ -49,8 +51,11 @@ def main(argv=None) -> int:
                 logging.warning("horaires SNCF non téléchargés : %s", e)
     elif a.commande == "calculer":
         from distancier import calcul, export
-        res = calcul.calculer(cfg, a.jour_sncf, a.jour_rinf, a.jour_gtfs)
-        for f in export.ecrire(res, cfg, config.chemin(cfg, "sorties")):
+        if a.par_sous_relation:
+            res = calcul.calculer_sous_relations(cfg, a.jour_sncf, a.jour_rinf)
+        else:
+            res = calcul.calculer(cfg, a.jour_sncf, a.jour_rinf, a.jour_gtfs)
+        for f in export.ecrire(res, cfg, config.chemin(cfg, "sorties"), par_sous_relation=a.par_sous_relation):
             print(f)
         erreurs = [r for r in res["relations"] if str(r.get("statut", "")).startswith("erreur")]
         for r in erreurs:

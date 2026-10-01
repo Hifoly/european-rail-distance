@@ -35,6 +35,7 @@ distancier telecharger --source sncf    # une seule source
 distancier telecharger --source rinf --pays FR BE
 distancier telecharger --source gtfs    # horaires SNCF, pour la distance TGV commerciale
 distancier calculer                     # -> data/output/distances_<date>.csv / .xlsx
+distancier calculer --par-sous-relation  # -> distances_srela_<date>.csv : par relation, sous-relation, montée et descente (Extract_score)
 distancier charger-bdd data/output/distances_2026-09-28.csv   # facultatif, PostGIS
 ```
 
