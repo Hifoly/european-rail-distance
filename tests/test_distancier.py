@@ -286,3 +286,31 @@ def test_tgv_commercial_meme_gare_au_depart_et_a_l_arrivee(cfg):
 ])
 def test_statut_d_une_distance_tgv_par_ses_troncons(statuts, attendu):
     assert calcul._statut_troncons([{"statut": s} for s in statuts]) == attendu
+
+
+def test_distance_tgv_verifiee_par_le_controle_de_tout_le_trajet(cfg):
+    from distancier.routage import Resultat
+    from distancier.sources.gtfs import Dessertes
+    troncons = {("A", "B"): {"resultat": Resultat(km=100.0, lignes=[("L1", 100.0)], vitesses={300: 100.0}),
+                             "moteur": "sncf", "statut": "estimé", "source": "S", "date_consultation": "2026-01-01",
+                             "gare_origine": "A", "gare_destination": "B", "remarques": [],
+                             "source_controle": "rinf", "distance_controle_km": 98.0},
+                ("B", "C"): {"resultat": Resultat(km=50.0, lignes=[("L2", 50.0)], vitesses={160: 50.0}),
+                             "moteur": "sncf", "statut": "vérifié (RINF)", "source": "S", "date_consultation": "2026-01-01",
+                             "gare_origine": "B", "gare_destination": "C", "remarques": [],
+                             "source_controle": "rinf", "distance_controle_km": 51.0}}
+
+    class Tgv:
+        dessertes, source, date = Dessertes([("A", "B", "C")]), "H", "2026-01-03"
+        troncon = staticmethod(lambda a, b, _: troncons[(a, b)])
+        nom = staticmethod(lambda u: u)
+
+    ligne = {"code_uic_origine": "A", "code_uic_destination": "C", "remarques": [], "source": "S",
+             "resultat": Resultat(km=120.0), "statut": "vérifié (RINF)"}
+    calcul._tgv_commercial(ligne, {"itineraire": "grande_vitesse"}, Tgv, None, cfg["routage"])
+    assert ligne["resultat"].km == 150.0 and ligne["distance_controle_km"] == 149.0
+    assert ligne["statut"] == "vérifié (RINF)"          # un tronçon estimé, mais le trajet entier concorde
+    troncons[("A", "B")]["distance_controle_km"] = 80.0
+    ligne.update(resultat=Resultat(km=120.0), remarques=[])
+    calcul._tgv_commercial(ligne, {"itineraire": "grande_vitesse"}, Tgv, None, cfg["routage"])
+    assert ligne["statut"] == "estimé"

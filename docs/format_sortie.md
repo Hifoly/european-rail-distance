@@ -23,7 +23,7 @@ dans Excel), une ligne par relation. Même contenu dans l'onglet « distances »
 | moteur | `sncf` ou `rinf` |
 | distance_controle_km, source_controle, ecart_controle_pct | calcul par l'autre source |
 | controle_pk_km, ecart_pk_pct | contrôle par les points kilométriques SNCF |
-| statut | vérifié (…), estimé, à vérifier, erreur. Distance TGV : statut de ses tronçons (tous vérifiés, sinon estimé ; un seul à vérifier suffit) |
+| statut | vérifié (…), estimé, à vérifier, erreur. Distance TGV : « vérifié (RINF) » ou « vérifié (PK SNCF) » si le contrôle de tout le trajet concorde, sinon « vérifié (PK SNCF et RINF) »… si chaque tronçon est vérifié, sinon estimé ; un seul tronçon « à vérifier » suffit pour tout le trajet |
 | source | jeux de données et API utilisés |
 | date_consultation | date du téléchargement des données |
 | remarques | limites connues, rattachements, corrections |

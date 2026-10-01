@@ -218,7 +218,7 @@ def _statut_troncons(troncons: list[dict]) -> str:
     return "estimé"
 
 
-def _tgv_commercial(ligne: dict, rel: dict, tgv: TgvCommercial, calcul) -> None:
+def _tgv_commercial(ligne: dict, rel: dict, tgv: TgvCommercial, calcul, rt: dict) -> None:
     """Remplace la distance de `ligne` par celle du TGV direct le plus fréquent, si elle existe."""
     go, gd = ligne["code_uic_origine"], ligne["code_uic_destination"]
     if go == gd:
@@ -275,7 +275,16 @@ def _tgv_commercial(ligne: dict, rel: dict, tgv: TgvCommercial, calcul) -> None:
     ligne.update(itineraire_retenu="tgv_commercial", resultat=res, remarques=remarques, moteur=moteurs.pop(),
                  date_consultation=troncons[0]["date_consultation"],
                  source=troncons[0]["source"] + f" ; desserte TGV : {tgv.source}, consulté le {tgv.date}")
-    ligne["statut"] = rel["statut_force"] if rel.get("statut_force") else _statut_troncons(troncons)
+    # Statut : comme pour une relation, le contrôle de tout le trajet suffit à « vérifier » ;
+    # sinon chaque tronçon doit l'être. Un tronçon « à vérifier » le reste pour tout le trajet.
+    statut = _statut_troncons(troncons)
+    if statut == "estimé":
+        globaux = [n for n, (km, ctl) in (("RINF", (res.km, ligne.get("distance_controle_km"))),
+                                          ("PK SNCF", (res.km, ligne.get("controle_pk_km"))))
+                   if ctl and _concorde(km, ctl, 100 * (km / ctl - 1), rt)]
+        if globaux:
+            statut = f"vérifié ({globaux[0]})"
+    ligne["statut"] = rel["statut_force"] if rel.get("statut_force") else statut
 
 
 def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = None,
@@ -335,7 +344,7 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
     ligne["distance_au_plus_court_km"] = round(ligne["resultat"].km, 1)
     if tgv is not None and ligne["moteur"] == "sncf":
         _tgv_commercial(ligne, rel, tgv,
-                        lambda r, g: _relation_reseau(r, g, moteurs, cfg, rt, valides))
+                        lambda r, g: _relation_reseau(r, g, moteurs, cfg, rt, valides), rt)
     return ligne
 
 
