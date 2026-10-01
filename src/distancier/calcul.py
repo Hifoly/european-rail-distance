@@ -353,13 +353,22 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
 
 def _temps_theorique(ligne: dict) -> None:
     """Minutes pour parcourir distance_km en roulant partout à la vitesse maximale de chaque section.
-    Vide s'il reste plus de 0,5 km sans vitesse connue."""
+    Les km sans vitesse connue comptent à la vitesse la plus basse connue du trajet (choix d'Aloïs
+    le 2026-10-01 : ce sont surtout des zones de gare et de raccordement)."""
     res = ligne["resultat"]
+    connues = {v: km for v, km in res.vitesses.items() if v}
     inconnu = res.vitesses.get(None, 0.0)
-    if inconnu > 0.5:
-        ligne["remarques"].append(f"temps théorique non calculé : {inconnu:.1f} km sans vitesse connue")
+    if not connues:
+        if res.km > 0:
+            ligne["remarques"].append("temps théorique non calculé : aucune vitesse connue sur le trajet")
         return
-    ligne["temps_theorique"] = round(sum(60 * km / v for v, km in res.vitesses.items() if v), 1)
+    minutes = sum(60 * km / v for v, km in connues.items())
+    if inconnu > 0:
+        v_min = min(connues)
+        minutes += 60 * inconnu / v_min
+        if inconnu > 0.5:
+            ligne["remarques"].append(f"temps théorique : {inconnu:.1f} km sans vitesse connue comptés à {v_min} km/h")
+    ligne["temps_theorique"] = round(minutes, 1)
 
 
 def _relation_reseau(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None) -> dict:
