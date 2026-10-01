@@ -123,7 +123,7 @@ def lire_sous_relations(chemin: Path, annee: int) -> dict:
             a = t["arrets"].setdefault(ordre, {"iata": iata})
             if _nombre(h) is not None:
                 a[cle_h] = _nombre(h)
-        t["durees"][(om, od)] = duree
+        t["durees"].setdefault((om, od), []).append((duree, poids))   # poids de la ligne, pas du train
 
     od_durees: dict[tuple, list] = collections.defaultdict(list)
     od_dessertes: dict[tuple, collections.Counter] = collections.defaultdict(collections.Counter)
@@ -135,10 +135,12 @@ def lire_sous_relations(chemin: Path, annee: int) -> dict:
         for x, y in zip(arrets, arrets[1:]):
             if "depart" in x and "arrivee" in y and y["arrivee"] >= x["depart"]:
                 troncons[(rel, srel, x["iata"], y["iata"])].append(((y["arrivee"] - x["depart"]) / 60, t["poids"]))
-        for (om, od), duree in t["durees"].items():
+        for (om, od), lignes in t["durees"].items():
             cle = (rel, srel, t["arrets"][om]["iata"], t["arrets"][od]["iata"])
-            od_durees[cle].append((duree, t["poids"], sum(1 for o in ordres if om < o < od)))
-            od_dessertes[cle][tuple(t["arrets"][o]["iata"] for o in ordres if om <= o <= od)] += t["poids"]
+            inter = sum(1 for o in ordres if om < o < od)
+            for duree, poids in lignes:
+                od_durees[cle].append((duree, poids, inter))
+                od_dessertes[cle][tuple(t["arrets"][o]["iata"] for o in ordres if om <= o <= od)] += poids
     ods = {}
     for cle, trains_od in od_durees.items():
         durees = [(d, p) for d, p, _ in trains_od]
@@ -197,6 +199,6 @@ def charger(cfg: dict) -> dict:
 
 def charger_sous_relations(cfg: dict) -> dict:
     """Dessertes et temps par relation, sous-relation, montée et descente (voir lire_sous_relations)."""
-    d = _charger(cfg, "score_srela_v2", lire_sous_relations)
+    d = _charger(cfg, "score_srela_v3", lire_sous_relations)
     d.update(d.pop("donnees"))
     return d
