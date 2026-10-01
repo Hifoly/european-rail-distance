@@ -326,6 +326,8 @@ def test_temps_theorique_et_pratique(cfg):
     r = par_id(calcul.calculer(cfg))
     assert r[1]["temps_pratique"] == 24                                    # médiane de 20, 24 et 26 min
     assert r[1]["temps_theorique"] == pytest.approx(60 * km(P, M, Q) / 300, abs=0.1)   # tout à 300 km/h
+    assert r[1]["temps_theorique_350"] == pytest.approx(60 * km(P, M, Q) / 350, abs=0.1)
+    assert r[3]["temps_theorique_350"] == r[3]["temps_theorique"]           # pas de LGV : inchangé
     # P-S : 37 km à 160 km/h, 55 km sans vitesse connue comptés à la médiane (160 km/h)
     assert r[3]["temps_theorique"] == pytest.approx(60 * km(P, X, S) / 160, abs=0.2)
     assert "sans vitesse connue comptés à 160 km/h" in " ".join(r[3]["remarques"])

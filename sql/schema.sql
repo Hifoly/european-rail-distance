@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS distancier.relation (
     distance_tgv_commercial_km numeric(8,1),
     desserte_tgv            text,
     temps_theorique         numeric(7,1),
+    temps_theorique_350     numeric(7,1),
     temps_pratique          int,
     temps_score             numeric(7,1),
     distance_plus_courte_km numeric(8,1),
@@ -55,6 +56,7 @@ ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS distance_au_plus_court_
 ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS distance_tgv_commercial_km numeric(8,1);
 ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS desserte_tgv text;
 ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS temps_theorique numeric(7,1);
+ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS temps_theorique_350 numeric(7,1);
 ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS temps_pratique int;
 ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS temps_score numeric(7,1);
 

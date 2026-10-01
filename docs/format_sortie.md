@@ -19,6 +19,7 @@ dans Excel), une ligne par relation. Même contenu dans l'onglet « distances »
 | distance_tgv_commercial_km | km parcourus par le TGV direct le plus fréquent : itinéraire grande vitesse d'arrêt en arrêt (vide sans TGV direct ou sans horaires téléchargés) |
 | desserte_tgv | arrêts de ce TGV et nombre de trains qui la font, ou « aucun TGV direct » |
 | temps_theorique | minutes, 1 décimale : temps pour parcourir `distance_km` en roulant partout à la vitesse maximale de chaque section (somme des `dont_km_<v>` / v). Les km sans vitesse connue comptent à la vitesse médiane du trajet (pondérée par les km) (remarque au-delà de 0,5 km) |
+| temps_theorique_350 | comme `temps_theorique`, mais les sections à 300 ou 320 km/h comptées à 350 km/h |
 | temps_pratique | minutes : durée médiane de tous les TGV directs entre les deux gares, quelle que soit leur desserte (horaires SNCF, départ de la première gare à l'arrivée à la seconde). Vide sans TGV direct |
 | temps_score | minutes : temps médian de l'année 2025 dans le plan de transport TGV théorique (`data/Extract_score.xlsx`, fichier local), pondéré par le nombre de jours de chaque jour type et par le compteur (0,5 par tranche d'un train couplé), les deux sens réunis. Vide si le fichier est absent ou si l'OD n'y figure pas |
 | distance_plus_courte_km | plus court chemin strict, sans préférence pour les LGV |

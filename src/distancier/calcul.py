@@ -369,6 +369,9 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
     return ligne
 
 
+V_RELEVEE, SEUIL_RELEVE = 350, 300   # temps_theorique_350 : v_max >= 300 km/h portée à 350 km/h
+
+
 def _vitesse_mediane(km_par_vitesse: dict) -> int:
     """Vitesse en dessous de laquelle se trouve la moitié des km."""
     total, cumul = sum(km_par_vitesse.values()), 0.0
@@ -390,14 +393,17 @@ def _temps_theorique(ligne: dict) -> None:
         if res.km > 0:
             ligne["remarques"].append("temps théorique non calculé : aucune vitesse connue sur le trajet")
         return
-    minutes = sum(60 * km / v for v, km in connues.items())
+    minutes_inconnu = 0.0
     if inconnu > 0:
         v_med = _vitesse_mediane(connues)
-        minutes += 60 * inconnu / v_med
+        minutes_inconnu = 60 * inconnu / v_med
         if inconnu > 0.5:
             ligne["remarques"].append(f"temps théorique : {inconnu:.1f} km sans vitesse connue comptés à "
                                       f"{v_med} km/h (vitesse médiane du trajet)")
-    ligne["temps_theorique"] = round(minutes, 1)
+    ligne["temps_theorique"] = round(minutes_inconnu + sum(60 * km / v for v, km in connues.items()), 1)
+    # Variante : sections à 300 ou 320 km/h relevées à 350 km/h (demande d'Aloïs le 2026-10-01).
+    ligne["temps_theorique_350"] = round(minutes_inconnu + sum(60 * km / (V_RELEVEE if v >= SEUIL_RELEVE else v)
+                                                               for v, km in connues.items()), 1)
 
 
 def _relation_reseau(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None) -> dict:
