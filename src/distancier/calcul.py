@@ -351,10 +351,20 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
     return ligne
 
 
+def _vitesse_mediane(km_par_vitesse: dict) -> int:
+    """Vitesse en dessous de laquelle se trouve la moitié des km."""
+    total, cumul = sum(km_par_vitesse.values()), 0.0
+    for v in sorted(km_par_vitesse):
+        cumul += km_par_vitesse[v]
+        if cumul >= total / 2:
+            return v
+    return max(km_par_vitesse)
+
+
 def _temps_theorique(ligne: dict) -> None:
     """Minutes pour parcourir distance_km en roulant partout à la vitesse maximale de chaque section.
-    Les km sans vitesse connue comptent à la vitesse la plus basse connue du trajet (choix d'Aloïs
-    le 2026-10-01 : ce sont surtout des zones de gare et de raccordement)."""
+    Les km sans vitesse connue comptent à la vitesse médiane du trajet, pondérée par les km
+    (choix d'Aloïs le 2026-10-01)."""
     res = ligne["resultat"]
     connues = {v: km for v, km in res.vitesses.items() if v}
     inconnu = res.vitesses.get(None, 0.0)
@@ -364,10 +374,11 @@ def _temps_theorique(ligne: dict) -> None:
         return
     minutes = sum(60 * km / v for v, km in connues.items())
     if inconnu > 0:
-        v_min = min(connues)
-        minutes += 60 * inconnu / v_min
+        v_med = _vitesse_mediane(connues)
+        minutes += 60 * inconnu / v_med
         if inconnu > 0.5:
-            ligne["remarques"].append(f"temps théorique : {inconnu:.1f} km sans vitesse connue comptés à {v_min} km/h")
+            ligne["remarques"].append(f"temps théorique : {inconnu:.1f} km sans vitesse connue comptés à "
+                                      f"{v_med} km/h (vitesse médiane du trajet)")
     ligne["temps_theorique"] = round(minutes, 1)
 
 
