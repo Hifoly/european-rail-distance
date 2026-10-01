@@ -95,8 +95,8 @@ _HTML = r"""<!doctype html>
   html, body { margin: 0; height: 100%; background: var(--fond); color: var(--texte);
                font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
   #app { display: flex; height: 100%; }
-  #panneau { width: 420px; max-width: 45vw; display: flex; flex-direction: column; border-right: 1px solid var(--trait); }
-  #carte { flex: 1; }
+  #panneau { flex: 0 0 420px; max-width: 45vw; min-width: 0; display: flex; flex-direction: column; border-right: 1px solid var(--trait); }
+  #carte { flex: 1 1 auto; min-width: 0; }
   header { padding: 12px 16px; border-bottom: 1px solid var(--trait); }
   h1 { font-size: 16px; margin: 0 0 4px; }
   .doux { color: var(--doux); font-size: 12px; }
@@ -115,7 +115,7 @@ _HTML = r"""<!doctype html>
   .legende { background: var(--fond); color: var(--texte); padding: 6px 8px; border-radius: 6px; font-size: 12px;
              box-shadow: 0 1px 4px rgba(0,0,0,.3); }
   .legende i { display: inline-block; width: 18px; height: 4px; margin-right: 6px; vertical-align: middle; }
-  @media (max-width: 700px) { #app { flex-direction: column-reverse; } #panneau { width: auto; max-width: none; height: 45%; border-right: 0; } }
+  @media (max-width: 700px) { #app { flex-direction: column-reverse; } #panneau { flex: 0 0 45%; max-width: none; border-right: 0; } }
 </style>
 </head>
 <body>
@@ -135,13 +135,16 @@ const D = __DONNEES__;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const ROUGE = css('--accent'), BLEU = css('--bleu');
 const carte = L.map('carte', { preferCanvas: true }).setView([46.6, 2.4], 6);
+// fonds sans clé, utilisables depuis un fichier ouvert en local (CARTO exige une clé dans ce cas)
 const fonds = {
-  'Plan clair': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-    { maxZoom: 19, attribution: '© OpenStreetMap, © CARTO' }),
-  'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    { maxZoom: 19, attribution: '© OpenStreetMap' }),
+  'Plan gris': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    { maxZoom: 16, attribution: 'Fond © Esri, HERE, Garmin, © OpenStreetMap' }),
+  'OpenStreetMap France': L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+    { maxZoom: 19, attribution: '© OpenStreetMap France, © contributeurs OpenStreetMap' }),
+  'Topographique': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+    { maxZoom: 19, attribution: 'Fond © Esri' }),
 };
-fonds['Plan clair'].addTo(carte);
+fonds['Plan gris'].addTo(carte);
 const surcouches = {
   'OpenRailwayMap (vitesses)': L.tileLayer('https://{s}.tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png',
     { maxZoom: 19, opacity: 0.7, attribution: '© OpenRailwayMap' }),
