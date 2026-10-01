@@ -18,6 +18,8 @@ dans Excel), une ligne par relation. Même contenu dans l'onglet « distances »
 | distance_au_plus_court_km | distance par le rail sans tenir compte des dessertes : itinéraire de `relations.csv` (LGV privilégiée pour `grande_vitesse`) |
 | distance_tgv_commercial_km | km parcourus par le TGV direct le plus fréquent : itinéraire grande vitesse d'arrêt en arrêt (vide sans TGV direct ou sans horaires téléchargés) |
 | desserte_tgv | arrêts de ce TGV et nombre de trains qui la font, ou « aucun TGV direct » |
+| temps_theorique | minutes, 1 décimale : temps pour parcourir `distance_km` en roulant partout à la vitesse maximale de chaque section (somme des `dont_km_<v>` / v). Vide s'il reste plus de 0,5 km sans vitesse connue |
+| temps_pratique | minutes : durée médiane des TGV de `desserte_tgv` (horaires SNCF, départ de la première gare à l'arrivée à la seconde). Vide sans TGV direct |
 | distance_plus_courte_km | plus court chemin strict, sans préférence pour les LGV |
 | distance_sans_lgv_km | plus court chemin sans LGV |
 | moteur | `sncf` ou `rinf` |

@@ -55,6 +55,10 @@ SNCF) ; chaque tronçon est calculé et contrôlé comme une relation, en itiné
 Un TGV province-province passe ainsi par Massy, Marne-la-Vallée ou Roissy. Relations françaises
 seulement ; sans horaires téléchargés, `distance_km` = `distance_au_plus_court_km`.
 
+**Temps.** `temps_theorique` : minutes pour parcourir `distance_km` en roulant partout à la vitesse
+maximale de chaque section (vide s'il reste des km sans vitesse connue). `temps_pratique` : durée
+médiane, en minutes, des TGV directs de la desserte retenue, d'après les horaires SNCF.
+
 ## Ce qu'on modifie au quotidien
 
 | Fichier | Contenu |

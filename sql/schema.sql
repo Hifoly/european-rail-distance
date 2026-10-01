@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS distancier.relation (
     distance_au_plus_court_km numeric(8,1),
     distance_tgv_commercial_km numeric(8,1),
     desserte_tgv            text,
+    temps_theorique         numeric(7,1),
+    temps_pratique          int,
     distance_plus_courte_km numeric(8,1),
     distance_sans_lgv_km    numeric(8,1),
     moteur                  text,
@@ -51,6 +53,8 @@ CREATE TABLE IF NOT EXISTS distancier.relation (
 ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS distance_au_plus_court_km numeric(8,1);
 ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS distance_tgv_commercial_km numeric(8,1);
 ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS desserte_tgv text;
+ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS temps_theorique numeric(7,1);
+ALTER TABLE distancier.relation ADD COLUMN IF NOT EXISTS temps_pratique int;
 
 -- Format long : une ligne par relation et par vitesse maximale (NULL = inconnue).
 CREATE TABLE IF NOT EXISTS distancier.relation_vitesse (

@@ -227,7 +227,9 @@ def _tgv_commercial(ligne: dict, rel: dict, tgv: TgvCommercial, calcul, rt: dict
     if trouve is None:
         ligne["desserte_tgv"] = "aucun TGV direct"
         return
-    arrets, n = trouve
+    arrets, n, duree = trouve
+    if duree is not None:
+        ligne["temps_pratique"] = round(duree)
     troncons = []
     for a, b in zip(arrets[:-1], arrets[1:]):
         if len(arrets) == 2 and rel["itineraire"] == "grande_vitesse":
@@ -316,7 +318,7 @@ def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = No
         except FileNotFoundError as e:
             log.warning("pas de distance TGV commerciale : %s", e)
         else:
-            tgv = TgvCommercial(gtfs.Dessertes(d["trajets"]), gtfs.description_source(d["manifeste"]),
+            tgv = TgvCommercial(gtfs.Dessertes(d["trajets"], d["horaires"]), gtfs.description_source(d["manifeste"]),
                                 gtfs.date_consultation(d["manifeste"]), gares, moteurs["sncf"].gares)
             sources["gtfs_sncf"] = {"description": tgv.source, "date_consultation": tgv.date}
 
@@ -345,7 +347,19 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
     if tgv is not None and ligne["moteur"] == "sncf":
         _tgv_commercial(ligne, rel, tgv,
                         lambda r, g: _relation_reseau(r, g, moteurs, cfg, rt, valides), rt)
+    _temps_theorique(ligne)
     return ligne
+
+
+def _temps_theorique(ligne: dict) -> None:
+    """Minutes pour parcourir distance_km en roulant partout à la vitesse maximale de chaque section.
+    Vide s'il reste plus de 0,5 km sans vitesse connue."""
+    res = ligne["resultat"]
+    inconnu = res.vitesses.get(None, 0.0)
+    if inconnu > 0.5:
+        ligne["remarques"].append(f"temps théorique non calculé : {inconnu:.1f} km sans vitesse connue")
+        return
+    ligne["temps_theorique"] = round(sum(60 * km / v for v, km in res.vitesses.items() if v), 1)
 
 
 def _relation_reseau(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None) -> dict:

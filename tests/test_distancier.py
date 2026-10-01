@@ -211,8 +211,9 @@ def _gtfs(cfg, trains):
     dossier = Path(cfg["chemins"]["donnees_brutes"]) / "gtfs_sncf" / "2026-01-03"
     dossier.mkdir(parents=True)
     lignes = ["trip_id,arrival_time,departure_time,stop_id,stop_sequence"]
-    for trip, (produit, arrets) in trains.items():
-        lignes += [f"{trip},08:00:00,08:00:00,StopPoint:OCE{produit}-{u},{i}" for i, u in enumerate(arrets)]
+    for trip, (produit, arrets, *heures) in trains.items():
+        heures = heures[0] if heures else [f"{8 + i // 2:02d}:{30 * (i % 2):02d}:00" for i in range(len(arrets))]
+        lignes += [f"{trip},{h},{h},StopPoint:OCE{produit}-{u},{i}" for i, (u, h) in enumerate(zip(arrets, heures))]
     with zipfile.ZipFile(dossier / "gtfs.zip", "w") as z:
         z.writestr("stop_times.txt", "\n".join(lignes) + "\n")
     (dossier / "manifest.json").write_text(json.dumps({"source": "Horaires SNCF", "url": "https://exemple/gtfs.zip",
@@ -314,3 +315,17 @@ def test_distance_tgv_verifiee_par_le_controle_de_tout_le_trajet(cfg):
     ligne.update(resultat=Resultat(km=120.0), remarques=[])
     calcul._tgv_commercial(ligne, {"itineraire": "grande_vitesse"}, Tgv, None, cfg["routage"])
     assert ligne["statut"] == "estimé"
+
+
+def test_temps_theorique_et_pratique(cfg):
+    p, q, s = "87000001", "87000002", "87000003"
+    _gtfs(cfg, {"T1": ("TGV INOUI", [p, q], ["08:00:00", "08:20:00"]),
+                "T2": ("TGV INOUI", [q, p], ["23:50:00", "24:16:00"]),   # après minuit
+                "T3": ("TGV INOUI", [p, q], ["10:00:00", "10:24:00"]),
+                "T4": ("TGV INOUI", [s, p], ["07:00:00", "08:00:00"])})
+    r = par_id(calcul.calculer(cfg))
+    assert r[1]["temps_pratique"] == 24                                    # médiane de 20, 24 et 26 min
+    assert r[1]["temps_theorique"] == pytest.approx(60 * km(P, M, Q) / 300, abs=0.1)   # tout à 300 km/h
+    assert "temps_theorique" not in r[3]                                   # 55 km sans vitesse connue
+    assert "temps théorique non calculé" in " ".join(r[3]["remarques"])
+    assert r[3]["temps_pratique"] == 60
