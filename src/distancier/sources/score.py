@@ -137,18 +137,34 @@ def lire_sous_relations(chemin: Path, annee: int) -> dict:
                 troncons[(rel, srel, x["iata"], y["iata"])].append(((y["arrivee"] - x["depart"]) / 60, t["poids"]))
         for (om, od), duree in t["durees"].items():
             cle = (rel, srel, t["arrets"][om]["iata"], t["arrets"][od]["iata"])
-            od_durees[cle].append((duree, t["poids"]))
+            od_durees[cle].append((duree, t["poids"], sum(1 for o in ordres if om < o < od)))
             od_dessertes[cle][tuple(t["arrets"][o]["iata"] for o in ordres if om <= o <= od)] += t["poids"]
     ods = {}
-    for cle, durees in od_durees.items():
+    for cle, trains_od in od_durees.items():
+        durees = [(d, p) for d, p, _ in trains_od]
         dessertes = od_dessertes[cle]
         total = sum(dessertes.values())
         # la plus fréquente ; à poids égal, celle qui a le moins d'arrêts
         arrets, poids = min(dessertes.items(), key=lambda kv: (-kv[1], len(kv[0]), kv[0]))
-        ods[cle] = {"temps": mediane_ponderee(durees), "desserte": arrets,
+        mediane = mediane_ponderee(durees)
+        roulent = [d for d, p in durees if p > 0] or [d for d, _ in durees]   # trains qui circulent dans l'année
+        temps = {"min": min(roulent), "max": max(roulent), "": mediane}
+        ods[cle] = {"temps": mediane, "desserte": arrets,
+                    **{f"temps{'_' + k if k else ''}": v for k, v in temps.items() if k},
+                    **{f"arrets_inter{'_' + k if k else ''}": _arrets_du_temps(trains_od, v) for k, v in temps.items()},
                     "part_desserte_pct": round(100 * poids / total, 1) if total else None,
                     "circulations": round(sum(p for _, p in durees), 1)}
     return {"od": ods, "troncons": {k: m for k, v in troncons.items() if (m := mediane_ponderee(v)) is not None}}
+
+
+def _arrets_du_temps(trains_od: list[tuple], minutes: float | None) -> int | None:
+    """Nombre d'arrêts intermédiaires des trains qui mettent `minutes` ; s'ils diffèrent, le plus
+    fréquent (poids nombre_jour × compteur), puis le plus petit."""
+    poids = collections.Counter()
+    for d, p, n in trains_od:
+        if d == minutes:
+            poids[n] += p
+    return min(poids, key=lambda n: (-poids[n], n)) if poids else None
 
 
 def _charger(cfg: dict, nom_cache: str, lire) -> dict:
@@ -181,6 +197,6 @@ def charger(cfg: dict) -> dict:
 
 def charger_sous_relations(cfg: dict) -> dict:
     """Dessertes et temps par relation, sous-relation, montée et descente (voir lire_sous_relations)."""
-    d = _charger(cfg, "score_srela", lire_sous_relations)
+    d = _charger(cfg, "score_srela_v2", lire_sous_relations)
     d.update(d.pop("donnees"))
     return d

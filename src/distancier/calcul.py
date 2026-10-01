@@ -745,8 +745,12 @@ def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
                                 "desserte_score", ctx["rt"])
             ligne["itineraire_retenu"] = "desserte_score"
     _temps_theorique(ligne)
+    for k in ("_min", "_max", ""):
+        if od.get(f"temps{k}") is not None:
+            ligne[f"temps_score{k}"] = round(od[f"temps{k}"], 1)
+        if od.get(f"arrets_inter{k}") is not None:
+            ligne[f"nb_arret_inter{k}"] = od[f"arrets_inter{k}"]
     if od.get("temps") is not None:
-        ligne["temps_score"] = round(od["temps"], 1)
         if ligne.get("temps_theorique") is not None:
             ligne["temps_score_350"] = round(od["temps"] - (ligne["temps_theorique"] - ligne["temps_theorique_350"]), 1)
     return ligne

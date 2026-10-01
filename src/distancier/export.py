@@ -26,7 +26,8 @@ COLONNES_SRELA_DEBUT = ["id", "relation", "sous_relation", "montee_iata", "desce
                         "code_uic_origine", "gare_destination", "code_uic_destination", "itineraire_retenu", "distance_km"]
 COLONNES_SRELA_FIN = ["dont_km_vitesse_inconnue", "part_lgv_pct", "type_ligne", "lignes_empruntees",
                       "distance_au_plus_court_km", "desserte_score", "part_desserte_pct", "circulations_annee",
-                      "troncons_sans_lgv", "temps_theorique", "temps_theorique_350", "temps_score", "temps_score_350",
+                      "troncons_sans_lgv", "temps_theorique", "temps_theorique_350", "temps_score_min", "temps_score_max",
+                      "temps_score", "temps_score_350", "nb_arret_inter_min", "nb_arret_inter_max", "nb_arret_inter",
                       "distance_plus_courte_km", "distance_sans_lgv_km", "moteur", "distance_controle_km",
                       "source_controle", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct",
                       "statut", "source", "date_consultation", "remarques"]

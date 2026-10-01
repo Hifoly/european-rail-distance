@@ -55,7 +55,8 @@ Mêmes colonnes que le tableau principal, avec ces différences :
 | desserte_score, part_desserte_pct | arrêts de la desserte la plus fréquente de la sous-relation entre la montée et la descente, et sa part des circulations (poids nombre_jour × compteur ; un train = un train_uid, soit un numéro sur une periode_label) |
 | circulations_annee | somme des poids des trains de la ligne sur l'année |
 | troncons_sans_lgv | tronçons passés par la ligne classique (vide si aucun) |
-| temps_score | temps médian de cette sous-relation dans ce sens (pondéré nombre_jour × compteur) |
+| temps_score_min, temps_score_max, temps_score | temps le plus court, le plus long et médian des trains de cette sous-relation dans ce sens (médiane pondérée nombre_jour × compteur), toutes dessertes confondues (demande d'Aloïs le 2026-10-01) |
+| nb_arret_inter_min, nb_arret_inter_max, nb_arret_inter | arrêts intermédiaires entre la montée et la descente du train le plus rapide, du plus lent et d'un train au temps médian (si plusieurs trains ont ce temps avec des dessertes différentes : la plus fréquente) |
 | distance_au_plus_court_km, distance_plus_courte_km, distance_sans_lgv_km | relation directe de la montée à la descente, comme dans le tableau principal |
 
 Pas de `temps_pratique`, `distance_tgv_commercial_km` ni `desserte_tgv` (horaires SNCF) dans ce tableau.
