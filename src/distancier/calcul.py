@@ -206,6 +206,7 @@ def _assembler(troncons: list[dict]) -> Resultat:
             else:
                 res.lignes.append((ligne, km))
         res.manuels += [m for m in r.manuels if m not in res.manuels]
+        res.traces += r.traces
     res.vitesses = dict(vit)
     return res
 
