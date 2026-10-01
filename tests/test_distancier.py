@@ -362,3 +362,12 @@ def test_temps_score_mediane_ponderee_de_l_annee_dans_les_deux_sens(cfg):
     assert "temps_score" not in r[3]          # OD absente du plan de transport
     assert res["sources"]["score"]["description"].startswith("Plan de transport TGV théorique")
     assert list(Path(cfg["chemins"]["intermediaire"]).glob("score_2025_*.pkl"))   # cache
+
+
+def test_temps_pratique_sur_tous_les_tgv_directs():
+    from distancier.sources.gtfs import Dessertes
+    trajets = [("A", "B"), ("A", "B"), ("A", "X", "B")]
+    horaires = [((0, 0), (600, 600)), ((0, 0), (720, 720)), ((0, 0), (900, 900), (1800, 1800))]
+    arrets, n, duree = Dessertes(trajets, horaires).desserte("A", "B")
+    assert arrets == ("A", "B") and n == 2
+    assert duree == 12                     # médiane de 10, 12 et 30 min, desserte par X comprise

@@ -92,11 +92,12 @@ class Dessertes:
 
     def desserte(self, o: str, d: str) -> tuple[tuple[str, ...], int, float | None] | None:
         """Arrêts (de o à d inclus) du TGV direct le plus fréquent, dans un sens ou dans l'autre,
-        nombre de trains qui la font et durée médiane de ces trains en minutes (départ du premier
-        arrêt du train à l'arrivée au second). À fréquence égale, la desserte la plus courte en arrêts."""
+        nombre de trains qui la font, et durée médiane en minutes de tous les TGV directs de l'OD,
+        quelle que soit leur desserte (choix d'Aloïs le 2026-10-01). À fréquence égale, la desserte
+        la plus courte en arrêts."""
         if o == d:
             return None
-        durees: dict[tuple, list[float]] = collections.defaultdict(list)
+        durees: list[float] = []
         compte = collections.Counter()
         for i in self.par_gare.get(o, set()) & self.par_gare.get(d, set()):
             t = self.trajets[i]
@@ -107,11 +108,11 @@ class Dessertes:
                 a, b = sorted((io_, id_))
                 depart, arrivee = self.horaires[i][a][1], self.horaires[i][b][0]
                 if depart is not None and arrivee is not None and arrivee >= depart:
-                    durees[arrets].append((arrivee - depart) / 60)
+                    durees.append((arrivee - depart) / 60)
         if not compte:
             return None
         arrets, n = min(compte.items(), key=lambda kv: (-kv[1], len(kv[0]), kv[0]))
-        return arrets, n, (statistics.median(durees[arrets]) if durees[arrets] else None)
+        return arrets, n, (statistics.median(durees) if durees else None)
 
 
 def description_source(man: dict) -> str:

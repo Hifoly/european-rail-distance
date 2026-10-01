@@ -57,7 +57,7 @@ seulement ; sans horaires téléchargés, `distance_km` = `distance_au_plus_cour
 
 **Temps.** `temps_theorique` : minutes pour parcourir `distance_km` en roulant partout à la vitesse
 maximale de chaque section (km sans vitesse connue comptés à la vitesse médiane du trajet). `temps_pratique` : durée
-médiane, en minutes, des TGV directs de la desserte retenue, d'après les horaires SNCF.
+médiane, en minutes, de tous les TGV directs entre les deux gares, d'après les horaires SNCF.
 `temps_score` : temps médian 2025 du plan de transport TGV théorique `data/Extract_score.xlsx`
 (fichier local, non versionné ; lu une fois puis gardé en cache dans `data/interim/`).
 
