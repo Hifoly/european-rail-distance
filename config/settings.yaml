@@ -29,9 +29,6 @@ routage:
   # plafond_detour_lgv_pct: 5.0  # itinéraire LGV > plus court chemin + x % : plus court chemin retenu.
   #   Désactivé : à 5 %, 86 relations perdaient leur itinéraire TGV (Rennes-Marseille par la province).
   part_ligne_controle_pk_pct: 95  # contrôle par PK si >= 95 % du trajet est sur une seule ligne
-  # temps_score_350 : gain réaliste d'un relèvement à 350 km/h (ordres de grandeur TGV, à affiner)
-  acceleration_grande_vitesse_ms2: 0.15   # accélération résiduelle entre 300 et 350 km/h
-  freinage_ms2: 0.5                       # freinage de service pour revenir à la vitesse de la ligne
 
 # Moteur de calcul principal par pays. Une relation dont les deux gares sont dans un
 # pays « sncf » est calculée sur les tracés SNCF Réseau ; toutes les autres (y compris
