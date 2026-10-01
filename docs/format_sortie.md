@@ -57,6 +57,8 @@ Mêmes colonnes que le tableau principal, avec ces différences :
 | troncons_sans_lgv | tronçons passés par la ligne classique (vide si aucun) |
 | temps_score_min, temps_score_max, temps_score | temps le plus court, le plus long et médian des trains de cette sous-relation dans ce sens (médiane pondérée nombre_jour × compteur), toutes dessertes confondues (demande d'Aloïs le 2026-10-01) |
 | nb_arret_inter_min, nb_arret_inter_max, nb_arret_inter | arrêts intermédiaires entre la montée et la descente du train le plus rapide, du plus lent et d'un train au temps médian (si plusieurs trains ont ce temps avec des dessertes différentes : la plus fréquente) |
+| distance_km_min, desserte_score_min, troncons_sans_lgv_min | km du train le plus rapide : ses arrêts, et sur chaque tronçon LGV ou ligne classique selon le temps de ce train (même règle que pour `distance_km`) ; vide si un tronçon est impossible |
+| distance_km_max, desserte_score_max, troncons_sans_lgv_max | idem pour le train le plus lent (ex. Bordeaux > Libourne > Angoulême > Poitiers > Paris) |
 | distance_au_plus_court_km, distance_plus_courte_km, distance_sans_lgv_km | relation directe de la montée à la descente, comme dans le tableau principal |
 
 Pas de `temps_pratique`, `distance_tgv_commercial_km` ni `desserte_tgv` (horaires SNCF) dans ce tableau.

@@ -28,6 +28,8 @@ COLONNES_SRELA_FIN = ["dont_km_vitesse_inconnue", "part_lgv_pct", "type_ligne", 
                       "distance_au_plus_court_km", "desserte_score", "part_desserte_pct", "circulations_annee",
                       "troncons_sans_lgv", "temps_theorique", "temps_theorique_350", "temps_score_min", "temps_score_max",
                       "temps_score", "temps_score_350", "nb_arret_inter_min", "nb_arret_inter_max", "nb_arret_inter",
+                      "distance_km_min", "desserte_score_min", "troncons_sans_lgv_min",
+                      "distance_km_max", "desserte_score_max", "troncons_sans_lgv_max",
                       "distance_plus_courte_km", "distance_sans_lgv_km", "moteur", "distance_controle_km",
                       "source_controle", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct",
                       "statut", "source", "date_consultation", "remarques"]

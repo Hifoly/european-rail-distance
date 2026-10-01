@@ -649,25 +649,24 @@ def _point_frontiere(depuis: str, candidats, ctx: dict) -> str:
     return min(candidats, key=lambda c: km[c])
 
 
-def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
-    relation, sous_relation, montee, descente = cle
-    base = {"id": i, "relation": relation, "sous_relation": sous_relation, "montee_iata": montee,
-            "descente_iata": descente}
-    desserte = list(od["desserte"])
+def _frontieres(desserte, ctx: dict) -> tuple | str:
+    """Desserte ramenée à la France : (iata, uic, indices des points frontière, remarques), ou le statut
+    « hors périmètre » / « erreur » si ce n'est pas possible."""
+    desserte = list(desserte)
     uics = [ctx["uic"].get(x) for x in desserte]
     # Gares étrangères en bout de trajet : distance arrêtée au point frontière, comme dans le tableau
     # principal. Le point frontière dépend de la première gare étrangère après la partie française ;
     # s'il y en a plusieurs possibles, le plus proche de la dernière gare française.
     absents_fr = sorted({x for x, u in zip(desserte, uics) if u is None and x.startswith("FR")})
     if absents_fr:
-        return {**base, "remarques": [], "statut": f"erreur : IATA {', '.join(absents_fr)} absent de {ctx['couples']}"}
+        return f"erreur : IATA {', '.join(absents_fr)} absent de {ctx['couples']}"
     francais = [k for k, u in enumerate(uics) if u is not None]
     if not francais:
-        return {**base, "remarques": [], "statut": "hors périmètre : trajet hors de France"}
+        return "hors périmètre : trajet hors de France"
     i0, i1 = francais[0], francais[-1]
     milieu = sorted({desserte[k] for k in range(i0, i1 + 1) if uics[k] is None})
     if milieu:
-        return {**base, "remarques": [], "statut": f"hors périmètre : gare étrangère en milieu de trajet ({', '.join(milieu)})"}
+        return f"hors périmètre : gare étrangère en milieu de trajet ({', '.join(milieu)})"
     remarques_frontiere, frontiere = [], set()
     debut, fin = [], []
     for cote, k_etr, k_fr in (("fin", i1 + 1, i1), ("debut", i0 - 1, i0)):
@@ -676,8 +675,8 @@ def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
         etranger = desserte[k_etr]
         candidats = ctx["frontieres"].get(etranger)
         if not candidats:
-            return {**base, "remarques": [], "statut": f"hors périmètre : gare étrangère sans point frontière (IATA "
-                                                       f"{etranger}, à ajouter dans sources.score.frontieres)"}
+            return (f"hors périmètre : gare étrangère sans point frontière (IATA "
+                    f"{etranger}, à ajouter dans sources.score.frontieres)")
         point = _point_frontiere(uics[k_fr], candidats, ctx)
         etrangeres = desserte[k_etr:] if cote == "fin" else desserte[:k_etr + 1]
         remarques_frontiere.append(f"{' > '.join(etrangeres)} : distance arrêtée au point frontière "
@@ -693,7 +692,48 @@ def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
     if fin:
         frontiere.add(len(uics) - 1)
     if len(uics) < 2:
-        return {**base, "remarques": remarques_frontiere, "statut": "hors périmètre : trajet hors de France"}
+        return "hors périmètre : trajet hors de France"
+    return desserte, uics, frontiere, remarques_frontiere
+
+
+def _troncons_desserte(desserte: list, uics: list, frontiere: set, relation: str, sous_relation: str,
+                       ctx: dict, temps_train: tuple | None = None) -> tuple[list | None, list, list]:
+    """Tronçons d'arrêt en arrêt (LGV ou ligne classique selon le temps des trains), tronçons passés
+    par la ligne classique et remarques. Temps de chaque tronçon : médiane de la sous-relation, ou ceux
+    d'un train (`temps_train`). Tronçons None si un tronçon est impossible ou si les tronçons viennent
+    de moteurs différents (un moteur par relation)."""
+    noms = [ctx["arrets"].nom(u) for u in uics]
+    troncons, classiques, remarques = [], [], []
+    for k, (a, b) in enumerate(zip(uics, uics[1:])):
+        if {k, k + 1} & frontiere:
+            minutes = None
+        elif temps_train is not None:
+            minutes = temps_train[k]
+        else:
+            minutes = ctx["troncons"].get((relation, sous_relation, desserte[k], desserte[k + 1]))
+        t, cmp = _troncon_selon_temps(a, b, minutes, ctx)
+        if isinstance(t, str):
+            return None, classiques, remarques + [f"distance de la desserte impossible : {t}"]
+        if cmp:
+            classiques.append(f"{noms[k]} - {noms[k + 1]}")
+            remarques.append(f"{noms[k]} - {noms[k + 1]} : ligne classique retenue (trains en {cmp['trains']:.0f} min, "
+                             f"théorique {cmp['lgv']:.0f} min par la LGV et {cmp['classique']:.0f} min sans)")
+        troncons.append(t)
+    moteurs = {t["moteur"] for t in troncons}
+    if len(moteurs) > 1:
+        return None, classiques, remarques + ["distance de la desserte non retenue : tronçons calculés sur des "
+                                              "moteurs différents (" + ", ".join(sorted(moteurs)) + ")"]
+    return troncons, classiques, remarques
+
+
+def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
+    relation, sous_relation, montee, descente = cle
+    base = {"id": i, "relation": relation, "sous_relation": sous_relation, "montee_iata": montee,
+            "descente_iata": descente}
+    prep = _frontieres(od["desserte"], ctx)
+    if isinstance(prep, str):
+        return {**base, "remarques": [], "statut": prep}
+    desserte, uics, frontiere, remarques_frontiere = prep
     go, gd = uics[0], uics[-1]
     # relation directe entre la montée et la descente : distance au plus court, une fois par couple de gares
     if (go, gd) not in ctx["directs"]:
@@ -716,40 +756,42 @@ def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
     ligne.update(desserte_score=texte, part_desserte_pct=od.get("part_desserte_pct"),
                  circulations_annee=od.get("circulations"))
 
-    troncons, classiques = [], []
-    for k, (a, b) in enumerate(zip(uics, uics[1:])):
-        minutes = None if {k, k + 1} & frontiere else \
-            ctx["troncons"].get((relation, sous_relation, desserte[k], desserte[k + 1]))
-        t, cmp = _troncon_selon_temps(a, b, minutes, ctx)
-        if isinstance(t, str):
-            ligne["remarques"].append(f"distance de la desserte impossible : {t}")
-            troncons = None
-            break
-        if cmp:
-            classiques.append(f"{noms[k]} - {noms[k + 1]}")
-            ligne["remarques"].append(
-                f"{noms[k]} - {noms[k + 1]} : ligne classique retenue (trains en {cmp['trains']:.0f} min, "
-                f"théorique {cmp['lgv']:.0f} min par la LGV et {cmp['classique']:.0f} min sans)")
-        troncons.append(t)
+    troncons, classiques, remarques = _troncons_desserte(desserte, uics, frontiere, relation, sous_relation, ctx)
+    ligne["remarques"] += remarques
     if troncons:
-        moteurs = {t["moteur"] for t in troncons}
-        if len(moteurs) > 1:   # un moteur par relation : pas de distance assemblée de deux sources
-            ligne["remarques"].append("distance de la desserte non retenue : tronçons calculés sur des moteurs "
-                                      "différents (" + ", ".join(sorted(moteurs)) + ")")
-        else:
-            if len(troncons) == 1 and not classiques:
-                troncons = [ligne]                  # même calcul que la relation directe
-            ligne["troncons_sans_lgv"] = " ; ".join(classiques)
-            _appliquer_troncons(ligne, {"itineraire": "grande_vitesse"}, troncons,
-                                f"distance de la desserte la plus fréquente ({texte})", ctx["source"],
-                                "desserte_score", ctx["rt"])
-            ligne["itineraire_retenu"] = "desserte_score"
+        if len(troncons) == 1 and not classiques:
+            troncons = [ligne]                  # même calcul que la relation directe
+        ligne["troncons_sans_lgv"] = " ; ".join(classiques)
+        _appliquer_troncons(ligne, {"itineraire": "grande_vitesse"}, troncons,
+                            f"distance de la desserte la plus fréquente ({texte})", ctx["source"],
+                            "desserte_score", ctx["rt"])
+        ligne["itineraire_retenu"] = "desserte_score"
     _temps_theorique(ligne)
     for k in ("_min", "_max", ""):
         if od.get(f"temps{k}") is not None:
             ligne[f"temps_score{k}"] = round(od[f"temps{k}"], 1)
-        if od.get(f"arrets_inter{k}") is not None:
-            ligne[f"nb_arret_inter{k}"] = od[f"arrets_inter{k}"]
+        d = od.get(f"desserte{k or '_mediane'}")
+        if d:
+            ligne[f"nb_arret_inter{k}"] = len(d[0]) - 2
+    # km du train le plus rapide et du plus lent : leurs arrêts, et sur chaque tronçon LGV ou ligne
+    # classique selon le temps de ce train (demande d'Aloïs le 2026-10-01)
+    for k in ("_min", "_max"):
+        if not od.get(f"desserte{k}"):
+            continue
+        d, temps_train = od[f"desserte{k}"]
+        prep = _frontieres(d, ctx)
+        if isinstance(prep, str):
+            continue
+        d2, u2, f2, _ = prep
+        if len(d2) != len(d):            # gares étrangères retirées : temps du train inutilisables
+            temps_train = None
+        t2, c2, r2 = _troncons_desserte(d2, u2, f2, relation, sous_relation, ctx, temps_train)
+        ligne[f"desserte_score{k}"] = " > ".join(ctx["arrets"].nom(u) for u in u2)
+        ligne[f"troncons_sans_lgv{k}"] = " ; ".join(c2)
+        if t2:
+            ligne[f"distance_km{k}"] = round(sum(t["resultat"].km for t in t2), 1)
+        else:
+            ligne["remarques"] += [f"train le plus {'rapide' if k == '_min' else 'lent'} : {r}" for r in r2]
     if od.get("temps") is not None:
         if ligne.get("temps_theorique") is not None:
             ligne["temps_score_350"] = round(od["temps"] - (ligne["temps_theorique"] - ligne["temps_theorique_350"]), 1)

@@ -425,6 +425,10 @@ def test_par_sous_relation_desserte_et_ligne_classique_selon_le_temps(cfg):
     assert tgv["temps_score"] == 17 and tgv["troncons_sans_lgv"] == ""
     assert (tgv["temps_score_min"], tgv["temps_score_max"]) == (17, 86)   # train direct, train par S
     assert (tgv["nb_arret_inter_min"], tgv["nb_arret_inter_max"], tgv["nb_arret_inter"]) == (0, 1, 0)
+    # km du train le plus rapide (direct, LGV) et du plus lent (par S, ses propres tronçons)
+    assert tgv["distance_km_min"] == pytest.approx(km(P, M, Q), abs=0.1)
+    assert tgv["distance_km_max"] == pytest.approx(km(P, X, S) + km(S, X, Q), abs=0.1)
+    assert tgv["desserte_score_max"] == "Pville > Sville > Qville"
     assert tgv["temps_score_350"] == round(17 - (tgv["temps_theorique"] - tgv["temps_theorique_350"]), 1)
 
     cl = r[("P - Q / CLASSIQUE", "FRPPP", "FRQQQ")]

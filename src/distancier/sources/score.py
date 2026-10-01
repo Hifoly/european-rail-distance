@@ -137,13 +137,17 @@ def lire_sous_relations(chemin: Path, annee: int) -> dict:
                 troncons[(rel, srel, x["iata"], y["iata"])].append(((y["arrivee"] - x["depart"]) / 60, t["poids"]))
         for (om, od), lignes in t["durees"].items():
             cle = (rel, srel, t["arrets"][om]["iata"], t["arrets"][od]["iata"])
-            inter = sum(1 for o in ordres if om < o < od)
+            sous = [t["arrets"][o] for o in ordres if om <= o <= od]
+            desserte = tuple(a["iata"] for a in sous)
+            # temps de ce train sur chaque tronçon (None si l'heure manque)
+            temps_tr = tuple((y["arrivee"] - x["depart"]) / 60 if "depart" in x and "arrivee" in y else None
+                             for x, y in zip(sous, sous[1:]))
             for duree, poids in lignes:
-                od_durees[cle].append((duree, poids, inter))
-                od_dessertes[cle][tuple(t["arrets"][o]["iata"] for o in ordres if om <= o <= od)] += poids
+                od_durees[cle].append((duree, poids, desserte, temps_tr))
+                od_dessertes[cle][desserte] += poids
     ods = {}
     for cle, trains_od in od_durees.items():
-        durees = [(d, p) for d, p, _ in trains_od]
+        durees = [(d, p) for d, p, *_ in trains_od]
         dessertes = od_dessertes[cle]
         total = sum(dessertes.values())
         # la plus fréquente ; à poids égal, celle qui a le moins d'arrêts
@@ -153,20 +157,25 @@ def lire_sous_relations(chemin: Path, annee: int) -> dict:
         temps = {"min": min(roulent), "max": max(roulent), "": mediane}
         ods[cle] = {"temps": mediane, "desserte": arrets,
                     **{f"temps{'_' + k if k else ''}": v for k, v in temps.items() if k},
-                    **{f"arrets_inter{'_' + k if k else ''}": _arrets_du_temps(trains_od, v) for k, v in temps.items()},
+                    **{f"desserte{'_' + k if k else '_mediane'}": _desserte_du_temps(trains_od, v) for k, v in temps.items()},
                     "part_desserte_pct": round(100 * poids / total, 1) if total else None,
                     "circulations": round(sum(p for _, p in durees), 1)}
     return {"od": ods, "troncons": {k: m for k, v in troncons.items() if (m := mediane_ponderee(v)) is not None}}
 
 
-def _arrets_du_temps(trains_od: list[tuple], minutes: float | None) -> int | None:
-    """Nombre d'arrêts intermédiaires des trains qui mettent `minutes` ; s'ils diffèrent, le plus
-    fréquent (poids nombre_jour × compteur), puis le plus petit."""
+def _desserte_du_temps(trains_od: list[tuple], minutes: float | None) -> tuple | None:
+    """(desserte, temps par tronçon) des trains qui mettent `minutes`. Desserte : arrêts de la montée à
+    la descente ; s'ils diffèrent, la plus fréquente (poids nombre_jour × compteur), puis celle qui a le
+    moins d'arrêts. Temps par tronçon : ceux du train de plus grand poids qui fait cette desserte."""
     poids = collections.Counter()
-    for d, p, n in trains_od:
+    for d, p, desserte, _ in trains_od:
         if d == minutes:
-            poids[n] += p
-    return min(poids, key=lambda n: (-poids[n], n)) if poids else None
+            poids[desserte] += p
+    if not poids:
+        return None
+    desserte = min(poids, key=lambda x: (-poids[x], len(x), x))
+    temps = max((x for x in trains_od if x[0] == minutes and x[2] == desserte), key=lambda x: x[1])[3]
+    return desserte, temps
 
 
 def _charger(cfg: dict, nom_cache: str, lire) -> dict:
@@ -199,6 +208,6 @@ def charger(cfg: dict) -> dict:
 
 def charger_sous_relations(cfg: dict) -> dict:
     """Dessertes et temps par relation, sous-relation, montée et descente (voir lire_sous_relations)."""
-    d = _charger(cfg, "score_srela_v3", lire_sous_relations)
+    d = _charger(cfg, "score_srela_v5", lire_sous_relations)
     d.update(d.pop("donnees"))
     return d
