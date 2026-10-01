@@ -59,3 +59,7 @@ Mêmes colonnes que le tableau principal, avec ces différences :
 | distance_au_plus_court_km, distance_plus_courte_km, distance_sans_lgv_km | relation directe de la montée à la descente, comme dans le tableau principal |
 
 Pas de `temps_pratique`, `distance_tgv_commercial_km` ni `desserte_tgv` (horaires SNCF) dans ce tableau.
+
+Points frontière possibles, si l'on étend le périmètre (codes relevés le 2026-10-01) : Kehl-Grenze 87212910,
+Forbach-Frontière (IE) 87193904, Perpignan 87784009, Bellegarde 87745000, Frasne 87715136, Modane 87742007,
+Bâle-St-Jean 87187930, Zoufftgen (IE) 87191973, Wannehain-Frontière 87218156.

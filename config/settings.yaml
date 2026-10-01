@@ -91,41 +91,9 @@ sources:
     annee: 2025   # noms relevés dans le GTFS le 2026-10-01
     # Tableau par sous-relation : première gare étrangère après la partie française -> point frontière
     # français (UIC), comme dans le tableau principal ; avec une liste, le plus proche de la dernière gare
-    # française. Codes IATA et UIC relevés dans Extract_score, couples_montee_descente_FR_UIC.csv et
-    # config/gares.csv le 2026-10-01. Une gare étrangère absente ici est « hors périmètre ».
+    # française. Choix d'Aloïs le 2026-10-01 : rester en France, seuls Bruxelles-Midi et Luxembourg
+    # (déjà ramenés à la frontière dans le tableau principal) ; les autres gares étrangères sont
+    # « hors périmètre ». Codes des autres points frontière : voir docs/format_sortie.md.
     frontieres:
       BEBMI: "87218156"   # Bruxelles-Midi -> Wannehain-Frontière (LGV Nord)
-      BEABW: "87218156"   # Antoing -> Wannehain-Frontière
       LULUX: "87191973"   # Luxembourg -> Zoufftgen (IE)
-      LUAAJ: "87191973"   # Bettembourg -> Zoufftgen (IE)
-      CHAJP: "87187930"   # Bâle CFF -> Bâle-St-Jean
-      CHAJD: "87187930"   # Zurich HB -> Bâle-St-Jean
-      CHAGL: "87715136"   # Vallorbe -> Frasne
-      CHAMN: "87745000"   # La Plaine -> Bellegarde
-      CHGVA: "87745000"   # Genève Cornavin -> Bellegarde
-      CHAJF: ["87715136", "87745000"]   # Lausanne -> Frasne ou Bellegarde
-      ESFIR: "87784009"   # Figueres Vilafant -> Perpignan (la LGV Perpignan-Figueres n'est pas au RFN)
-      ESGRO: "87784009"   # Gérone -> Perpignan
-      ESBST: "87784009"   # Barcelone Sants -> Perpignan
-      ITOCS: "87742007"   # Oulx -> Modane
-      ITTRS: "87742007"   # Turin Porta Susa -> Modane
-      ITMPG: "87742007"   # Milan Porta Garibaldi -> Modane
-      # Allemagne par Strasbourg : Kehl (87212910) ; par Metz : Forbach-Frontière (87193904)
-      DEQKA: "87212910"   # Karlsruhe
-      DEZCC: "87212910"   # Baden-Baden
-      DEZPA: "87212910"   # Offenburg
-      DEANL: "87212910"   # Lahr
-      DERSH: "87212910"   # Ringsheim Europa-Park
-      DEFGB: "87212910"   # Fribourg-en-Brisgau
-      DESGT: "87212910"   # Stuttgart
-      DEQUL: "87212910"   # Ulm
-      DEAGB: "87212910"   # Augsbourg
-      DEBEG: "87212910"   # Munich
-      DESBK: "87193904"   # Sarrebruck
-      DEKLT: "87193904"   # Kaiserslautern
-      DEMHG: ["87212910", "87193904"]   # Mannheim
-      DEFRH: ["87212910", "87193904"]   # Francfort Hbf
-      DEFRS: ["87212910", "87193904"]   # Francfort Sud
-      DEHBF: ["87212910", "87193904"]   # Berlin Hbf
-      DEBSP: ["87212910", "87193904"]   # Berlin Spandau
-      "33897": ["87212910", "87193904"]   # Berlin Ostbahnhof (code anormal dans Extract_score)
