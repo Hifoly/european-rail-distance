@@ -89,3 +89,8 @@ sources:
     fichier: data/Extract_score.xlsx
     couples: data/couples_montee_descente_FR_UIC.csv   # IATA <-> UIC
     annee: 2025   # noms relevés dans le GTFS le 2026-10-01
+    # tableau par sous-relation : gare étrangère en bout de trajet -> point frontière français (UIC),
+    # comme dans le tableau principal. Les autres gares étrangères sont « hors périmètre ».
+    frontieres:
+      BEBMI: "87218156"   # Bruxelles-Midi -> Wannehain-Frontière (LGV Nord)
+      LULUX: "87191973"   # Luxembourg -> Zoufftgen (IE)

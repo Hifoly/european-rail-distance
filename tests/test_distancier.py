@@ -401,12 +401,18 @@ def _extract_score(cfg, trains):
 def test_par_sous_relation_desserte_et_ligne_classique_selon_le_temps(cfg):
     _extract_score(cfg, {
         "2025_A_lundi_1": ("PARIS-Q", "P - Q_TGV", 10, [("FRPPP", None, 0), ("FRQQQ", 17, None)]),
-        "2025_A_lundi_4": ("PARIS-Q", "P - Q_TGV", 2, [("FRPPP", None, 0), ("FRSSS", 30, 32), ("FRQQQ", 60, None)]),
-        # même gares, mais 30 min de P à Q : plus proche de la ligne classique (28 min) que de la LGV (16 min)
-        "2025_A_lundi_2": ("OUIGO", "P - Q / CLASSIQUE", 5, [("FRPPP", None, 0), ("FRQQQ", 30, None)]),
+        # P-S et S-Q : pas d'alternative LGV, les trains y mettent 1,2 fois le temps théorique (35 min)
+        "2025_A_lundi_4": ("PARIS-Q", "P - Q_TGV", 2, [("FRPPP", None, 0), ("FRSSS", 42, 44), ("FRQQQ", 86, None)]),
+        # mêmes gares, mais 36 min de P à Q : une fois divisé par 1,2, plus proche de la ligne classique (28 min)
+        # que de la LGV (16 min) ; 17 min / 1,2 reste du côté de la LGV
+        "2025_A_lundi_2": ("OUIGO", "P - Q / CLASSIQUE", 5, [("FRPPP", None, 0), ("FRQQQ", 36, None)]),
         "2025_A_lundi_9": ("OUIGO", "P - Z", 5, [("FRPPP", None, 0), ("FRZZZ", 30, None)]),
+        "2025_A_lundi_7": ("INTER", "P - BE", 5, [("FRPPP", None, 0), ("BEBXX", 40, None)]),
+        "2025_A_lundi_8": ("INTER", "P - DE", 5, [("FRPPP", None, 0), ("DEYYY", 40, None)]),
     })
+    cfg["sources"]["score"]["frontieres"] = {"BEBXX": "87000002"}
     res = calcul.calculer_sous_relations(cfg)
+    assert res["sources"]["score"]["coefficient_temps"] == pytest.approx(1.2, abs=0.02)
     r = {(l["sous_relation"], l["montee_iata"], l["descente_iata"]): l for l in res["relations"]}
 
     tgv = r[("P - Q_TGV", "FRPPP", "FRQQQ")]
@@ -421,13 +427,18 @@ def test_par_sous_relation_desserte_et_ligne_classique_selon_le_temps(cfg):
     assert cl["resultat"].km == pytest.approx(km(P, X, Q), rel=1e-3)
     assert set(cl["resultat"].vitesses) == {160}
     assert cl["troncons_sans_lgv"] == "Pville - Qville"
-    assert "ligne classique retenue (trains en 30 min" in " ".join(cl["remarques"])
+    assert "ligne classique retenue (trains en 36 min" in " ".join(cl["remarques"])
     assert cl["distance_au_plus_court_km"] == pytest.approx(km(P, M, Q), abs=0.1)
-    assert cl["temps_score_350"] == cl["temps_score"] == 30                # pas de LGV : rien à gagner
+    assert cl["temps_score_350"] == cl["temps_score"] == 36                # pas de LGV : rien à gagner
 
     srel_s = r[("P - Q_TGV", "FRSSS", "FRQQQ")]                            # couple porté par le seul train 4
     assert srel_s["resultat"].km == pytest.approx(km(S, X, Q), rel=1e-3)
     assert r[("P - Z", "FRPPP", "FRZZZ")]["statut"].startswith("erreur : IATA FRZZZ absent")
+    be = r[("P - BE", "FRPPP", "BEBXX")]                                   # gare étrangère : arrêt au point frontière
+    assert be["gare_destination"] == "Qville" and be["temps_score"] == 40
+    assert be["resultat"].km == pytest.approx(km(P, M, Q), rel=1e-3)      # pas de choix par le temps vers la frontière
+    assert "point frontière Qville" in " ".join(be["remarques"])
+    assert r[("P - DE", "FRPPP", "DEYYY")]["statut"].startswith("hors périmètre : gare étrangère")
 
     fichiers = export.ecrire(res, cfg, Path(cfg["chemins"]["sorties"]), "test", par_sous_relation=True)
     assert fichiers[0].name == "distances_srela_test.csv"

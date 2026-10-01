@@ -8,6 +8,7 @@ import json
 import logging
 import math
 import pickle
+import statistics
 from pathlib import Path
 
 import networkx as nx
@@ -580,29 +581,59 @@ def calculer_sous_relations(cfg: dict, jour_sncf: str | None = None, jour_rinf: 
     arrets = TgvCommercial(None, d["description"], d["date_consultation"], gares, moteurs["sncf"].gares)
     contexte = {"calcul": lambda r, g: _relation_reseau(r, g, moteurs, cfg, rt, corrections["valides"]),
                 "arrets": arrets, "uic": uic, "troncons": d["troncons"], "directs": {}, "rt": rt,
+                "frontieres": {k: str(v) for k, v in (cfg["sources"]["score"].get("frontieres") or {}).items()},
                 "source": f"desserte : {d['description']}, fichier du {d['date_consultation']}",
                 "couples": Path(cfg["sources"]["score"]["couples"]).name}
+    contexte["k"] = _coefficient_temps(contexte)
+    sources["score"]["coefficient_temps"] = round(contexte["k"], 3)
+    log.info("temps des trains / temps théorique sur les tronçons sans alternative : %.2f", contexte["k"])
     lignes = [_sous_relation(i, cle, od, contexte) for i, (cle, od) in enumerate(sorted(d["od"].items()), 1)]
     vitesses = sorted({v for m in moteurs.values() for v in m.vitesses}, reverse=True)
     return {"relations": lignes, "vitesses": vitesses, "sources": sources}
 
 
-def _troncon_selon_temps(a: str, b: str, minutes: float | None, ctx: dict) -> tuple[dict | str, dict | None]:
-    """Tronçon a -> b par la LGV (itinéraire grande vitesse) ou par la ligne classique (sans LGV) :
-    celui dont le temps théorique est le plus proche du temps de parcours des trains, au sens du
-    rapport (seuil à la moyenne géométrique des deux temps théoriques, insensible à une marge
-    proportionnelle). Renvoie le tronçon et, si la ligne classique est retenue, les temps comparés."""
+def _deux_itineraires(a: str, b: str, ctx: dict) -> tuple[dict | str, dict | None, float | None, float | None]:
+    """Tronçon a -> b par la LGV (itinéraire grande vitesse) et par la ligne classique (sans LGV), avec
+    leurs temps théoriques. La ligne classique est None si elle n'existe pas, vient d'un autre moteur
+    ou n'est pas plus lente de 2 % (rien à départager)."""
     gv = ctx["arrets"].troncon(a, b, ctx["calcul"])
-    if isinstance(gv, str) or minutes is None:
-        return gv, None
+    if isinstance(gv, str):
+        return gv, None, None, None
+    tg = _minutes_theoriques(gv["resultat"])
+    tg = tg[0] if tg else None
     cl = ctx["arrets"].troncon(a, b, ctx["calcul"], "sans_lgv")
-    if isinstance(cl, str) or cl["moteur"] != gv["moteur"]:
+    if isinstance(cl, str) or cl["moteur"] != gv["moteur"] or tg is None:
+        return gv, None, tg, None
+    tc = _minutes_theoriques(cl["resultat"])
+    if tc is None or tc[0] <= tg * 1.02:
+        return gv, None, tg, None
+    return gv, cl, tg, tc[0]
+
+
+def _coefficient_temps(ctx: dict) -> float:
+    """Rapport médian entre le temps de parcours des trains et le temps théorique, sur les tronçons
+    où il n'y a pas à choisir entre LGV et ligne classique : marges, ralentissements, accélérations."""
+    ratios = []
+    for (_, _, ia, ib), minutes in ctx["troncons"].items():
+        a, b = ctx["uic"].get(ia), ctx["uic"].get(ib)
+        if not a or not b or a == b:
+            continue
+        gv, cl, tg, _ = _deux_itineraires(a, b, ctx)
+        if cl is None and tg:
+            ratios.append(minutes / tg)
+    return statistics.median(ratios) if ratios else 1.0
+
+
+def _troncon_selon_temps(a: str, b: str, minutes: float | None, ctx: dict) -> tuple[dict | str, dict | None]:
+    """Tronçon a -> b par la LGV ou par la ligne classique : celui dont le temps théorique, multiplié
+    par le coefficient observé (_coefficient_temps), est le plus proche du temps de parcours des trains,
+    au sens du rapport (seuil à la moyenne géométrique des deux temps). Renvoie le tronçon et, si la
+    ligne classique est retenue, les temps comparés."""
+    gv, cl, tg, tc = _deux_itineraires(a, b, ctx)
+    if cl is None or minutes is None:
         return gv, None
-    tg, tc = _minutes_theoriques(gv["resultat"]), _minutes_theoriques(cl["resultat"])
-    if tg is None or tc is None or tc[0] <= tg[0] * 1.02:      # même temps : rien à départager
-        return gv, None
-    if minutes >= math.sqrt(tg[0] * tc[0]):
-        return cl, {"trains": minutes, "lgv": tg[0], "classique": tc[0]}
+    if minutes / ctx["k"] >= math.sqrt(tg * tc):
+        return cl, {"trains": minutes, "lgv": tg * ctx["k"], "classique": tc * ctx["k"]}
     return gv, None
 
 
@@ -610,11 +641,29 @@ def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
     relation, sous_relation, montee, descente = cle
     base = {"id": i, "relation": relation, "sous_relation": sous_relation, "montee_iata": montee,
             "descente_iata": descente}
-    desserte = od["desserte"]
+    desserte = list(od["desserte"])
     uics = [ctx["uic"].get(x) for x in desserte]
+    # gare étrangère en bout de trajet : distance arrêtée au point frontière, comme dans le tableau principal
+    remarques_frontiere, frontiere = [], set()
+    for k in (0, -1):
+        if uics[k] is None and desserte[k] in ctx["frontieres"]:
+            uics[k] = ctx["frontieres"][desserte[k]]
+            frontiere.add(k % len(uics))
+            remarques_frontiere.append(f"{desserte[k]} : distance arrêtée au point frontière "
+                                       f"{ctx['arrets'].nom(uics[k])} ; temps_score jusqu'à la gare étrangère")
     manquants = sorted({x for x, u in zip(desserte, uics) if u is None})
     if manquants:
-        return {**base, "remarques": [], "statut": f"erreur : IATA {', '.join(manquants)} absent de {ctx['couples']}"}
+        etrangers = [x for x in manquants if not x.startswith("FR")]
+        motif = (f"hors périmètre : gare étrangère sans point frontière (IATA {', '.join(etrangers)}, "
+                 f"à ajouter dans sources.score.frontieres)" if etrangers == manquants
+                 else f"erreur : IATA {', '.join(manquants)} absent de {ctx['couples']}")
+        return {**base, "remarques": [], "statut": motif}
+    # deux arrêts étrangers de suite ramenés au même point frontière
+    garde = [k for k in range(len(uics)) if k == 0 or uics[k] != uics[k - 1]]
+    frontiere = {garde.index(k) if k in garde else len(garde) - 1 for k in frontiere}
+    desserte, uics = [desserte[k] for k in garde], [uics[k] for k in garde]
+    if len(uics) < 2:
+        return {**base, "remarques": remarques_frontiere, "statut": "hors périmètre : trajet hors de France"}
     go, gd = uics[0], uics[-1]
     # relation directe entre la montée et la descente : distance au plus court, une fois par couple de gares
     if (go, gd) not in ctx["directs"]:
@@ -626,7 +675,7 @@ def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
             ctx["directs"][(go, gd)] = ctx["calcul"]({"id": "", "uic_origine": go, "uic_destination": gd,
                                                       "itineraire": "grande_vitesse"}, g)
     direct = ctx["directs"][(go, gd)]
-    ligne = {**direct, **base, "remarques": list(direct["remarques"])}
+    ligne = {**direct, **base, "remarques": list(direct["remarques"]) + remarques_frontiere}
     if "resultat" not in ligne:
         return ligne
     ligne["distance_au_plus_court_km"] = round(ligne["resultat"].km, 1)
@@ -639,7 +688,9 @@ def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
 
     troncons, classiques = [], []
     for k, (a, b) in enumerate(zip(uics, uics[1:])):
-        t, cmp = _troncon_selon_temps(a, b, ctx["troncons"].get((relation, sous_relation, desserte[k], desserte[k + 1])), ctx)
+        minutes = None if {k, k + 1} & frontiere else \
+            ctx["troncons"].get((relation, sous_relation, desserte[k], desserte[k + 1]))
+        t, cmp = _troncon_selon_temps(a, b, minutes, ctx)
         if isinstance(t, str):
             ligne["remarques"].append(f"distance de la desserte impossible : {t}")
             troncons = None
