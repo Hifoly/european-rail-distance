@@ -16,12 +16,13 @@ def main(argv=None) -> int:
     sub = ap.add_subparsers(dest="commande", required=True)
 
     t = sub.add_parser("telecharger", help="récupère les données sources par API")
-    t.add_argument("--source", choices=["sncf", "rinf", "tout"], default="tout")
+    t.add_argument("--source", choices=["sncf", "rinf", "gtfs", "tout"], default="tout")
     t.add_argument("--pays", nargs="*", help="pays RINF (FR DE IT ES BE CH PT) ; défaut : tous")
 
     c = sub.add_parser("calculer", help="calcule les distances des relations et exporte le tableau")
     c.add_argument("--jour-sncf", help="date du téléchargement SNCF à utiliser (défaut : le plus récent)")
     c.add_argument("--jour-rinf", help="date du téléchargement RINF à utiliser (défaut : le plus récent)")
+    c.add_argument("--jour-gtfs", help="date du téléchargement des horaires SNCF à utiliser (défaut : le plus récent)")
 
     b = sub.add_parser("charger-bdd", help="charge un tableau exporté dans PostgreSQL/PostGIS")
     b.add_argument("fichier", type=Path, help="data/output/distances_AAAA-MM-JJ.csv")
@@ -38,9 +39,17 @@ def main(argv=None) -> int:
         if a.source in ("rinf", "tout"):
             from distancier.sources import rinf
             print("RINF ->", rinf.telecharger(cfg, a.pays))
+        if a.source in ("gtfs", "tout"):
+            from distancier.sources import gtfs
+            try:
+                print("Horaires SNCF ->", gtfs.telecharger(cfg))
+            except Exception as e:  # facultatif : sans horaires, seule la distance TGV commerciale manque
+                if a.source == "gtfs":
+                    raise
+                logging.warning("horaires SNCF non téléchargés : %s", e)
     elif a.commande == "calculer":
         from distancier import calcul, export
-        res = calcul.calculer(cfg, a.jour_sncf, a.jour_rinf)
+        res = calcul.calculer(cfg, a.jour_sncf, a.jour_rinf, a.jour_gtfs)
         for f in export.ecrire(res, cfg, config.chemin(cfg, "sorties")):
             print(f)
         erreurs = [r for r in res["relations"] if str(r.get("statut", "")).startswith("erreur")]

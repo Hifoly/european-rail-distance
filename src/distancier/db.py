@@ -8,10 +8,11 @@ from pathlib import Path
 
 from distancier.calcul import referentiel_gares
 
-NUM = {"distance_km", "part_lgv_pct", "distance_plus_courte_km", "distance_sans_lgv_km",
+NUM = {"distance_km", "part_lgv_pct", "distance_plus_courte_km", "distance_sans_lgv_km", "distance_tgv_commercial_km",
        "distance_controle_km", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct"}
 COLS = ["id", "code_uic_origine", "code_uic_destination", "itineraire_retenu", "distance_km", "part_lgv_pct",
-        "type_ligne", "lignes_empruntees", "distance_plus_courte_km", "distance_sans_lgv_km", "moteur",
+        "type_ligne", "lignes_empruntees", "distance_plus_courte_km", "distance_sans_lgv_km",
+        "distance_tgv_commercial_km", "desserte_tgv", "moteur",
         "distance_controle_km", "source_controle", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct",
         "statut", "source", "date_consultation", "remarques"]
 
@@ -62,7 +63,7 @@ def charger(cfg: dict, fichier_csv: Path, dsn: str | None = None) -> int:
         for r in lignes:
             cur.execute(f"INSERT INTO distancier.relation (calcul_id, id, uic_origine, uic_destination, "
                         f"{', '.join(COLS[3:])}) VALUES ({', '.join(['%s'] * (len(COLS) + 1))})",
-                        [calcul_id] + [_val(c, r[c]) for c in COLS])
+                        [calcul_id] + [_val(c, r.get(c, "")) for c in COLS])
             for c in vitesses:
                 km = float(r[c] or 0)
                 if km > 0:

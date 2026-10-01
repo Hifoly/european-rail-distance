@@ -149,7 +149,67 @@ def referentiel_gares(cfg: dict) -> dict[str, dict]:
     return gares
 
 
-def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = None) -> dict:
+class TgvCommercial:
+    """Itinéraire « TGV commercial » : la relation suit les arrêts du TGV direct le plus fréquent
+    des horaires SNCF, chaque tronçon entre deux arrêts étant calculé en itinéraire grande vitesse."""
+
+    def __init__(self, dessertes, source: str, date: str, gares: dict, gares_sncf: dict):
+        self.dessertes, self.source, self.date = dessertes, source, date
+        self.gares, self.gares_sncf = gares, gares_sncf
+        self._troncons: dict[tuple, float | str] = {}
+
+    def gare(self, uic: str) -> dict | None:
+        g = self.gares.get(uic)
+        if g and g.get("lon"):
+            return g
+        ref = self.gares_sncf.get(uic)
+        if ref and ref["lon"] is not None:
+            return {"uic": uic, "nom": (g or ref)["nom"], "lon": ref["lon"], "lat": ref["lat"], "pks": ref["pks"]}
+        return None
+
+    def troncon(self, moteur, a: str, b: str) -> float | str:
+        """km de a à b en grande vitesse, ou le motif de l'échec."""
+        cle = (moteur.nom, a, b)
+        if cle not in self._troncons:
+            ga, gb = self.gare(a), self.gare(b)
+            if ga is None or gb is None:
+                self._troncons[cle] = f"arrêt UIC {a if ga is None else b} absent du jeu SNCF des gares"
+            else:
+                try:
+                    self._troncons[cle] = moteur.calculer(dict(ga), dict(gb), "grande_vitesse")[0].km
+                except (nx.NetworkXNoPath, nx.NodeNotFound, LookupError) as e:
+                    self._troncons[cle] = f"{ga['nom']} - {gb['nom']} : {e}"
+        return self._troncons[cle]
+
+    def nom(self, uic: str) -> str:
+        g = self.gares.get(uic) or self.gares_sncf.get(uic)
+        return g["nom"] if g else uic
+
+
+def _tgv_commercial(ligne: dict, go: dict, gd: dict, moteur, tgv: TgvCommercial) -> None:
+    trouve = tgv.dessertes.desserte(go["uic"], gd["uic"])
+    if trouve is None:
+        ligne["desserte_tgv"] = "aucun TGV direct"
+        return
+    arrets, n = trouve
+    total = 0.0
+    for a, b in zip(arrets[:-1], arrets[1:]):
+        km = tgv.troncon(moteur, a, b)
+        if isinstance(km, str):
+            ligne["remarques"].append(f"distance TGV commerciale impossible : {km}")
+            return
+        total += km
+    ligne["distance_tgv_commercial_km"] = round(total, 1)
+    ligne["desserte_tgv"] = " > ".join(tgv.nom(u) for u in arrets) + f" ({n} train{'s' if n > 1 else ''})"
+    ligne["source"] += f" ; desserte TGV : {tgv.source}, consulté le {tgv.date}"
+    res = ligne["resultat"]
+    if res.km > 0 and total > res.km * 1.01:
+        ligne["remarques"].append(f"le TGV direct fait un détour de {100 * (total / res.km - 1):+.1f} % "
+                                  f"({round(total, 1)} km par ses arrêts)")
+
+
+def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = None,
+             jour_gtfs: str | None = None) -> dict:
     corrections = charger_corrections(cfg)
     moteurs = {}
     for nom, classe, jour in (("sncf", MoteurSncf, jour_sncf), ("rinf", MoteurRinf, jour_rinf)):
@@ -168,13 +228,25 @@ def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = No
             if g["pays"] == "FR":
                 moteurs["sncf"].completer_gare(g)
 
+    sources = {n: {"description": m.source, "date_consultation": m.date} for n, m in moteurs.items()}
+    tgv = None
+    if "sncf" in moteurs and cfg["sources"].get("gtfs_sncf"):
+        from distancier.sources import gtfs
+        try:
+            d = gtfs.charger(cfg, jour_gtfs)
+        except FileNotFoundError as e:
+            log.warning("pas de distance TGV commerciale : %s", e)
+        else:
+            tgv = TgvCommercial(gtfs.Dessertes(d["trajets"]), gtfs.description_source(d["manifeste"]),
+                                gtfs.date_consultation(d["manifeste"]), gares, moteurs["sncf"].gares)
+            sources["gtfs_sncf"] = {"description": tgv.source, "date_consultation": tgv.date}
+
     rt = cfg["routage"]
     lignes = []
     for rel in lire_csv(config.chemin(cfg, "relations")):
-        lignes.append(_relation(rel, gares, moteurs, cfg, rt, corrections["valides"]))
+        lignes.append(_relation(rel, gares, moteurs, cfg, rt, corrections["valides"], tgv))
     vitesses = sorted({v for m in moteurs.values() for v in m.vitesses}, reverse=True)
-    return {"relations": lignes, "vitesses": vitesses,
-            "sources": {n: {"description": m.source, "date_consultation": m.date} for n, m in moteurs.items()}}
+    return {"relations": lignes, "vitesses": vitesses, "sources": sources}
 
 
 def _concorde(km: float, controle: float, ecart_pct: float, rt: dict) -> bool:
@@ -183,7 +255,8 @@ def _concorde(km: float, controle: float, ecart_pct: float, rt: dict) -> bool:
     return abs(ecart_pct) <= rt["seuil_verification_pct"] or abs(km - controle) <= rt.get("seuil_verification_km", 0)
 
 
-def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None) -> dict:
+def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None,
+              tgv: TgvCommercial | None = None) -> dict:
     go, gd = gares.get(rel["uic_origine"]), gares.get(rel["uic_destination"])
     ligne = {"id": rel["id"], "itineraire_retenu": rel["itineraire"], "remarques": []}
     if rel.get("remarque"):
@@ -253,6 +326,8 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
     if rel["itineraire"] == "grande_vitesse" and ligne["distance_plus_courte_km"] != "" \
             and ligne["distance_plus_courte_km"] < res.km - 0.5:
         ligne["remarques"].append(f"itinéraire LGV privilégié ; le plus court chemin fait {ligne['distance_plus_courte_km']} km")
+    if tgv is not None and nom_principal == "sncf":
+        _tgv_commercial(ligne, go, gd, principal, tgv)
 
     verifie, alerte = [], False
     autre = None if repli else moteurs.get("rinf" if nom_principal == "sncf" else "sncf")

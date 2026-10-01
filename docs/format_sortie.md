@@ -17,6 +17,8 @@ dans Excel), une ligne par relation. Même contenu dans l'onglet « distances »
 | lignes_empruntees | codes de ligne et km, dans l'ordre du trajet |
 | distance_plus_courte_km | plus court chemin |
 | distance_sans_lgv_km | plus court chemin sans LGV |
+| distance_tgv_commercial_km | km parcourus par le TGV direct le plus fréquent : itinéraire grande vitesse d'arrêt en arrêt (vide sans TGV direct ou sans horaires téléchargés) |
+| desserte_tgv | arrêts de ce TGV et nombre de trains qui la font, ou « aucun TGV direct » |
 | moteur | `sncf` ou `rinf` |
 | distance_controle_km, source_controle, ecart_controle_pct | calcul par l'autre source |
 | controle_pk_km, ecart_pk_pct | contrôle par les points kilométriques SNCF |

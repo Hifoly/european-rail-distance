@@ -30,21 +30,29 @@ Python 3.10 ou plus récent.
 ## Utilisation
 
 ```bash
-distancier telecharger                  # SNCF Réseau + RINF des 7 pays -> data/raw/<source>/<date>/
+distancier telecharger                  # SNCF Réseau, RINF des 7 pays et horaires SNCF -> data/raw/<source>/<date>/
 distancier telecharger --source sncf    # une seule source
 distancier telecharger --source rinf --pays FR BE
+distancier telecharger --source gtfs    # horaires SNCF, pour la distance TGV commerciale
 distancier calculer                     # -> data/output/distances_<date>.csv / .xlsx
 distancier charger-bdd data/output/distances_2026-09-28.csv   # facultatif, PostGIS
 ```
 
 Chaque téléchargement est rangé dans un dossier daté avec un `manifest.json` (URL,
 date de consultation, date de mise à jour côté producteur, licence). `calculer` utilise
-le téléchargement le plus récent, ou celui passé par `--jour-sncf` / `--jour-rinf`.
+le téléchargement le plus récent, ou celui passé par `--jour-sncf` / `--jour-rinf` / `--jour-gtfs`.
 Le premier calcul construit le graphe SNCF (environ 30 s) puis le garde en cache dans
 `data/interim/`.
 
 Si une source n'a pas encore été téléchargée, les relations qui en dépendent sortent
-avec un statut `erreur : …` et les autres sont calculées normalement.
+avec un statut `erreur : …` et les autres sont calculées normalement. Sans horaires SNCF,
+seules les colonnes `distance_tgv_commercial_km` et `desserte_tgv` restent vides.
+
+**Distance TGV commerciale.** `distance_km` reste la distance par le rail (plus court chemin
+LGV privilégiée). `distance_tgv_commercial_km` donne en plus les km que roule le TGV direct le
+plus fréquent entre les deux gares : on suit ses arrêts (horaires SNCF), chaque tronçon d'arrêt à
+arrêt étant calculé en itinéraire grande vitesse sur le même moteur. Un TGV province-province
+passe ainsi par Massy, Marne-la-Vallée ou Roissy. Relations françaises seulement.
 
 ## Ce qu'on modifie au quotidien
 

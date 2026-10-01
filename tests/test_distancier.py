@@ -1,4 +1,5 @@
 import csv
+from pathlib import Path
 
 import pytest
 from pyproj import Geod
@@ -200,3 +201,50 @@ def test_pk_sncf_priment_sur_l_alerte_rinf(cfg):
     assert r["controle_pk_km"] == pytest.approx(74.4)        # ...mais les PK confirment SNCF
     assert r["statut"] == "vérifié (PK SNCF)"
     assert any("PK SNCF" in x and "RINF" in x for x in r["remarques"])
+
+
+def _gtfs(cfg, trains):
+    """Horaires simulés au format GTFS SNCF : {trip_id: (produit, [UIC…])}."""
+    import json
+    import zipfile
+    from pathlib import Path
+    dossier = Path(cfg["chemins"]["donnees_brutes"]) / "gtfs_sncf" / "2026-01-03"
+    dossier.mkdir(parents=True)
+    lignes = ["trip_id,arrival_time,departure_time,stop_id,stop_sequence"]
+    for trip, (produit, arrets) in trains.items():
+        lignes += [f"{trip},08:00:00,08:00:00,StopPoint:OCE{produit}-{u},{i}" for i, u in enumerate(arrets)]
+    with zipfile.ZipFile(dossier / "gtfs.zip", "w") as z:
+        z.writestr("stop_times.txt", "\n".join(lignes) + "\n")
+    (dossier / "manifest.json").write_text(json.dumps({"source": "Horaires SNCF", "url": "https://exemple/gtfs.zip",
+                                                       "fichier": "gtfs.zip",
+                                                       "date_consultation": "2026-01-03T10:00:00+00:00"}))
+
+
+def test_tgv_commercial_suit_les_arrets_du_tgv_le_plus_frequent(cfg):
+    p, q, s = "87000001", "87000002", "87000003"
+    _gtfs(cfg, {"T1": ("TGV INOUI", [p, s, q]), "T2": ("TGV INOUI", [q, s, p]),   # le plus fréquent, dans les deux sens
+                "T3": ("OUIGO", [p, q]),
+                "R1": ("TER", [p, q]), "R2": ("TER", [p, q]), "R3": ("TER", [p, q])})  # pas des TGV
+    res = calcul.calculer(cfg)
+    r = par_id(res)
+    detour = km(P, X, S) + km(S, X, Q)
+    assert r[1]["distance_tgv_commercial_km"] == pytest.approx(detour, abs=0.1)
+    assert r[1]["desserte_tgv"] == "Pville > Sville > Qville (2 trains)"
+    assert r[1]["resultat"].km == pytest.approx(km(P, M, Q), rel=1e-3)        # distance_km inchangée
+    assert "le TGV direct fait un détour" in " ".join(r[1]["remarques"])
+    assert "desserte TGV : Horaires SNCF" in r[1]["source"] and "2026-01-03" in r[1]["source"]
+    assert r[3]["distance_tgv_commercial_km"] == pytest.approx(km(P, X, S), abs=0.1)
+    assert res["sources"]["gtfs_sncf"]["date_consultation"] == "2026-01-03"
+
+    with open(export.ecrire(res, cfg, Path(cfg["chemins"]["sorties"]), "test")[0], encoding="utf-8-sig") as f:
+        lignes = {l["id"]: l for l in csv.DictReader(f, delimiter=";")}
+    assert float(lignes["1"]["distance_tgv_commercial_km"]) == pytest.approx(detour, abs=0.1)
+
+
+def test_tgv_commercial_sans_tgv_direct_ni_horaires(cfg):
+    r = par_id(calcul.calculer(cfg))
+    assert "distance_tgv_commercial_km" not in r[1] and "desserte_tgv" not in r[1]   # horaires non téléchargés
+    _gtfs(cfg, {"T1": ("TGV INOUI", ["87000001", "87000003"])})
+    r = par_id(calcul.calculer(cfg))
+    assert r[1]["desserte_tgv"] == "aucun TGV direct"
+    assert "distance_tgv_commercial_km" not in r[1]

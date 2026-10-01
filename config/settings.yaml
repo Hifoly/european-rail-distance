@@ -71,3 +71,12 @@ sources:
       CH: CHE
       PT: PRT
     rayon_recherche_gare_m: 2000   # rattachement gare -> point d'exploitation RINF
+
+  # Horaires théoriques SNCF (GTFS) : itinéraire « TGV commercial » (colonnes
+  # distance_tgv_commercial_km et desserte_tgv). Facultatif : sans téléchargement, colonnes vides.
+  # Adresse donnée par le jeu horaires-sncf de ressources.data.sncf.com (vérifié le 2026-10-01).
+  gtfs_sncf:
+    nom: Horaires théoriques SNCF (GTFS)
+    url: https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip
+    # produits lus dans l'identifiant d'arrêt « StopPoint:OCE<produit>-<UIC> »
+    produits_tgv: [TGV INOUI, OUIGO, TGV Lyria, ICE]
