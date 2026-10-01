@@ -268,6 +268,16 @@ def test_tgv_commercial_sans_tgv_direct_ni_horaires(cfg):
     assert r[1]["itineraire_retenu"] == "grande_vitesse"
 
 
+def test_tgv_commercial_meme_gare_au_depart_et_a_l_arrivee(cfg):
+    from distancier.sources.gtfs import Dessertes
+    assert Dessertes([("87000001", "87000002")]).desserte("87000001", "87000001") is None
+    rel = Path(cfg["chemins"]["relations"])
+    rel.write_text(rel.read_text(encoding="utf-8") + "6;87000001;87000001;grande_vitesse;;\n", encoding="utf-8")
+    _gtfs(cfg, {"T1": ("TGV INOUI", ["87000001", "87000002"])})
+    r = par_id(calcul.calculer(cfg))[6]
+    assert r["resultat"].km == 0 and "desserte_tgv" not in r
+
+
 @pytest.mark.parametrize("statuts,attendu", [
     (["vérifié (RINF)", "vérifié (RINF)"], "vérifié (RINF)"),
     (["vérifié (RINF)", "vérifié (PK SNCF)"], "vérifié (PK SNCF et RINF)"),

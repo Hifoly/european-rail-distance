@@ -79,6 +79,8 @@ class Dessertes:
     def desserte(self, o: str, d: str) -> tuple[tuple[str, ...], int] | None:
         """Arrêts (de o à d inclus) du TGV direct le plus fréquent, dans un sens ou dans l'autre,
         et nombre de trains qui la font. À fréquence égale, la desserte la plus courte en arrêts."""
+        if o == d:
+            return None
         compte = collections.Counter()
         for i in self.par_gare.get(o, set()) & self.par_gare.get(d, set()):
             t = self.trajets[i]

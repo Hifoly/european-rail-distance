@@ -221,6 +221,8 @@ def _statut_troncons(troncons: list[dict]) -> str:
 def _tgv_commercial(ligne: dict, rel: dict, tgv: TgvCommercial, calcul) -> None:
     """Remplace la distance de `ligne` par celle du TGV direct le plus fréquent, si elle existe."""
     go, gd = ligne["code_uic_origine"], ligne["code_uic_destination"]
+    if go == gd:
+        return
     trouve = tgv.dessertes.desserte(go, gd)
     if trouve is None:
         ligne["desserte_tgv"] = "aucun TGV direct"
@@ -267,8 +269,8 @@ def _tgv_commercial(ligne: dict, rel: dict, tgv: TgvCommercial, calcul) -> None:
         ctl = sum(t["distance_controle_km"] for t in troncons)
         ligne.update(distance_controle_km=round(ctl, 1), source_controle=sources_ctl.pop(),
                      ecart_controle_pct=round(100 * (res.km / ctl - 1), 2) if ctl else "")
-    if all(t.get("controle_pk_km") for t in troncons):
-        pk = sum(t["controle_pk_km"] for t in troncons)
+    pk = sum(t.get("controle_pk_km") or 0 for t in troncons)
+    if pk > 0 and all(t.get("controle_pk_km") for t in troncons):
         ligne.update(controle_pk_km=round(pk, 1), ecart_pk_pct=round(100 * (res.km / pk - 1), 2))
     ligne.update(itineraire_retenu="tgv_commercial", resultat=res, remarques=remarques, moteur=moteurs.pop(),
                  date_consultation=troncons[0]["date_consultation"],
