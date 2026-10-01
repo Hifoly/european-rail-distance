@@ -361,6 +361,9 @@ def test_temps_score_mediane_ponderee_de_l_annee_dans_les_deux_sens(cfg):
     r = par_id(res)
     assert r[1]["temps_score"] == 34          # poids 10 (30 min), 12 (34 min), 6 (60 min)
     assert r[2]["temps_score"] == 34
+    # P-Q en LGV à 300 km/h sur 77 km : gain réaliste, plus petit que le gain théorique
+    gain_theorique = 60 * km(P, M, Q) * (1 / 300 - 1 / 350)
+    assert 0 < 34 - r[1]["temps_score_350"] < gain_theorique
     assert "temps_score" not in r[3]          # OD absente du plan de transport
     assert res["sources"]["score"]["description"].startswith("Plan de transport TGV théorique")
     assert list(Path(cfg["chemins"]["intermediaire"]).glob("score_2025_*.pkl"))   # cache
@@ -373,3 +376,13 @@ def test_temps_pratique_sur_tous_les_tgv_directs():
     arrets, n, duree = Dessertes(trajets, horaires).desserte("A", "B")
     assert arrets == ("A", "B") and n == 2
     assert duree == 12                     # médiane de 10, 12 et 30 min, desserte par X comprise
+
+
+def test_gain_350_avec_acceleration_et_freinage(cfg):
+    rt = cfg["routage"]
+    theorique = lambda k: 60 * k * (1 / 300 - 1 / 350)
+    long_ = calcul.gain_350_minutes({300: 400.0, 160: 20.0}, rt)
+    assert theorique(400) - 1.5 < long_ < theorique(400)             # Paris-Lyon : environ 1 min de moins
+    assert calcul.gain_350_minutes({300: 5.0}, rt) < 0.1 * theorique(5) + 0.05   # trop court pour accélérer
+    assert calcul.gain_350_minutes({160: 100.0, None: 3.0}, rt) == 0
+    assert calcul.gain_350_minutes({300: 100.0}, rt) > calcul.gain_350_minutes({320: 100.0}, rt)

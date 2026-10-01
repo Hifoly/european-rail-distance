@@ -22,6 +22,7 @@ dans Excel), une ligne par relation. Même contenu dans l'onglet « distances »
 | temps_theorique_350 | comme `temps_theorique`, mais les sections à 300 ou 320 km/h comptées à 350 km/h |
 | temps_pratique | minutes : durée médiane de tous les TGV directs entre les deux gares, quelle que soit leur desserte (horaires SNCF, départ de la première gare à l'arrivée à la seconde). Vide sans TGV direct |
 | temps_score | minutes : temps médian de l'année 2025 dans le plan de transport TGV théorique (`data/Extract_score.xlsx`, fichier local), pondéré par le nombre de jours de chaque jour type et par le compteur (0,5 par tranche d'un train couplé), les deux sens réunis. Vide si le fichier est absent ou si l'OD n'y figure pas |
+| temps_score_350 | `temps_score` moins le gain d'un relèvement à 350 km/h des sections à 300 ou 320 km/h, calculé tronçon par tronçon entre les arrêts du TGV, avec accélération (0,15 m/s²) et freinage (0,5 m/s²) : le gain réel est plus petit que le gain théorique, nul sur les LGV très courtes |
 | distance_plus_courte_km | plus court chemin strict, sans préférence pour les LGV |
 | distance_sans_lgv_km | plus court chemin sans LGV |
 | moteur | `sncf` ou `rinf` |

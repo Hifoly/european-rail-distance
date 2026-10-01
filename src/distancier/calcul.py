@@ -274,6 +274,7 @@ def _tgv_commercial(ligne: dict, rel: dict, tgv: TgvCommercial, calcul, rt: dict
     pk = sum(t.get("controle_pk_km") or 0 for t in troncons)
     if pk > 0 and all(t.get("controle_pk_km") for t in troncons):
         ligne.update(controle_pk_km=round(pk, 1), ecart_pk_pct=round(100 * (res.km / pk - 1), 2))
+    ligne["troncons_vitesses"] = [t["resultat"].vitesses for t in troncons]   # pour temps_score_350
     ligne.update(itineraire_retenu="tgv_commercial", resultat=res, remarques=remarques, moteur=moteurs.pop(),
                  date_consultation=troncons[0]["date_consultation"],
                  source=troncons[0]["source"] + f" ; desserte TGV : {tgv.source}, consulté le {tgv.date}")
@@ -346,6 +347,10 @@ def _temps_score(cfg: dict, lignes: list[dict], sources: dict) -> None:
         t = d["temps"].get(frozenset((o, a))) if o and a else None
         if t is not None:
             ligne["temps_score"] = round(t, 1)
+            if "resultat" in ligne:
+                gain = sum(gain_350_minutes(v, cfg["routage"]) for v in
+                           ligne.get("troncons_vitesses") or [ligne["resultat"].vitesses])
+                ligne["temps_score_350"] = round(t - gain, 1)
 
 
 def _concorde(km: float, controle: float, ecart_pct: float, rt: dict) -> bool:
@@ -370,6 +375,30 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
 
 
 V_RELEVEE, SEUIL_RELEVE = 350, 300   # temps_theorique_350 : v_max >= 300 km/h portée à 350 km/h
+
+
+def gain_350_minutes(vitesses: dict, rt: dict) -> float:
+    """Minutes gagnées sur un tronçon entre deux arrêts si ses sections à 300 ou 320 km/h passaient à 350.
+
+    Les km à grande vitesse du tronçon sont pris d'un seul tenant, à leur vitesse moyenne v1. Le train
+    y entre et en sort à v1 ; à 350 km/h, il doit d'abord accélérer (accélération résiduelle faible à
+    grande vitesse) puis freiner pour revenir à v1. Sur un tronçon trop court pour atteindre 350 km/h,
+    il plafonne à la vitesse de pointe que permet la distance."""
+    km = sum(k for v, k in vitesses.items() if v and v >= SEUIL_RELEVE)
+    if km <= 0:
+        return 0.0
+    v1 = sum(v * k for v, k in vitesses.items() if v and v >= SEUIL_RELEVE) / km / 3.6
+    v2 = V_RELEVEE / 3.6
+    if v2 <= v1:
+        return 0.0
+    a, b, L = rt["acceleration_grande_vitesse_ms2"], rt["freinage_ms2"], km * 1000
+    d_transitions = (v2 ** 2 - v1 ** 2) * (1 / (2 * a) + 1 / (2 * b))
+    if L >= d_transitions:
+        t2 = (v2 - v1) / a + (v2 - v1) / b + (L - d_transitions) / v2
+    else:
+        vp = (v1 ** 2 + L / (1 / (2 * a) + 1 / (2 * b))) ** 0.5
+        t2 = (vp - v1) / a + (vp - v1) / b
+    return max(0.0, (L / v1 - t2) / 60)
 
 
 def _vitesse_mediane(km_par_vitesse: dict) -> int:
