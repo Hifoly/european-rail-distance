@@ -23,3 +23,6 @@ dist/
 .DS_Store
 Thumbs.db
 ~$*.xlsx
+
+# Fichiers de travail locaux d'Aloïs (params_simu, Extract_score…)
+data/*.xlsx

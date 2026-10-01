@@ -8,11 +8,11 @@ from pathlib import Path
 
 from distancier.calcul import referentiel_gares
 
-NUM = {"temps_theorique", "temps_pratique", "distance_km", "part_lgv_pct", "distance_plus_courte_km", "distance_sans_lgv_km", "distance_au_plus_court_km", "distance_tgv_commercial_km",
+NUM = {"temps_theorique", "temps_pratique", "temps_score", "distance_km", "part_lgv_pct", "distance_plus_courte_km", "distance_sans_lgv_km", "distance_au_plus_court_km", "distance_tgv_commercial_km",
        "distance_controle_km", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct"}
 COLS = ["id", "code_uic_origine", "code_uic_destination", "itineraire_retenu", "distance_km", "part_lgv_pct",
         "type_ligne", "lignes_empruntees", "distance_au_plus_court_km", "distance_tgv_commercial_km", "desserte_tgv",
-        "temps_theorique", "temps_pratique", "distance_plus_courte_km", "distance_sans_lgv_km", "moteur",
+        "temps_theorique", "temps_pratique", "temps_score", "distance_plus_courte_km", "distance_sans_lgv_km", "moteur",
         "distance_controle_km", "source_controle", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct",
         "statut", "source", "date_consultation", "remarques"]
 

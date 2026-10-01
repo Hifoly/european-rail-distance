@@ -326,8 +326,26 @@ def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = No
     lignes = []
     for rel in lire_csv(config.chemin(cfg, "relations")):
         lignes.append(_relation(rel, gares, moteurs, cfg, rt, corrections["valides"], tgv))
+    if cfg["sources"].get("score"):
+        _temps_score(cfg, lignes, sources)
     vitesses = sorted({v for m in moteurs.values() for v in m.vitesses}, reverse=True)
     return {"relations": lignes, "vitesses": vitesses, "sources": sources}
+
+
+def _temps_score(cfg: dict, lignes: list[dict], sources: dict) -> None:
+    """temps_score : temps médian de l'année dans le plan de transport (Extract_score), deux sens réunis."""
+    from distancier.sources import score
+    try:
+        d = score.charger(cfg)
+    except FileNotFoundError as e:
+        log.warning("%s", e)
+        return
+    sources["score"] = {"description": d["description"], "date_consultation": d["date_consultation"]}
+    for ligne in lignes:
+        o, a = d["iata"].get(ligne.get("code_uic_origine", "")), d["iata"].get(ligne.get("code_uic_destination", ""))
+        t = d["temps"].get(frozenset((o, a))) if o and a else None
+        if t is not None:
+            ligne["temps_score"] = round(t, 1)
 
 
 def _concorde(km: float, controle: float, ecart_pct: float, rt: dict) -> bool:

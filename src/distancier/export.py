@@ -16,7 +16,7 @@ COLONNES_DEBUT = ["id", "gare_origine", "code_uic_origine", "pays_origine", "gar
                   "code_uic_destination", "pays_destination", "itineraire_retenu", "distance_km"]
 COLONNES_FIN = ["dont_km_vitesse_inconnue", "part_lgv_pct", "type_ligne", "lignes_empruntees",
                 "distance_au_plus_court_km", "distance_tgv_commercial_km", "desserte_tgv",
-                "temps_theorique", "temps_pratique",
+                "temps_theorique", "temps_pratique", "temps_score",
                 "distance_plus_courte_km", "distance_sans_lgv_km", "moteur", "distance_controle_km",
                 "source_controle", "ecart_controle_pct", "controle_pk_km", "ecart_pk_pct",
                 "statut", "source", "date_consultation", "remarques"]

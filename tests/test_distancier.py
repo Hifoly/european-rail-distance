@@ -6,7 +6,7 @@ from pyproj import Geod
 
 from distancier import calcul, export
 from distancier.reseau import parse_pk
-from tests.conftest import M, P, Q, S, X
+from tests.conftest import M, P, Q, S, X, _csv
 
 GEOD = Geod(ellps="GRS80")
 
@@ -335,3 +335,30 @@ def test_temps_theorique_et_pratique(cfg):
 def test_vitesse_mediane_ponderee_par_les_km():
     assert calcul._vitesse_mediane({300: 100.0, 160: 30.0, 80: 10.0}) == 300
     assert calcul._vitesse_mediane({300: 40.0, 160: 50.0, 80: 20.0}) == 160
+
+
+def test_temps_score_mediane_ponderee_de_l_annee_dans_les_deux_sens(cfg):
+    from openpyxl import Workbook
+    from distancier.sources.score import mediane_ponderee
+    assert mediane_ponderee([(100, 1), (120, 1), (200, 5)]) == 200
+    assert mediane_ponderee([(100, 3), (120, 1), (200, 1)]) == 100
+
+    _csv(Path(cfg["sources"]["score"]["couples"]), [
+        {"arret_montee_iata": "FRPPP", "arret_montee_uic": "87000001", "arret_descente_iata": "FRQQQ", "arret_descente_uic": "87000002"}])
+    wb = Workbook()
+    ws = wb.active
+    ws.append(["train_uid", "annee", "periode", "arret_montee_iata", "arret_descente_iata",
+               "duree_commerciale_minutes", "nombre_jour", "compteur"])
+    for ligne in ([1, 2025, "A", "FRPPP", "FRQQQ", 30, 10, 1],
+                  [2, 2025, "B", "FRQQQ", "FRPPP", 34, 12, 1],      # autre sens, compté avec
+                  [3, 2025, "B", "FRPPP", "FRQQQ", 60, 12, 0.5],    # tranche d'un train couplé
+                  [4, 2024, "A", "FRPPP", "FRQQQ", 10, 100, 1]):    # autre année : ignorée
+        ws.append(ligne)
+    wb.save(cfg["sources"]["score"]["fichier"])
+    res = calcul.calculer(cfg)
+    r = par_id(res)
+    assert r[1]["temps_score"] == 34          # poids 10 (30 min), 12 (34 min), 6 (60 min)
+    assert r[2]["temps_score"] == 34
+    assert "temps_score" not in r[3]          # OD absente du plan de transport
+    assert res["sources"]["score"]["description"].startswith("Plan de transport TGV théorique")
+    assert list(Path(cfg["chemins"]["intermediaire"]).glob("score_2025_*.pkl"))   # cache

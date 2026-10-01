@@ -79,4 +79,13 @@ sources:
     nom: Horaires théoriques SNCF (GTFS)
     url: https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip
     # produits lus dans l'identifiant d'arrêt « StopPoint:OCE<produit>-<UIC> »
-    produits_tgv: [TGV INOUI, OUIGO, Lyria, ICE]   # noms relevés dans le GTFS le 2026-10-01
+    produits_tgv: [TGV INOUI, OUIGO, Lyria, ICE]
+
+  # Plan de transport TGV théorique fourni par Aloïs (fichier local, non versionné) : colonne
+  # temps_score = temps médian de l'année, pondéré par nombre_jour × compteur, deux sens réunis.
+  # Facultatif : sans le fichier, la colonne reste vide.
+  score:
+    nom: Plan de transport TGV théorique
+    fichier: data/Extract_score.xlsx
+    couples: data/couples_montee_descente_FR_UIC.csv   # IATA <-> UIC
+    annee: 2025   # noms relevés dans le GTFS le 2026-10-01

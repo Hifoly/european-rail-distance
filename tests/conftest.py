@@ -37,6 +37,9 @@ def cfg(tmp_path):
     for cle in ("donnees_brutes", "intermediaire", "sorties"):
         c["chemins"][cle] = str(tmp_path / cle)
     c["chemins"]["corrections"] = str(tmp_path / "corrections.yaml")
+    # jamais le vrai plan de transport du poste (230 Mo) dans les tests
+    c["sources"]["score"]["fichier"] = str(tmp_path / "Extract_score.xlsx")
+    c["sources"]["score"]["couples"] = str(tmp_path / "couples.csv")
 
     sncf = tmp_path / "donnees_brutes" / "sncf" / "2026-01-01"
     sncf.mkdir(parents=True)
