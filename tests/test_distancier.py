@@ -409,8 +409,10 @@ def test_par_sous_relation_desserte_et_ligne_classique_selon_le_temps(cfg):
         "2025_A_lundi_9": ("OUIGO", "P - Z", 5, [("FRPPP", None, 0), ("FRZZZ", 30, None)]),
         "2025_A_lundi_7": ("INTER", "P - BE", 5, [("FRPPP", None, 0), ("BEBXX", 40, None)]),
         "2025_A_lundi_8": ("INTER", "P - DE", 5, [("FRPPP", None, 0), ("DEYYY", 40, None)]),
+        # deux gares étrangères au bout : point frontière choisi par la première, le plus proche de P
+        "2025_A_lundi_6": ("INTER", "P - CH", 5, [("FRPPP", None, 0), ("CHAAA", 20, 21), ("CHBBB", 50, None)]),
     })
-    cfg["sources"]["score"]["frontieres"] = {"BEBXX": "87000002"}
+    cfg["sources"]["score"]["frontieres"] = {"BEBXX": "87000002", "CHAAA": ["87000003", "87000002"]}
     res = calcul.calculer_sous_relations(cfg)
     assert res["sources"]["score"]["coefficient_temps"] == pytest.approx(1.2, abs=0.02)
     r = {(l["sous_relation"], l["montee_iata"], l["descente_iata"]): l for l in res["relations"]}
@@ -439,6 +441,10 @@ def test_par_sous_relation_desserte_et_ligne_classique_selon_le_temps(cfg):
     assert be["resultat"].km == pytest.approx(km(P, M, Q), rel=1e-3)      # pas de choix par le temps vers la frontière
     assert "point frontière Qville" in " ".join(be["remarques"])
     assert r[("P - DE", "FRPPP", "DEYYY")]["statut"].startswith("hors périmètre : gare étrangère")
+    ch = r[("P - CH", "FRPPP", "CHBBB")]
+    assert ch["gare_destination"] == "Qville" and ch["temps_score"] == 50   # P-Q (78 km) plus proche que P-S (93 km)
+    assert "CHAAA > CHBBB : distance arrêtée au point frontière Qville" in " ".join(ch["remarques"])
+    assert r[("P - CH", "CHAAA", "CHBBB")]["statut"] == "hors périmètre : trajet hors de France"
 
     fichiers = export.ecrire(res, cfg, Path(cfg["chemins"]["sorties"]), "test", par_sous_relation=True)
     assert fichiers[0].name == "distances_srela_test.csv"

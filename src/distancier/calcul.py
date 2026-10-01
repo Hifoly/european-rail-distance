@@ -581,7 +581,7 @@ def calculer_sous_relations(cfg: dict, jour_sncf: str | None = None, jour_rinf: 
     arrets = TgvCommercial(None, d["description"], d["date_consultation"], gares, moteurs["sncf"].gares)
     contexte = {"calcul": lambda r, g: _relation_reseau(r, g, moteurs, cfg, rt, corrections["valides"]),
                 "arrets": arrets, "uic": uic, "troncons": d["troncons"], "directs": {}, "rt": rt,
-                "frontieres": {k: str(v) for k, v in (cfg["sources"]["score"].get("frontieres") or {}).items()},
+                "frontieres": cfg["sources"]["score"].get("frontieres") or {},
                 "source": f"desserte : {d['description']}, fichier du {d['date_consultation']}",
                 "couples": Path(cfg["sources"]["score"]["couples"]).name}
     contexte["k"] = _coefficient_temps(contexte)
@@ -637,31 +637,61 @@ def _troncon_selon_temps(a: str, b: str, minutes: float | None, ctx: dict) -> tu
     return gv, None
 
 
+def _point_frontiere(depuis: str, candidats, ctx: dict) -> str:
+    """Point frontière (UIC) parmi `candidats` (un UIC ou une liste) : le plus proche de `depuis` par le rail."""
+    candidats = [str(c) for c in (candidats if isinstance(candidats, (list, tuple)) else [candidats])]
+    if len(candidats) == 1:
+        return candidats[0]
+    km = {}
+    for c in candidats:
+        t = ctx["arrets"].troncon(depuis, c, ctx["calcul"])
+        km[c] = t["resultat"].km if not isinstance(t, str) else math.inf
+    return min(candidats, key=lambda c: km[c])
+
+
 def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
     relation, sous_relation, montee, descente = cle
     base = {"id": i, "relation": relation, "sous_relation": sous_relation, "montee_iata": montee,
             "descente_iata": descente}
     desserte = list(od["desserte"])
     uics = [ctx["uic"].get(x) for x in desserte]
-    # gare étrangère en bout de trajet : distance arrêtée au point frontière, comme dans le tableau principal
+    # Gares étrangères en bout de trajet : distance arrêtée au point frontière, comme dans le tableau
+    # principal. Le point frontière dépend de la première gare étrangère après la partie française ;
+    # s'il y en a plusieurs possibles, le plus proche de la dernière gare française.
+    absents_fr = sorted({x for x, u in zip(desserte, uics) if u is None and x.startswith("FR")})
+    if absents_fr:
+        return {**base, "remarques": [], "statut": f"erreur : IATA {', '.join(absents_fr)} absent de {ctx['couples']}"}
+    francais = [k for k, u in enumerate(uics) if u is not None]
+    if not francais:
+        return {**base, "remarques": [], "statut": "hors périmètre : trajet hors de France"}
+    i0, i1 = francais[0], francais[-1]
+    milieu = sorted({desserte[k] for k in range(i0, i1 + 1) if uics[k] is None})
+    if milieu:
+        return {**base, "remarques": [], "statut": f"hors périmètre : gare étrangère en milieu de trajet ({', '.join(milieu)})"}
     remarques_frontiere, frontiere = [], set()
-    for k in (0, -1):
-        if uics[k] is None and desserte[k] in ctx["frontieres"]:
-            uics[k] = ctx["frontieres"][desserte[k]]
-            frontiere.add(k % len(uics))
-            remarques_frontiere.append(f"{desserte[k]} : distance arrêtée au point frontière "
-                                       f"{ctx['arrets'].nom(uics[k])} ; temps_score jusqu'à la gare étrangère")
-    manquants = sorted({x for x, u in zip(desserte, uics) if u is None})
-    if manquants:
-        etrangers = [x for x in manquants if not x.startswith("FR")]
-        motif = (f"hors périmètre : gare étrangère sans point frontière (IATA {', '.join(etrangers)}, "
-                 f"à ajouter dans sources.score.frontieres)" if etrangers == manquants
-                 else f"erreur : IATA {', '.join(manquants)} absent de {ctx['couples']}")
-        return {**base, "remarques": [], "statut": motif}
-    # deux arrêts étrangers de suite ramenés au même point frontière
+    debut, fin = [], []
+    for cote, k_etr, k_fr in (("fin", i1 + 1, i1), ("debut", i0 - 1, i0)):
+        if not 0 <= k_etr < len(uics):
+            continue
+        etranger = desserte[k_etr]
+        candidats = ctx["frontieres"].get(etranger)
+        if not candidats:
+            return {**base, "remarques": [], "statut": f"hors périmètre : gare étrangère sans point frontière (IATA "
+                                                       f"{etranger}, à ajouter dans sources.score.frontieres)"}
+        point = _point_frontiere(uics[k_fr], candidats, ctx)
+        etrangeres = desserte[k_etr:] if cote == "fin" else desserte[:k_etr + 1]
+        remarques_frontiere.append(f"{' > '.join(etrangeres)} : distance arrêtée au point frontière "
+                                   f"{ctx['arrets'].nom(point)} ; temps_score jusqu'à la gare étrangère")
+        (fin if cote == "fin" else debut).append((etranger, point))
+    desserte = [x for x, _ in debut] + desserte[i0:i1 + 1] + [x for x, _ in fin]
+    uics = [u for _, u in debut] + uics[i0:i1 + 1] + [u for _, u in fin]
+    if debut:
+        frontiere.add(0)
+    # point frontière confondu avec la dernière gare française (ex. Perpignan)
     garde = [k for k in range(len(uics)) if k == 0 or uics[k] != uics[k - 1]]
-    frontiere = {garde.index(k) if k in garde else len(garde) - 1 for k in frontiere}
     desserte, uics = [desserte[k] for k in garde], [uics[k] for k in garde]
+    if fin:
+        frontiere.add(len(uics) - 1)
     if len(uics) < 2:
         return {**base, "remarques": remarques_frontiere, "statut": "hors périmètre : trajet hors de France"}
     go, gd = uics[0], uics[-1]
