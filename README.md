@@ -50,7 +50,8 @@ avec un statut `erreur : …` et les autres sont calculées normalement. Sans ho
 
 **Distance retenue.** `distance_km` est la distance du TGV direct le plus fréquent entre les deux
 gares quand il existe (`distance_tgv_commercial_km`, choix d'Aloïs le 2026-10-01), sinon la
-distance par le rail `distance_au_plus_court_km`. Le TGV est suivi d'arrêt en arrêt (horaires
+distance par le rail `distance_au_plus_court_km`. Un TGV qui fait plus de 1,3 fois le trajet au plus
+court (il dessert d'autres villes en chemin) n'est pas retenu. Le TGV est suivi d'arrêt en arrêt (horaires
 SNCF) ; chaque tronçon est calculé et contrôlé comme une relation, en itinéraire grande vitesse.
 Un TGV province-province passe ainsi par Massy, Marne-la-Vallée ou Roissy. Relations françaises
 seulement ; sans horaires téléchargés, `distance_km` = `distance_au_plus_court_km`.

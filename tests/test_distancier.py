@@ -225,6 +225,7 @@ def test_tgv_commercial_suit_les_arrets_du_tgv_le_plus_frequent(cfg):
     _gtfs(cfg, {"T1": ("TGV INOUI", [p, s, q]), "T2": ("TGV INOUI", [q, s, p]),   # le plus fréquent, dans les deux sens
                 "T3": ("OUIGO", [p, q]),
                 "R1": ("TER", [p, q]), "R2": ("TER", [p, q]), "R3": ("TER", [p, q])})  # pas des TGV
+    cfg["routage"]["plafond_detour_tgv"] = 3.0     # le détour par Sville (x2,2) reste retenu ici
     res = calcul.calculer(cfg)
     r = par_id(res)[1]
     detour = km(P, X, S) + km(S, X, Q)
@@ -314,3 +315,14 @@ def test_distance_tgv_verifiee_par_le_controle_de_tout_le_trajet(cfg):
     ligne.update(resultat=Resultat(km=120.0), remarques=[])
     calcul._tgv_commercial(ligne, {"itineraire": "grande_vitesse"}, Tgv, None, cfg["routage"])
     assert ligne["statut"] == "estimé"
+
+
+def test_tgv_trop_detourne_garde_la_distance_au_plus_court(cfg):
+    p, q, s = "87000001", "87000002", "87000003"
+    _gtfs(cfg, {"T1": ("TGV INOUI", [p, s, q]), "T2": ("TGV INOUI", [p, s, q])})
+    cfg["routage"]["plafond_detour_tgv"] = 1.3     # P-S-Q fait environ 2,2 fois P-Q
+    r = par_id(calcul.calculer(cfg))[1]
+    assert r["resultat"].km == pytest.approx(km(P, M, Q), rel=1e-3)
+    assert r["itineraire_retenu"] == "grande_vitesse"
+    assert r["distance_tgv_commercial_km"] == pytest.approx(km(P, X, S) + km(S, X, Q), abs=0.1)
+    assert "TGV direct trop détourné" in " ".join(r["remarques"])

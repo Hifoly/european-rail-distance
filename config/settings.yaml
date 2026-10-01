@@ -29,6 +29,8 @@ routage:
   # plafond_detour_lgv_pct: 5.0  # itinéraire LGV > plus court chemin + x % : plus court chemin retenu.
   #   Désactivé : à 5 %, 86 relations perdaient leur itinéraire TGV (Rennes-Marseille par la province).
   part_ligne_controle_pk_pct: 95  # contrôle par PK si >= 95 % du trajet est sur une seule ligne
+  plafond_detour_tgv: 1.3      # TGV direct > 1,3 x distance au plus court : distance au plus court retenue
+                               #   (Étaples - Arras par Boulogne, Calais et Lille), choix d'Aloïs le 2026-10-01
 
 # Moteur de calcul principal par pays. Une relation dont les deux gares sont dans un
 # pays « sncf » est calculée sur les tracés SNCF Réseau ; toutes les autres (y compris

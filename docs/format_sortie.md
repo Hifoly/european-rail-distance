@@ -9,7 +9,7 @@ dans Excel), une ligne par relation. Même contenu dans l'onglet « distances »
 | gare_origine, code_uic_origine, pays_origine | gare de départ (nom officiel, UIC, code pays ISO) |
 | gare_destination, code_uic_destination, pays_destination | gare d'arrivée |
 | itineraire_retenu | `tgv_commercial` (distance du TGV direct), sinon celui de `config/relations.csv` (`grande_vitesse` ou `plus_court`) |
-| distance_km | distance retenue, km, 1 décimale : celle du TGV direct le plus fréquent s'il y en a un (`distance_tgv_commercial_km`), sinon `distance_au_plus_court_km`. Les colonnes `dont_km_*`, `part_lgv_pct`, `type_ligne`, `lignes_empruntees`, les contrôles et le statut portent sur cette distance |
+| distance_km | distance retenue, km, 1 décimale : celle du TGV direct le plus fréquent s'il y en a un (`distance_tgv_commercial_km`) et qu'il ne fait pas plus de 1,3 fois le trajet au plus court (`routage.plafond_detour_tgv`), sinon `distance_au_plus_court_km`. Les colonnes `dont_km_*`, `part_lgv_pct`, `type_ligne`, `lignes_empruntees`, les contrôles et le statut portent sur cette distance |
 | dont_km_320 … dont_km_10 | km à chaque vitesse maximale nominale (une colonne par valeur des sources) |
 | dont_km_vitesse_inconnue | km sans vitesse connue |
 | part_lgv_pct | part du trajet à v_max ≥ 250 km/h |
