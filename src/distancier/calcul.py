@@ -250,16 +250,9 @@ def _tgv_commercial(ligne: dict, rel: dict, tgv: TgvCommercial, calcul, rt: dict
     if troncons == [ligne]:
         ligne["source"] += f" ; desserte TGV : {tgv.source}, consulté le {tgv.date}"
         return
-    au_plus_court = ligne["resultat"].km
-    plafond = rt.get("plafond_detour_tgv")
-    if plafond and au_plus_court > 0 and res.km > au_plus_court * plafond:
-        # TGV qui dessert d'autres villes en chemin (Étaples - Arras par Boulogne, Calais et Lille) :
-        # aucun voyageur ne ferait ce trajet, on garde la distance au plus court.
-        ligne["remarques"].append(f"TGV direct trop détourné ({res.km:.1f} km par {desserte}, "
-                                  f"x{res.km / au_plus_court:.2f}) : distance au plus court retenue")
-        return
 
     # distance_km devient celle du TGV : vitesses, lignes, contrôles et statut suivent les tronçons
+    au_plus_court = ligne["resultat"].km
     remarques = [r for r in ligne["remarques"] if not r.startswith(_REMARQUES_ROUTINE)]
     remarques.append(f"distance du TGV direct le plus fréquent ({desserte}) ; "
                      f"au plus court : {au_plus_court:.1f} km")
