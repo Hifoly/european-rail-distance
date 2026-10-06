@@ -19,10 +19,12 @@ dans Excel), une ligne par relation. Même contenu dans l'onglet « distances »
 | distance_tgv_commercial_km | km parcourus par le TGV direct le plus fréquent : itinéraire grande vitesse d'arrêt en arrêt (vide sans TGV direct ou sans horaires téléchargés) |
 | desserte_tgv | arrêts de ce TGV et nombre de trains qui la font, ou « aucun TGV direct » |
 | temps_theorique | minutes, 1 décimale : temps pour parcourir `distance_km` en roulant partout à la vitesse maximale de chaque section (somme des `dont_km_<v>` / v). Les km sans vitesse connue comptent à la vitesse médiane du trajet (pondérée par les km) (remarque au-delà de 0,5 km) |
-| temps_theorique_350 | comme `temps_theorique`, mais les sections à 300 ou 320 km/h comptées à 350 km/h |
+| temps_theorique_350 | comme `temps_theorique`, mais les sections à 270, 300 ou 320 km/h comptées à 350 km/h (demande d'Aloïs le 2026-10-06) |
+| temps_theorique_350_hors_270 | idem, seulement les sections à 300 ou 320 km/h (ancien `temps_theorique_350`) |
 | temps_pratique | minutes : durée médiane de tous les TGV directs entre les deux gares, quelle que soit leur desserte (horaires SNCF, départ de la première gare à l'arrivée à la seconde). Vide sans TGV direct |
 | temps_score | minutes : temps médian de l'année 2025 dans le plan de transport TGV théorique (`data/Extract_score.xlsx`, fichier local), pondéré par le nombre de jours de chaque jour type et par le compteur (0,5 par tranche d'un train couplé), les deux sens réunis. Vide si le fichier est absent ou si l'OD n'y figure pas |
 | temps_score_350 | `temps_score` moins le gain théorique d'un relèvement à 350 km/h (`temps_theorique` − `temps_theorique_350`) : les arrêts, ralentissements et marges du temps réel restent ; le gain est un majorant, car il ignore l'accélération et le freinage |
+| temps_score_350_hors_270 | idem avec `temps_theorique_350_hors_270` (ancien `temps_score_350`) |
 | distance_plus_courte_km | plus court chemin strict, sans préférence pour les LGV |
 | distance_sans_lgv_km | plus court chemin sans LGV |
 | moteur | `sncf` ou `rinf` |
@@ -54,6 +56,7 @@ Mêmes colonnes que le tableau principal, avec ces différences :
 | distance_km | somme des tronçons entre arrêts consécutifs de cette desserte. Chaque tronçon passe par la LGV ou par la ligne classique (plus court chemin sans LGV) selon le temps de parcours des trains de la sous-relation : la ligne classique est retenue si ce temps (médiane pondérée, du départ à l'arrivée), divisé par le rapport médian temps des trains / temps théorique observé sur les tronçons sans alternative (`coefficient_temps` dans `calcul_srela_<date>.json`), atteint la moyenne géométrique des deux temps théoriques. Gare étrangère en bout de trajet : distance arrêtée au point frontière de `sources.score.frontieres` (Bruxelles-Midi, Luxembourg), sinon statut « hors périmètre » |
 | desserte_score, part_desserte_pct | arrêts de la desserte la plus fréquente de la sous-relation entre la montée et la descente, et sa part des circulations (poids nombre_jour × compteur ; un train = un train_uid, soit un numéro sur une periode_label) |
 | circulations_annee | somme des poids des trains de la ligne sur l'année |
+| frequence_2024, frequence_2025, frequence_2026 | fréquences de l'année : somme de nombre_jour × compteur sur toutes les lignes (toutes périodes) de la relation, sous-relation, montée et descente (`sources.score.annees_frequence`). 0 si l'année figure dans Extract_score sans cette montée-descente, vide si l'année n'y figure pas. `frequence_2025` = `circulations_annee` |
 | troncons_sans_lgv | tronçons passés par la ligne classique (vide si aucun) |
 | temps_score_min, temps_score_max, temps_score | temps le plus court, le plus long et médian des trains de cette sous-relation dans ce sens (médiane pondérée nombre_jour × compteur), toutes dessertes confondues (demande d'Aloïs le 2026-10-01) |
 | nb_arret_inter_min, nb_arret_inter_max, nb_arret_inter | arrêts intermédiaires entre la montée et la descente du train le plus rapide, du plus lent et d'un train au temps médian (si plusieurs trains ont ce temps avec des dessertes différentes : la plus fréquente) |

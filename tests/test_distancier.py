@@ -334,6 +334,21 @@ def test_temps_theorique_et_pratique(cfg):
     assert r[3]["temps_pratique"] == 60
 
 
+def test_temps_theorique_350_avec_et_hors_270():
+    from distancier.routage import Resultat
+    res = Resultat(km=200.0, vitesses={320: 35.0, 300: 30.0, 270: 70.0, 160: 40.0, None: 25.0})
+    t, t350, t350_hors_270, inconnu, v_med = calcul._minutes_theoriques(res)
+    assert v_med == 270 and inconnu == 25.0
+    assert t == pytest.approx(60 * (35 / 320 + 30 / 300 + 70 / 270 + 40 / 160 + 25 / 270))
+    assert t350 == pytest.approx(60 * (135 / 350 + 40 / 160 + 25 / 270))          # 270, 300, 320 -> 350
+    assert t350_hors_270 == pytest.approx(60 * (65 / 350 + 70 / 270 + 40 / 160 + 25 / 270))
+    ligne = {"resultat": res, "remarques": []}
+    calcul._temps_theorique(ligne)
+    calcul._temps_score_350(ligne, 60.0)
+    assert ligne["temps_score_350"] == round(60 - (ligne["temps_theorique"] - ligne["temps_theorique_350"]), 1)
+    assert ligne["temps_score_350"] < ligne["temps_score_350_hors_270"] < 60
+
+
 def test_vitesse_mediane_ponderee_par_les_km():
     assert calcul._vitesse_mediane({300: 100.0, 160: 30.0, 80: 10.0}) == 300
     assert calcul._vitesse_mediane({300: 40.0, 160: 50.0, 80: 20.0}) == 160
@@ -394,7 +409,7 @@ def _extract_score(cfg, trains):
     for uid, (rel, srel, poids, arrets) in trains.items():
         for i, (m, _, dep) in enumerate(arrets):
             for j, (d, arr, _) in enumerate(arrets[i + 1:], i + 1):
-                ws.append([uid, 2025, rel, srel, m, d, i + 1, j + 1, 28800 + 60 * dep, 28800 + 60 * arr, arr - dep, poids, 1])
+                ws.append([uid, int(uid[:4]), rel, srel, m, d, i + 1, j + 1, 28800 + 60 * dep, 28800 + 60 * arr, arr - dep, poids, 1])
     wb.save(cfg["sources"]["score"]["fichier"])
 
 
@@ -411,6 +426,9 @@ def test_par_sous_relation_desserte_et_ligne_classique_selon_le_temps(cfg):
         "2025_A_lundi_8": ("INTER", "P - DE", 5, [("FRPPP", None, 0), ("DEYYY", 40, None)]),
         # deux gares étrangères au bout : point frontière choisi par la première, le plus proche de P
         "2025_A_lundi_6": ("INTER", "P - CH", 5, [("FRPPP", None, 0), ("CHAAA", 20, 21), ("CHBBB", 50, None)]),
+        # autres années : fréquences seulement, sans effet sur les temps et dessertes de 2025
+        "2024_A_lundi_1": ("PARIS-Q", "P - Q_TGV", 7, [("FRPPP", None, 0), ("FRQQQ", 50, None)]),
+        "2024_B_lundi_1": ("PARIS-Q", "P - Q_TGV", 4, [("FRPPP", None, 0), ("FRQQQ", 50, None)]),
     })
     cfg["sources"]["score"]["frontieres"] = {"BEBXX": "87000002", "CHAAA": ["87000003", "87000002"]}
     res = calcul.calculer_sous_relations(cfg)
@@ -430,6 +448,10 @@ def test_par_sous_relation_desserte_et_ligne_classique_selon_le_temps(cfg):
     assert tgv["distance_km_max"] == pytest.approx(km(P, X, S) + km(S, X, Q), abs=0.1)
     assert tgv["desserte_score_max"] == "Pville > Sville > Qville"
     assert tgv["temps_score_350"] == round(17 - (tgv["temps_theorique"] - tgv["temps_theorique_350"]), 1)
+    # fréquences : somme sur toutes les périodes de l'année ; 2026 absente du fichier
+    assert (tgv["frequence_2024"], tgv["frequence_2025"]) == (11, 12) and "frequence_2026" not in tgv
+    assert tgv["circulations_annee"] == 12
+    assert r[("P - BE", "FRPPP", "BEBXX")]["frequence_2024"] == 0        # année présente, pas ce train
 
     cl = r[("P - Q / CLASSIQUE", "FRPPP", "FRQQQ")]
     assert cl["resultat"].km == pytest.approx(km(P, X, Q), rel=1e-3)
@@ -459,3 +481,4 @@ def test_par_sous_relation_desserte_et_ligne_classique_selon_le_temps(cfg):
     assert list(lignes[0])[:5] == ["id", "relation", "sous_relation", "montee_iata", "descente_iata"]
     l = next(x for x in lignes if x["sous_relation"] == "P - Q / CLASSIQUE")
     assert float(l["dont_km_160"]) == pytest.approx(float(l["distance_km"]))
+    assert (l["frequence_2024"], l["frequence_2025"], l["frequence_2026"]) == ("0", "5.0", "")
