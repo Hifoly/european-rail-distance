@@ -361,9 +361,7 @@ def _temps_score(cfg: dict, lignes: list[dict], sources: dict) -> None:
         t = d["temps"].get(frozenset((o, a))) if o and a else None
         if t is not None:
             ligne["temps_score"] = round(t, 1)
-            if ligne.get("temps_theorique") is not None and ligne.get("temps_theorique_350") is not None:
-                # gain théorique d'un relèvement à 350 km/h (choix d'Aloïs le 2026-10-01)
-                ligne["temps_score_350"] = round(t - (ligne["temps_theorique"] - ligne["temps_theorique_350"]), 1)
+            _temps_score_350(ligne, t)
 
 
 def _concorde(km: float, controle: float, ecart_pct: float, rt: dict) -> bool:
@@ -387,7 +385,9 @@ def _relation(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valide
     return ligne
 
 
-V_RELEVEE, SEUIL_RELEVE = 350, 300   # temps_theorique_350 : v_max >= 300 km/h portée à 350 km/h
+# temps_theorique_350 : v_max >= 270 km/h portée à 350 km/h (270, 300 et 320 ; demande d'Aloïs le
+# 2026-10-06) ; temps_theorique_350_hors_270 : seulement v_max >= 300 km/h (règle du 2026-10-01)
+V_RELEVEE, SEUIL_RELEVE, SEUIL_RELEVE_HORS_270 = 350, 270, 300
 
 
 def _vitesse_mediane(km_par_vitesse: dict) -> int:
@@ -400,36 +400,48 @@ def _vitesse_mediane(km_par_vitesse: dict) -> int:
     return max(km_par_vitesse)
 
 
-def _minutes_theoriques(res: Resultat) -> tuple[float, float, float, int] | None:
-    """(minutes, minutes à 350 km/h, km sans vitesse, vitesse médiane) pour parcourir `res` en roulant
-    partout à la vitesse maximale ; None sans aucune vitesse connue. Les km sans vitesse connue
-    comptent à la vitesse médiane du trajet, pondérée par les km (choix d'Aloïs le 2026-10-01).
-    Variante 350 : sections à 300 ou 320 km/h relevées à 350 km/h (demande d'Aloïs le 2026-10-01)."""
+def _minutes_theoriques(res: Resultat) -> tuple[float, float, float, float, int] | None:
+    """(minutes, minutes à 350 km/h, minutes à 350 km/h hors 270, km sans vitesse, vitesse médiane)
+    pour parcourir `res` en roulant partout à la vitesse maximale ; None sans aucune vitesse connue.
+    Les km sans vitesse connue comptent à la vitesse médiane du trajet, pondérée par les km (choix
+    d'Aloïs le 2026-10-01). Variantes 350 : sections à 270, 300 ou 320 km/h relevées à 350 km/h ;
+    hors 270 : seulement celles à 300 ou 320 km/h."""
     connues = {v: km for v, km in res.vitesses.items() if v}
     if not connues:
         return None
     inconnu = res.vitesses.get(None, 0.0)
     v_med = _vitesse_mediane(connues)
     minutes_inconnu = 60 * inconnu / v_med if inconnu > 0 else 0.0
-    return (minutes_inconnu + sum(60 * km / v for v, km in connues.items()),
-            minutes_inconnu + sum(60 * km / (V_RELEVEE if v >= SEUIL_RELEVE else v) for v, km in connues.items()),
-            inconnu, v_med)
+    def minutes(seuil: float) -> float:
+        return minutes_inconnu + sum(60 * km / (V_RELEVEE if v >= seuil else v) for v, km in connues.items())
+    return minutes(math.inf), minutes(SEUIL_RELEVE), minutes(SEUIL_RELEVE_HORS_270), inconnu, v_med
 
 
 def _temps_theorique(ligne: dict) -> None:
-    """temps_theorique et temps_theorique_350 : minutes pour parcourir distance_km (voir _minutes_theoriques)."""
+    """temps_theorique, temps_theorique_350 et temps_theorique_350_hors_270 : minutes pour parcourir
+    distance_km (voir _minutes_theoriques)."""
     res = ligne["resultat"]
     t = _minutes_theoriques(res)
     if t is None:
         if res.km > 0:
             ligne["remarques"].append("temps théorique non calculé : aucune vitesse connue sur le trajet")
         return
-    minutes, minutes_350, inconnu, v_med = t
+    minutes, minutes_350, minutes_350_hors_270, inconnu, v_med = t
     if inconnu > 0.5:
         ligne["remarques"].append(f"temps théorique : {inconnu:.1f} km sans vitesse connue comptés à "
                                   f"{v_med} km/h (vitesse médiane du trajet)")
     ligne["temps_theorique"] = round(minutes, 1)
     ligne["temps_theorique_350"] = round(minutes_350, 1)
+    ligne["temps_theorique_350_hors_270"] = round(minutes_350_hors_270, 1)
+
+
+def _temps_score_350(ligne: dict, temps_score: float) -> None:
+    """temps_score moins le gain théorique d'un relèvement à 350 km/h (choix d'Aloïs le 2026-10-01),
+    avec et sans les sections à 270 km/h."""
+    if ligne.get("temps_theorique") is None:
+        return
+    for k in ("", "_hors_270"):
+        ligne[f"temps_score_350{k}"] = round(temps_score - (ligne["temps_theorique"] - ligne[f"temps_theorique_350{k}"]), 1)
 
 
 def _relation_reseau(rel: dict, gares: dict, moteurs: dict, cfg: dict, rt: dict, valides: dict | None = None) -> dict:
@@ -755,7 +767,8 @@ def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
     if od.get("part_desserte_pct") is not None:
         texte += f" ({od['part_desserte_pct']:.0f} % des circulations)"
     ligne.update(desserte_score=texte, part_desserte_pct=od.get("part_desserte_pct"),
-                 circulations_annee=od.get("circulations"))
+                 circulations_annee=od.get("circulations"),
+                 **{f"frequence_{a}": f for a, f in od.get("frequences", {}).items()})
 
     troncons, classiques, remarques = _troncons_desserte(desserte, uics, frontiere, relation, sous_relation, ctx)
     ligne["remarques"] += remarques
@@ -794,6 +807,5 @@ def _sous_relation(i: int, cle: tuple, od: dict, ctx: dict) -> dict:
         else:
             ligne["remarques"] += [f"train le plus {'rapide' if k == '_min' else 'lent'} : {r}" for r in r2]
     if od.get("temps") is not None:
-        if ligne.get("temps_theorique") is not None:
-            ligne["temps_score_350"] = round(od["temps"] - (ligne["temps_theorique"] - ligne["temps_theorique_350"]), 1)
+        _temps_score_350(ligne, od["temps"])
     return ligne

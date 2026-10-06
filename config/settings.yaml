@@ -89,6 +89,8 @@ sources:
     fichier: data/Extract_score.xlsx
     couples: data/couples_montee_descente_FR_UIC.csv   # IATA <-> UIC
     annee: 2025   # noms relevés dans le GTFS le 2026-10-01
+    # tableau par sous-relation : colonnes frequence_<année> (somme de nombre_jour × compteur sur l'année)
+    annees_frequence: [2024, 2025, 2026]
     # Tableau par sous-relation : première gare étrangère après la partie française -> point frontière
     # français (UIC), comme dans le tableau principal ; avec une liste, le plus proche de la dernière gare
     # française. Choix d'Aloïs le 2026-10-01 : rester en France, seuls Bruxelles-Midi et Luxembourg

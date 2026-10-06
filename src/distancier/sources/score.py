@@ -95,17 +95,29 @@ def _nombre(x) -> float | None:
         return None
 
 
-def lire_sous_relations(chemin: Path, annee: int) -> dict:
+def lire_sous_relations(chemin: Path, annee: int, annees_frequence: tuple = ()) -> dict:
     """Par relation, sous-relation, montée et descente (dans le sens du train) : temps médian, et
     dessertes (arrêts de la montée à la descente) avec leur poids. Par tronçon entre deux arrêts
     consécutifs d'une sous-relation : temps de parcours médian, de départ à arrivée.
 
     Un train est un train_uid (numéro de train × periode_label) ; ses arrêts et leur ordre viennent
-    de ordre_montee / ordre_descente de toutes ses lignes. Poids : nombre_jour × compteur."""
+    de ordre_montee / ordre_descente de toutes ses lignes. Poids : nombre_jour × compteur.
+
+    Fréquences : pour chaque année de `annees_frequence`, somme de nombre_jour × compteur de toutes les
+    lignes (toutes périodes) de la relation, sous-relation, montée et descente ; 0 si l'année est dans
+    le fichier sans cette montée-descente, absente si l'année n'y est pas du tout."""
     trains: dict[str, dict] = {}
+    frequences: dict[tuple, collections.Counter] = collections.defaultdict(collections.Counter)
+    annees_lues: set[int] = set()
     for r in _lignes(chemin, COLONNES_SOUS_RELATIONS):
         try:
-            if int(float(r["annee"])) != annee:
+            an = int(float(r["annee"]))
+            if an in annees_frequence:
+                poids = float(r["nombre_jour"] or 0) * float(r["compteur"] if r["compteur"] not in (None, "") else 1)
+                m, d = str(r["arret_montee_iata"] or "").strip(), str(r["arret_descente_iata"] or "").strip()
+                annees_lues.add(an)
+                frequences[(str(r["relation"] or "").strip(), str(r["sous_relation"] or "").strip(), m, d)][an] += poids
+            if an != annee:
                 continue
             om, od = int(float(r["ordre_montee"])), int(float(r["ordre_descente"]))
             duree = float(r["duree_commerciale_minutes"])
@@ -159,7 +171,8 @@ def lire_sous_relations(chemin: Path, annee: int) -> dict:
                     **{f"temps{'_' + k if k else ''}": v for k, v in temps.items() if k},
                     **{f"desserte{'_' + k if k else '_mediane'}": _desserte_du_temps(trains_od, v) for k, v in temps.items()},
                     "part_desserte_pct": round(100 * poids / total, 1) if total else None,
-                    "circulations": round(sum(p for _, p in durees), 1)}
+                    "circulations": round(sum(p for _, p in durees), 1),
+                    "frequences": {a: round(frequences[cle][a], 1) for a in sorted(annees_lues)}}
     return {"od": ods, "troncons": {k: m for k, v in troncons.items() if (m := mediane_ponderee(v)) is not None}}
 
 
@@ -178,20 +191,20 @@ def _desserte_du_temps(trains_od: list[tuple], minutes: float | None) -> tuple |
     return desserte, temps
 
 
-def _charger(cfg: dict, nom_cache: str, lire) -> dict:
+def _charger(cfg: dict, nom_cache: str, lire, *options) -> dict:
     """Lecture du fichier configuré, gardée en cache dans data/interim (lecture du xlsx : quelques minutes)."""
     src = cfg["sources"]["score"]
     fichier = _chemin(cfg, "fichier")
     if not fichier.exists():
         raise FileNotFoundError(f"{fichier} absent : temps_score non calculé")
     st = fichier.stat()
-    cle = hashlib.sha1(f"{fichier.name}|{st.st_size}|{st.st_mtime_ns}|{src['annee']}".encode()).hexdigest()[:10]
+    cle = hashlib.sha1(f"{fichier.name}|{st.st_size}|{st.st_mtime_ns}|{src['annee']}|{options}".encode()).hexdigest()[:10]
     cache = config.chemin(cfg, "intermediaire") / f"{nom_cache}_{src['annee']}_{cle}.pkl"
     if cache.exists():
         donnees = pickle.loads(cache.read_bytes())
     else:
         log.info("lecture de %s (année %s)…", fichier.name, src["annee"])
-        donnees = lire(fichier, int(src["annee"]))
+        donnees = lire(fichier, int(src["annee"]), *options)
         cache.parent.mkdir(parents=True, exist_ok=True)
         cache.write_bytes(pickle.dumps(donnees))
     modifie = date.fromtimestamp(st.st_mtime).isoformat()
@@ -208,6 +221,7 @@ def charger(cfg: dict) -> dict:
 
 def charger_sous_relations(cfg: dict) -> dict:
     """Dessertes et temps par relation, sous-relation, montée et descente (voir lire_sous_relations)."""
-    d = _charger(cfg, "score_srela_v5", lire_sous_relations)
+    annees = tuple(int(a) for a in cfg["sources"]["score"].get("annees_frequence", ()))
+    d = _charger(cfg, "score_srela_v6", lire_sous_relations, annees)
     d.update(d.pop("donnees"))
     return d
