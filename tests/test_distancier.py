@@ -527,3 +527,4 @@ def test_kpi_par_vitesse(cfg):
     assert list(lignes[0])[:9] == ["v_max_kmh", "nb_lignes", "km", "part_reseau_pct", "km_voie_unique",
                                    "km_voie_double_ou_plus", "km_voie_non_renseignee", "tkm_2025", "part_tkm_pct"]
     assert lignes[-1]["v_max_kmh"] == "total" and lignes[0]["source"].startswith("SNCF Réseau")
+    assert lignes[0]["source"].count("SNCF Réseau") == 1 and lignes[0]["date_consultation"].startswith("SNCF 2026-01-01")

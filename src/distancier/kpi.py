@@ -118,8 +118,13 @@ def calculer(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = No
 
     total_km = sum(x["km"] for x in res.values())
     total_tkm = sum(tkm.values())
-    source = " ; ".join(f"{s['description']}" for k, s in sources.items() if k in ("sncf", "regimes", "score"))
-    date_c = sources["sncf"]["date_consultation"]
+    # la description SNCF liste déjà le jeu des régimes (même manifeste) ; sa date peut différer
+    source = " ; ".join(sources[k]["description"] for k in ("sncf", "score") if k in sources)
+    date_c = f"SNCF {sources['sncf']['date_consultation']}"
+    if "regimes" in sources and sources["regimes"]["date_consultation"] != sources["sncf"]["date_consultation"]:
+        date_c += f", régimes d'exploitation {sources['regimes']['date_consultation']}"
+    if "score" in sources:
+        date_c += f", Extract_score {sources['score']['date_consultation']}"
     lignes = []
     for v in sorted(set(res) | set(tkm), key=lambda v: (v is None, -(v or 0))):
         x = res.get(v)
