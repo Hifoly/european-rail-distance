@@ -1,4 +1,4 @@
-"""Ligne de commande : distancier telecharger | calculer | kpi | charger-bdd."""
+"""Ligne de commande : distancier telecharger | calculer | carte | kpi | charger-bdd."""
 from __future__ import annotations
 
 import argparse
@@ -27,9 +27,11 @@ def main(argv=None) -> int:
     c.add_argument("--par-sous-relation", action="store_true",
                    help="une ligne par relation, sous-relation, montée et descente du plan de transport (Extract_score)")
 
-    k = sub.add_parser("kpi", help="KPI par vitesse maximale : lignes, km, voies, trains-km (kpi_vitesse_<date>)")
-    k.add_argument("--jour-sncf", help="date du téléchargement SNCF à utiliser (défaut : le plus récent)")
-    k.add_argument("--jour-rinf", help="date du téléchargement RINF à utiliser (défaut : le plus récent)")
+    for nom, aide in (("carte", "carte HTML des relations qui gagnent du temps à 350 km/h (par sous-relation)"),
+                      ("kpi", "KPI par vitesse maximale : lignes, km, voies, trains-km (kpi_vitesse_<date>)")):
+        k = sub.add_parser(nom, help=aide)
+        k.add_argument("--jour-sncf", help="date du téléchargement SNCF à utiliser (défaut : le plus récent)")
+        k.add_argument("--jour-rinf", help="date du téléchargement RINF à utiliser (défaut : le plus récent)")
 
     b = sub.add_parser("charger-bdd", help="charge un tableau exporté dans PostgreSQL/PostGIS")
     b.add_argument("fichier", type=Path, help="data/output/distances_AAAA-MM-JJ.csv")
@@ -69,6 +71,10 @@ def main(argv=None) -> int:
         from distancier import kpi
         for f in kpi.ecrire(kpi.calculer(cfg, a.jour_sncf, a.jour_rinf), config.chemin(cfg, "sorties")):
             print(f)
+    elif a.commande == "carte":
+        from distancier import calcul, carte
+        res = calcul.calculer_sous_relations(cfg, a.jour_sncf, a.jour_rinf)
+        print(carte.ecrire(res, config.chemin(cfg, "sorties")))
     elif a.commande == "charger-bdd":
         from distancier import db
         print("calcul chargé, id", db.charger(cfg, a.fichier, a.dsn))

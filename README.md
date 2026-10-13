@@ -38,6 +38,7 @@ distancier calculer                     # -> data/output/distances_<date>.csv / 
 distancier calculer --par-sous-relation  # -> distances_srela_<date>.csv : par relation, sous-relation, montée et descente (Extract_score)
 distancier telecharger --source sncf --jeux regimes   # ajoute un seul jeu au téléchargement SNCF le plus récent
 distancier kpi                          # -> kpi_vitesse_<date>.csv / .xlsx / .json : KPI par vitesse maximale
+distancier carte                        # -> carte_350_<date>.html : relations qui gagnent du temps à 350 km/h, tracés sur les voies (relance le calcul par sous-relation)
 distancier charger-bdd data/output/distances_2026-09-28.csv   # facultatif, PostGIS
 ```
 

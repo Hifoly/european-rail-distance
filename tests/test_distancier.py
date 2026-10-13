@@ -528,3 +528,24 @@ def test_kpi_par_vitesse(cfg):
                                    "km_voie_double_ou_plus", "km_voie_non_renseignee", "tkm_2025", "part_tkm_pct"]
     assert lignes[-1]["v_max_kmh"] == "total" and lignes[0]["source"].startswith("SNCF Réseau")
     assert lignes[0]["source"].count("SNCF Réseau") == 1 and lignes[0]["date_consultation"].startswith("SNCF 2026-01-01")
+
+
+def test_carte_350(cfg):
+    from distancier import carte
+    _extract_score(cfg, {
+        "2025_A_lundi_1": ("PARIS-Q", "P - Q_TGV", 10, [("FRPPP", None, 0), ("FRQQQ", 17, None)]),
+        "2025_A_lundi_2": ("OUIGO", "P - Q / CLASSIQUE", 5, [("FRPPP", None, 0), ("FRQQQ", 36, None)]),
+        "2025_A_lundi_3": ("OUIGO", "P - Q / CLASSIQUE", 5, [("FRPPP", None, 0), ("FRSSS", 30, None)]),
+    })
+    res = calcul.calculer_sous_relations(cfg)
+    d = carte.donnees(res)
+    # seule la montée-descente par la LGV gagne du temps à 350 km/h
+    assert [r["nom"] for r in d["relations"]] == ["PARIS-Q"]
+    od = d["relations"][0]["od"][0]
+    assert od["km_300"] == pytest.approx(km(P, M, Q), abs=0.1) and od["temps_score"] == 17
+    assert od["km_270"] == 0 and od["temps_theorique_350_hors_270"] == od["temps_theorique_350"]
+    assert 300 in {d["segments"][i]["v"] for i in od["segments"]}
+    lat, lon = d["segments"][od["segments"][0]]["c"][0]
+    assert 47.9 < lat < 48.2 and 1.9 < lon < 3.1                  # coordonnées WGS84 (lat, lon)
+    html = carte.ecrire(res, Path(cfg["chemins"]["sorties"]), "test").read_text(encoding="utf-8")
+    assert "__DONNEES__" not in html and '"PARIS-Q"' in html

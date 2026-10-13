@@ -31,6 +31,7 @@ class Resultat:
     lignes: list = field(default_factory=list)       # [(ligne, km)] dans l'ordre du trajet
     vitesses: dict = field(default_factory=dict)     # {v_max ou None: km}
     manuels: list = field(default_factory=list)      # raccordements manuels empruntés
+    traces: list = field(default_factory=list)       # [(coordonnées WGS84 [(lon, lat)…], v_max principale)] pour les cartes
 
     def km_lgv(self, seuil: int) -> float:
         return sum(k for v, k in self.vitesses.items() if v is not None and v >= seuil)
@@ -61,6 +62,8 @@ class Routeur:
                 self._doublons[id(d["geom"])].append(d)
         crs = G.graph.get("crs")
         self._vers_m = Transformer.from_crs(4326, crs, always_xy=True).transform if crs else None
+        self._vers_deg = Transformer.from_crs(crs, 4326, always_xy=True).transform if crs else None
+        self._traces: dict = {}
         self._rattachements: dict = {}
 
     def _part_lgv(self, d: dict) -> float:
@@ -100,6 +103,9 @@ class Routeur:
         vit = km_par_vitesse(d, a, b)
         km = d["km"] * (b - a)
         attrs = dict(km=km, ligne=d["ligne"], vitesses=vit, manuel=d.get("manuel"), temporaire=True)
+        if "geom" in d:   # morceau d'arête, pour le tracé sur une carte
+            from shapely.ops import substring
+            attrs["morceau"] = substring(d["geom"], a, b, normalized=True)
         attrs["part_lgv"] = self._part_lgv(attrs)
         self.G.add_edge(tag, noeud, **attrs)
 
@@ -143,5 +149,24 @@ class Routeur:
                 res.lignes.append((d["ligne"], d["km"]))
             if d.get("manuel") and d["manuel"] not in res.manuels:
                 res.manuels.append(d["manuel"])
+            trace = self._trace(d)
+            if trace:
+                res.traces.append(trace)
         res.vitesses = dict(vit)
         return res
+
+    def _trace(self, d: dict):
+        """(coordonnées WGS84 simplifiées à 20 m, v_max qui couvre le plus de km) d'une arête, ou None
+        sans géométrie (graphe RINF). Gardé en mémoire par arête du graphe."""
+        g = d.get("morceau") if d.get("temporaire") else d.get("geom")
+        if g is None or self._vers_deg is None or g.is_empty:
+            return None
+        cle = id(g)
+        if cle not in self._traces:
+            from shapely.ops import transform
+            coords = [(round(x, 5), round(y, 5)) for x, y in transform(self._vers_deg, g.simplify(20)).coords]
+            v = max(d["vitesses"].items(), key=lambda kv: kv[1])[0] if d.get("vitesses") else None
+            self._traces[cle] = (coords, v)
+            if d.get("temporaire"):
+                return self._traces.pop(cle)
+        return self._traces[cle]
