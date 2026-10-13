@@ -482,3 +482,48 @@ def test_par_sous_relation_desserte_et_ligne_classique_selon_le_temps(cfg):
     l = next(x for x in lignes if x["sous_relation"] == "P - Q / CLASSIQUE")
     assert float(l["dont_km_160"]) == pytest.approx(float(l["distance_km"]))
     assert (l["frequence_2024"], l["frequence_2025"], l["frequence_2026"]) == ("0", "5.0", "")
+
+
+def test_kpi_par_vitesse(cfg):
+    import json as js
+    from distancier import kpi
+    from tests.conftest import _geojson
+    sncf = Path(cfg["chemins"]["donnees_brutes"]) / "sncf" / "2026-01-01"
+    # LGV1 en double voie, C1 en voie unique de P à X puis « _Autre » de X à Q, C3 sans régime
+    _geojson(sncf / "regimes.geojson", [
+        ({"code_ligne": "LGV1", "exploitati": "Double voie"}, [P, M, Q]),
+        ({"code_ligne": "C1", "exploitati": "Voie unique"}, [P, X]),
+        ({"code_ligne": "C1", "exploitati": "_Autre"}, [X, Q]),
+    ])
+    man = js.loads((sncf / "manifest.json").read_text())
+    man["jeux"]["regimes"] = {"id": "regime-dexploitation-des-lignes", "fichier": "regimes.geojson",
+                              "date_consultation": "2026-01-01T10:00:00+00:00"}
+    (sncf / "manifest.json").write_text(js.dumps(man))
+    _extract_score(cfg, {
+        "2025_A_lundi_1": ("PARIS-Q", "P - Q_TGV", 10, [("FRPPP", None, 0), ("FRQQQ", 17, None)]),
+        "2025_A_lundi_4": ("PARIS-Q", "P - Q_TGV", 2, [("FRPPP", None, 0), ("FRSSS", 42, 44), ("FRQQQ", 86, None)]),
+        "2025_A_lundi_7": ("INTER", "P - DE", 5, [("FRPPP", None, 0), ("DEYYY", 40, None)]),   # hors périmètre
+        "2024_A_lundi_1": ("PARIS-Q", "P - Q_TGV", 99, [("FRPPP", None, 0), ("FRQQQ", 17, None)]),  # autre année
+    })
+    res = kpi.calculer(cfg)
+    l = {x["v_max_kmh"]: x for x in res["lignes"]}
+    assert list(l) == [300, 160, "inconnue", "total"]
+    assert l[300]["nb_lignes"] == 1 and l[300]["km"] == pytest.approx(km(P, M, Q), rel=1e-2)
+    assert l[300]["km_voie_double_ou_plus"] == pytest.approx(l[300]["km"])
+    assert l[160]["km_voie_unique"] == pytest.approx(km(P, X), rel=0.05)
+    assert l[160]["km_voie_non_renseignee"] == pytest.approx(km(X, Q), rel=0.05)
+    assert l["inconnue"]["km_voie_non_renseignee"] == pytest.approx(km(X, S), rel=0.02)   # C3 sans régime
+    assert l["total"]["km"] == pytest.approx(km(P, M, Q) + km(P, X, Q) + km(X, S), rel=1e-2)
+    assert l["total"]["nb_lignes"] == 3
+    assert sum(l[v]["part_reseau_pct"] for v in (300, 160, "inconnue")) == pytest.approx(100)
+    # trains-km 2025 : 10 trains P-Q par la LGV, 2 trains P-S-Q par C1 et C3 ; 2024 et le train vers DE ignorés
+    assert l[300]["tkm"] == pytest.approx(10 * km(P, M, Q), rel=1e-2)
+    assert l[160]["tkm"] == pytest.approx(2 * (km(P, X) + km(X, Q)), rel=0.05)
+    assert l["inconnue"]["tkm"] == pytest.approx(2 * 2 * km(X, S), rel=0.05)
+    assert res["bilan_tkm"]["passages_non_comptes"] == 5
+    fichiers = kpi.ecrire(res, Path(cfg["chemins"]["sorties"]), "test")
+    with open(fichiers[0], encoding="utf-8-sig") as f:
+        lignes = list(csv.DictReader(f, delimiter=";"))
+    assert list(lignes[0])[:9] == ["v_max_kmh", "nb_lignes", "km", "part_reseau_pct", "km_voie_unique",
+                                   "km_voie_double_ou_plus", "km_voie_non_renseignee", "tkm_2025", "part_tkm_pct"]
+    assert lignes[-1]["v_max_kmh"] == "total" and lignes[0]["source"].startswith("SNCF Réseau")

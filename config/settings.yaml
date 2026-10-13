@@ -53,6 +53,8 @@ sources:
       gares:    {id: liste-des-gares, format: csv}
       # tracés voie par voie : seulement pour les lignes absentes des tracés de lignes (corrections.yaml)
       voies:    {id: fichier-de-formes-des-voies-du-reseau-ferre-national, format: geojson}
+      # nombre de voies par section (distancier kpi) ; champ « exploitati »
+      regimes:  {id: regime-dexploitation-des-lignes, format: geojson}
     statuts_lignes: [EXPLOITE]   # valeur du champ « mnemo » des tracés
 
   rinf:
@@ -99,3 +101,19 @@ sources:
     frontieres:
       BEBMI: "87218156"   # Bruxelles-Midi -> Wannehain-Frontière (LGV Nord)
       LULUX: "87191973"   # Luxembourg -> Zoufftgen (IE)
+
+# distancier kpi : KPI par vitesse maximale (demande d'Aloïs le 2026-10-13). Nombre de voies d'après
+# le régime d'exploitation SNCF (champ « exploitati ») ; valeur absente de la liste ou section sans
+# régime : non renseignée.
+# Trains-km : plan de transport de l'année sources.score.annee.
+kpi:
+  regimes:
+    voie_unique:
+      - Voie unique
+      - Voie unique à signalisation simplifiée
+      - Voie unique à trafic restreint (consigne de ligne)
+      - Régime particulier de voie unique autre que trafic restreint
+      - Régime en navette
+    voie_double_ou_plus:
+      - Double voie
+      - Voie banalisée

@@ -102,6 +102,7 @@ def lire_sous_relations(chemin: Path, annee: int, annees_frequence: tuple = ()) 
 
     Un train est un train_uid (numéro de train × periode_label) ; ses arrêts et leur ordre viennent
     de ordre_montee / ordre_descente de toutes ses lignes. Poids : nombre_jour × compteur.
+    Passages : par tronçon entre deux arrêts consécutifs d'un train, somme des poids (trains-km).
 
     Fréquences : pour chaque année de `annees_frequence`, somme de nombre_jour × compteur de toutes les
     lignes (toutes périodes) de la relation, sous-relation, montée et descente ; 0 si l'année est dans
@@ -140,10 +141,15 @@ def lire_sous_relations(chemin: Path, annee: int, annees_frequence: tuple = ()) 
     od_durees: dict[tuple, list] = collections.defaultdict(list)
     od_dessertes: dict[tuple, collections.Counter] = collections.defaultdict(collections.Counter)
     troncons: dict[tuple, list] = collections.defaultdict(list)
+    passages: dict[tuple, float] = collections.Counter()
     for t in trains.values():
         rel, srel = t["cle"]
         ordres = sorted(t["arrets"])
         arrets = [t["arrets"][o] for o in ordres]
+        # circulations entre deux arrêts consécutifs : poids des lignes de ce train de l'un à l'autre
+        for o1, o2 in zip(ordres, ordres[1:]):
+            for _, poids in t["durees"].get((o1, o2), ()):
+                passages[(rel, srel, t["arrets"][o1]["iata"], t["arrets"][o2]["iata"])] += poids
         for x, y in zip(arrets, arrets[1:]):
             if "depart" in x and "arrivee" in y and y["arrivee"] >= x["depart"]:
                 troncons[(rel, srel, x["iata"], y["iata"])].append(((y["arrivee"] - x["depart"]) / 60, t["poids"]))
@@ -173,7 +179,8 @@ def lire_sous_relations(chemin: Path, annee: int, annees_frequence: tuple = ()) 
                     "part_desserte_pct": round(100 * poids / total, 1) if total else None,
                     "circulations": round(sum(p for _, p in durees), 1),
                     "frequences": {a: round(frequences[cle][a], 1) for a in sorted(annees_lues)}}
-    return {"od": ods, "troncons": {k: m for k, v in troncons.items() if (m := mediane_ponderee(v)) is not None}}
+    return {"od": ods, "troncons": {k: m for k, v in troncons.items() if (m := mediane_ponderee(v)) is not None},
+            "passages": dict(passages)}
 
 
 def _desserte_du_temps(trains_od: list[tuple], minutes: float | None) -> tuple | None:
@@ -222,6 +229,6 @@ def charger(cfg: dict) -> dict:
 def charger_sous_relations(cfg: dict) -> dict:
     """Dessertes et temps par relation, sous-relation, montée et descente (voir lire_sous_relations)."""
     annees = tuple(int(a) for a in cfg["sources"]["score"].get("annees_frequence", ()))
-    d = _charger(cfg, "score_srela_v6", lire_sous_relations, annees)
+    d = _charger(cfg, "score_srela_v7", lire_sous_relations, annees)
     d.update(d.pop("donnees"))
     return d

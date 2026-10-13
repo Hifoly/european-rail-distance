@@ -69,3 +69,23 @@ Pas de `temps_pratique`, `distance_tgv_commercial_km` ni `desserte_tgv` (horaire
 Points frontière possibles, si l'on étend le périmètre (codes relevés le 2026-10-01) : Kehl-Grenze 87212910,
 Forbach-Frontière (IE) 87193904, Perpignan 87784009, Bellegarde 87745000, Frasne 87715136, Modane 87742007,
 Bâle-St-Jean 87187930, Zoufftgen (IE) 87191973, Wannehain-Frontière 87218156.
+
+## KPI par vitesse maximale (`distancier kpi`)
+
+`data/output/kpi_vitesse_<date>.csv` (et `.xlsx`) : une ligne par vitesse maximale nominale des tracés SNCF Réseau
+(réseau exploité, celui du graphe de calcul des distances, hors raccordements ajoutés à la main), puis
+« inconnue » (sections sans vitesse) et « total ». Demande d'Aloïs le 2026-10-13.
+
+| Colonne | Contenu |
+|---|---|
+| v_max_kmh | vitesse maximale nominale (km/h), `inconnue` ou `total` |
+| nb_lignes | codes ligne SNCF qui ont au moins une section à cette vitesse |
+| km | km de ligne à cette vitesse (une vitesse lue tous les 100 m du tracé, comme pour les distances) |
+| part_reseau_pct | part de ces km dans le total du réseau exploité |
+| km_voie_unique, km_voie_double_ou_plus, km_voie_non_renseignee | répartition des km selon le régime d'exploitation SNCF (`regime-dexploitation-des-lignes`, lu aux mêmes points). Correspondance dans `kpi.regimes` de `config/settings.yaml` : voie unique (et ses variantes, régime en navette) ; double voie et voie banalisée ; « _Autre » ou section sans régime : non renseignée |
+| tkm_<année> | trains-km de l'année `sources.score.annee` : pour chaque train d'Extract_score et chaque couple d'arrêts consécutifs, nombre_jour × compteur × km à cette vitesse. Itinéraire du tableau par sous-relation (LGV ou ligne classique selon le temps), partie française seulement : gare étrangère ramenée au point frontière de `sources.score.frontieres`, sinon tronçon non compté (deux sens comptés) |
+| part_tkm_pct | part des trains-km |
+| source, date_consultation | jeux SNCF et plan de transport utilisés, date du téléchargement SNCF |
+
+`kpi_vitesse_<date>.json` : sources, circulations entre arrêts non comptées et leurs motifs, trains-km par moteur.
+Le régime d'exploitation se télécharge seul avec `distancier telecharger --source sncf --jeux regimes`.

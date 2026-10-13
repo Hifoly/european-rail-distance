@@ -26,14 +26,21 @@ log = logging.getLogger(__name__)
 csv.field_size_limit(2**31 - 1)
 
 
-def telecharger(cfg: dict, jour: str | None = None) -> Path:
+def telecharger(cfg: dict, jour: str | None = None, jeux: list[str] | None = None) -> Path:
+    """Télécharge les jeux configurés dans un dossier daté. Avec `jeux`, seulement ceux-là, ajoutés au
+    téléchargement le plus récent (les autres jeux, donc les distances, ne changent pas)."""
     src = cfg["sources"]["sncf"]
     base = src["base_url"].rstrip("/")
-    jour = jour or date.today().isoformat()
-    dossier = config.dossier_source(cfg, "sncf", jour)
     s = http.session()
-    manifeste = {"source": src["nom"], "api": base, "jeux": {}}
+    if jeux:
+        dossier = config.dossier_source(cfg, "sncf", jour)
+        manifeste = http.lire_manifeste(dossier)
+    else:
+        dossier = config.dossier_source(cfg, "sncf", jour or date.today().isoformat())
+        manifeste = {"source": src["nom"], "api": base, "jeux": {}}
     for cle, jeu in src["jeux"].items():
+        if jeux and cle not in jeux:
+            continue
         url = f"{base}/catalog/datasets/{jeu['id']}/exports/{jeu['format']}"
         params = {"delimiter": ";"} if jeu["format"] == "csv" else None
         dest = http.telecharger(url, dossier / f"{jeu['id']}.{jeu['format']}", params, s)
@@ -136,6 +143,20 @@ def charger(cfg: dict, jour: str | None = None, complementaires: set[str] | froz
 
     log.info("SNCF %s : %d tracés, %d tronçons de vitesse, %d gares", dossier.name, len(troncons), len(vitesses), len(gares))
     return {"troncons": troncons, "vitesses": vitesses, "gares": gares, "manifeste": man, "jour": dossier.name}
+
+
+def charger_regimes(cfg: dict, jour: str | None = None) -> dict:
+    """Régime d'exploitation (voie unique, double voie…) par tronçon de ligne : liste de
+    TronconVitesse dont v_max porte le libellé du régime. FileNotFoundError si le jeu n'est pas téléchargé."""
+    dossier = config.dossier_source(cfg, "sncf", jour)
+    man = http.lire_manifeste(dossier)
+    if "regimes" not in man["jeux"]:
+        raise FileNotFoundError(f"régimes d'exploitation absents de {dossier} : relancer « distancier telecharger --source sncf »")
+    jeu = man["jeux"]["regimes"]
+    regimes = [TronconVitesse(str(p["code_ligne"]), (p.get("exploitati") or "").strip() or None, g)
+               for p, g in _features(dossier / jeu["fichier"])]
+    return {"regimes": regimes, "description": f"{man['source']} ({jeu['id']}) via {man['api']}",
+            "date_consultation": jeu["date_consultation"][:10]}
 
 
 def description_source(man: dict) -> str:

@@ -1,4 +1,4 @@
-"""Ligne de commande : distancier telecharger | calculer | charger-bdd."""
+"""Ligne de commande : distancier telecharger | calculer | kpi | charger-bdd."""
 from __future__ import annotations
 
 import argparse
@@ -18,6 +18,7 @@ def main(argv=None) -> int:
     t = sub.add_parser("telecharger", help="récupère les données sources par API")
     t.add_argument("--source", choices=["sncf", "rinf", "gtfs", "tout"], default="tout")
     t.add_argument("--pays", nargs="*", help="pays RINF (FR DE IT ES BE CH PT) ; défaut : tous")
+    t.add_argument("--jeux", nargs="*", help="SNCF : seulement ces jeux (ex. regimes), ajoutés au téléchargement le plus récent")
 
     c = sub.add_parser("calculer", help="calcule les distances des relations et exporte le tableau")
     c.add_argument("--jour-sncf", help="date du téléchargement SNCF à utiliser (défaut : le plus récent)")
@@ -25,6 +26,10 @@ def main(argv=None) -> int:
     c.add_argument("--jour-gtfs", help="date du téléchargement des horaires SNCF à utiliser (défaut : le plus récent)")
     c.add_argument("--par-sous-relation", action="store_true",
                    help="une ligne par relation, sous-relation, montée et descente du plan de transport (Extract_score)")
+
+    k = sub.add_parser("kpi", help="KPI par vitesse maximale : lignes, km, voies, trains-km (kpi_vitesse_<date>)")
+    k.add_argument("--jour-sncf", help="date du téléchargement SNCF à utiliser (défaut : le plus récent)")
+    k.add_argument("--jour-rinf", help="date du téléchargement RINF à utiliser (défaut : le plus récent)")
 
     b = sub.add_parser("charger-bdd", help="charge un tableau exporté dans PostgreSQL/PostGIS")
     b.add_argument("fichier", type=Path, help="data/output/distances_AAAA-MM-JJ.csv")
@@ -37,7 +42,7 @@ def main(argv=None) -> int:
     if a.commande == "telecharger":
         if a.source in ("sncf", "tout"):
             from distancier.sources import sncf
-            print("SNCF Réseau ->", sncf.telecharger(cfg))
+            print("SNCF Réseau ->", sncf.telecharger(cfg, jeux=a.jeux))
         if a.source in ("rinf", "tout"):
             from distancier.sources import rinf
             print("RINF ->", rinf.telecharger(cfg, a.pays))
@@ -60,6 +65,10 @@ def main(argv=None) -> int:
         erreurs = [r for r in res["relations"] if str(r.get("statut", "")).startswith("erreur")]
         for r in erreurs:
             print(f"relation {r['id']} : {r['statut']}", file=sys.stderr)
+    elif a.commande == "kpi":
+        from distancier import kpi
+        for f in kpi.ecrire(kpi.calculer(cfg, a.jour_sncf, a.jour_rinf), config.chemin(cfg, "sorties")):
+            print(f)
     elif a.commande == "charger-bdd":
         from distancier import db
         print("calcul chargé, id", db.charger(cfg, a.fichier, a.dsn))

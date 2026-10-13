@@ -580,6 +580,15 @@ def calculer_sous_relations(cfg: dict, jour_sncf: str | None = None, jour_rinf: 
     """Une ligne par relation, sous-relation, montée et descente du plan de transport TGV
     (Extract_score), dans le sens du train : distance de la desserte la plus fréquente, d'arrêt en
     arrêt. Sur chaque tronçon, LGV ou ligne classique selon le temps de parcours des trains."""
+    moteurs, sources, d, contexte = contexte_sous_relations(cfg, jour_sncf, jour_rinf)
+    lignes = [_sous_relation(i, cle, od, contexte) for i, (cle, od) in enumerate(sorted(d["od"].items()), 1)]
+    vitesses = sorted({v for m in moteurs.values() for v in m.vitesses}, reverse=True)
+    return {"relations": lignes, "vitesses": vitesses, "sources": sources}
+
+
+def contexte_sous_relations(cfg: dict, jour_sncf: str | None = None, jour_rinf: str | None = None) -> tuple:
+    """Moteurs, sources, plan de transport lu (score.charger_sous_relations) et contexte de calcul des
+    tronçons d'arrêt en arrêt."""
     from distancier.sources import score
     moteurs, gares, sources, corrections = _preparer(cfg, jour_sncf, jour_rinf)
     if "sncf" not in moteurs:
@@ -599,9 +608,8 @@ def calculer_sous_relations(cfg: dict, jour_sncf: str | None = None, jour_rinf: 
     contexte["k"] = _coefficient_temps(contexte)
     sources["score"]["coefficient_temps"] = round(contexte["k"], 3)
     log.info("temps des trains / temps théorique sur les tronçons sans alternative : %.2f", contexte["k"])
-    lignes = [_sous_relation(i, cle, od, contexte) for i, (cle, od) in enumerate(sorted(d["od"].items()), 1)]
-    vitesses = sorted({v for m in moteurs.values() for v in m.vitesses}, reverse=True)
-    return {"relations": lignes, "vitesses": vitesses, "sources": sources}
+    contexte["moteurs"] = moteurs
+    return moteurs, sources, d, contexte
 
 
 def _deux_itineraires(a: str, b: str, ctx: dict) -> tuple[dict | str, dict | None, float | None, float | None]:

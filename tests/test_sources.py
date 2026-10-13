@@ -52,10 +52,17 @@ def test_telechargement_sncf(cfg, monkeypatch):
     monkeypatch.setattr(http, "session", lambda: fausse)
     dossier = sncf.telecharger(cfg, jour="2026-09-28")
     man = http.lire_manifeste(dossier)
-    assert set(man["jeux"]) == {"lignes", "vitesses", "gares", "voies"}
+    assert set(man["jeux"]) == {"lignes", "vitesses", "gares", "voies", "regimes"}
     assert man["jeux"]["gares"]["url"].endswith("/catalog/datasets/liste-des-gares/exports/csv")
     assert man["jeux"]["lignes"]["modifie_a_la_source"] == "2026-09-01T00:00:00Z"
     assert config.dossier_source(cfg, "sncf") == dossier   # le plus récent
+    # un seul jeu, ajouté au téléchargement le plus récent sans toucher aux autres
+    man["jeux"].pop("regimes")
+    (dossier / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
+    assert sncf.telecharger(cfg, jeux=["regimes"]) == dossier
+    man2 = http.lire_manifeste(dossier)
+    assert set(man2["jeux"]) == {"lignes", "vitesses", "gares", "voies", "regimes"}
+    assert man2["jeux"]["lignes"] == man["jeux"]["lignes"]
 
 
 def test_telechargement_rinf_pagine(cfg, monkeypatch):
