@@ -26,6 +26,14 @@ def lire_csv(chemin: Path) -> list[dict]:
         return [{k: (v or "").strip() for k, v in r.items()} for r in csv.DictReader(f, delimiter=";")]
 
 
+def lignes_preferees(g: dict, lignes_gares: dict) -> tuple:
+    """Lignes où rattacher la gare `g` : celles de lignes_gares (corrections.yaml) si la gare y figure,
+    seules, car elles corrigent un rattachement à la voie la plus proche (gare à deux niveaux, ex.
+    Nîmes-Pont-du-Gard : quais TGV sur le contournement, quais TER sur la ligne classique) ; sinon
+    les lignes de ses PK SNCF."""
+    return lignes_gares.get(g["uic"]) or tuple(g.get("pks", {}))
+
+
 def charger_corrections(cfg: dict) -> dict:
     p = config.chemin(cfg, "corrections")
     c = (yaml.safe_load(p.read_text(encoding="utf-8")) if p.exists() else None) or {}
@@ -91,7 +99,7 @@ class MoteurSncf:
                 raise LookupError(f"{g['nom']} : absente du jeu SNCF des gares, saisir lat/lon dans config/gares.csv")
         try:
             for tag, g in (("O", go), ("D", gd)):
-                preferees = tuple(g.get("pks", {})) + self.lignes_gares.get(g["uic"], ())
+                preferees = lignes_preferees(g, self.lignes_gares)
                 dist = self.routeur.rattacher(tag, g["lon"], g["lat"], preferees)
                 if dist > 100:
                     notes.append(f"{g['nom']} rattachée à la voie à {dist:.0f} m")

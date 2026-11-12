@@ -103,9 +103,16 @@ lignes_complementaires: ["070606", "145306", "226301", "226303", "226310", "2286
 
 # Ligne de rattachement des gares absentes de liste-des-gares (qui n'ont donc pas de PK SNCF) :
 # sans cela la gare est rattachée à la voie la plus proche, qui peut être une autre ligne.
+# Pour une gare qui a des PK SNCF, la ligne indiquée ici remplace celles des PK (gare à deux niveaux).
 lignes_gares:
   # Aéroport-CDG-2-TGV-Roissy : voie la plus proche = ligne 025000 (à 1 m), la gare TGV est sur
   # l'Interconnexion Est (226310, à 17 m). Constaté le 2026-09-28.
   "87271494": ["226310"]
   # Marne-la-Vallée-Chessy : sur l'Interconnexion Est.
   "87111849": ["226310"]
+  # Nîmes-Pont-du-Gard : gare à deux niveaux, quais TGV sur le contournement Nîmes-Montpellier
+  # (834000, PK 27,166) et quais TER sur Tarascon-Sète (810000, PK 14,291), plus proche du point de
+  # la gare. Rattachée à 810000, les TGV quittaient le contournement par le raccordement de Manduel
+  # (834310) et 3,4 km du contournement autour de la gare n'étaient jamais parcourus.
+  # Constaté le 2026-11-12 (liste-des-gares et formes-des-lignes-du-rfn du 2026-09-29).
+  "87703975": ["834000"]

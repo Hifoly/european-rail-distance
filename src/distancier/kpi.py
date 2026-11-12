@@ -37,7 +37,8 @@ def _categorie(regime: str | None, cfg: dict) -> str:
 
 def reseau(G, regimes: list | None, cfg: dict) -> dict:
     """{v_max: {"lignes": set, "km": float, <catégorie de voies>: km}} sur les arêtes du graphe SNCF
-    (hors raccordements ajoutés à la main et arêtes dupliquées par un virage interdit). La vitesse est
+    (hors raccordements ajoutés à la main, arêtes dupliquées par un virage interdit et boucles de moins de
+    2 × tolerance_noeud_m, morceaux de tracé dont les deux bouts sont soudés au même nœud). La vitesse est
     celle du profil de l'arête (un point tous les pas_echantillonnage_vitesse_m) ; le régime est lu aux
     mêmes points, sur la même ligne d'abord, comme la vitesse."""
     tol = cfg["reseau"]["tolerance_vitesse_m"]
@@ -56,9 +57,12 @@ def reseau(G, regimes: list | None, cfg: dict) -> dict:
         return best[1] if best else None
 
     kpi: dict = collections.defaultdict(lambda: {"lignes": set(), "km": 0.0, **{c: 0.0 for c in CATEGORIES_VOIES}})
-    for _, _, d in G.edges(data=True):
+    boucle_max_km = 2 * cfg["reseau"]["tolerance_noeud_m"] / 1000
+    for u, v, d in G.edges(data=True):
         if d.get("manuel") or d.get("doublon") or "geom" not in d:
             continue
+        if u == v and d["km"] <= boucle_max_km:
+            continue   # bout de tracé entre deux coupes soudées au même nœud : aucun itinéraire ne le compte
         n = len(d["profil"])
         km = d["km"] / n
         for k, v in enumerate(d["profil"]):

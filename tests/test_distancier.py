@@ -549,3 +549,35 @@ def test_carte_350(cfg):
     assert 47.9 < lat < 48.2 and 1.9 < lon < 3.1                  # coordonnées WGS84 (lat, lon)
     html = carte.ecrire(res, Path(cfg["chemins"]["sorties"]), "test").read_text(encoding="utf-8")
     assert "__DONNEES__" not in html and '"PARIS-Q"' in html
+
+
+def test_lignes_gares_priment_sur_les_pk():
+    from shapely.geometry import LineString
+    from distancier.calcul import lignes_preferees
+    from distancier.reseau import Troncon, construire_graphe
+    from distancier.routage import Routeur
+
+    # gare à deux niveaux : ligne classique C au nord, à 40 m de la gare ; contournement L à 70 m au sud
+    c = Troncon("C", LineString([(2.0, 48.00036), (2.1, 48.00036)]))
+    l = Troncon("L", LineString([(2.0, 47.99937), (2.1, 47.99937)]))
+    g = {"uic": "87000009", "pks": {"C": 1.0, "L": 2.0}}
+    assert lignes_preferees(g, {}) == ("C", "L")
+    assert lignes_preferees(g, {"87000009": ("L",)}) == ("L",)
+    rt = Routeur(construire_graphe([c, l], [], tolerance_noeud_m=10))
+    rt.rattacher("A", 2.05, 48.0, lignes_preferees(g, {}))
+    assert {d["ligne"] for d in rt.G["A"].values() for d in d.values()} == {"C"}
+    rt.detacher("A")
+    rt.rattacher("A", 2.05, 48.0, lignes_preferees(g, {"87000009": ("L",)}))
+    assert {d["ligne"] for d in rt.G["A"].values() for d in d.values()} == {"L"}
+
+
+def test_kpi_reseau_ignore_les_boucles_de_soudure(cfg):
+    import networkx as nx
+    from shapely.geometry import LineString
+    from distancier import kpi
+    G = nx.MultiGraph()
+    G.add_edge(1, 2, km=10.0, ligne="A", geom=LineString([(0, 0), (10000, 0)]), profil=[300], manuel=None)
+    G.add_edge(2, 2, km=0.12, ligne="A", geom=LineString([(10000, 0), (10120, 0)]), profil=[300], manuel=None)
+    G.add_edge(3, 3, km=5.0, ligne="B", geom=LineString([(0, 0), (0, 5000)]), profil=[160], manuel=None)  # vraie boucle
+    res = kpi.reseau(G, None, cfg)
+    assert res[300]["km"] == pytest.approx(10.0) and res[160]["km"] == pytest.approx(5.0)
