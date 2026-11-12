@@ -3,7 +3,8 @@
 Lit le résultat de calcul.calculer_sous_relations (avec les tracés des arêtes, Resultat.traces) et
 écrit un fichier HTML autonome (Leaflet, fonds de carte en ligne) : les voies empruntées, colorées
 selon la vitesse maximale en 6 classes (320, 300, 270, 200 à 269, 100 à 199, moins de 100 km/h ;
-demande d'Aloïs le 2026-10-06), en gris pointillé sans vitesse connue ; un clic sur une voie ou sur
+demande d'Aloïs le 2026-10-06 ; rouge, bleu, vert, marron, gris, noir depuis le 2026-11-12),
+en violet pointillé sans vitesse connue ; un clic sur une voie ou sur
 une relation de la liste affiche ses montées-descentes et leurs temps.
 """
 from __future__ import annotations
@@ -136,16 +137,17 @@ _HTML = r"""<!doctype html>
 <script>
 const D = __DONNEES__;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-// 6 classes de vitesse maximale (km/h), de la plus rapide à la plus lente ; sans vitesse : gris pointillé
+// 6 classes de vitesse maximale (km/h), de la plus rapide à la plus lente ; sans vitesse : violet pointillé
+// couleurs demandées par Aloïs le 2026-11-12 (le marron couvre toute la plage 200 à 269)
 const CLASSES = [
-  { min: 320, nom: '320 km/h', c: '#6a1b9a' },
-  { min: 300, nom: '300 km/h', c: '#d62728' },
-  { min: 270, nom: '270 km/h', c: '#f28e2b' },
-  { min: 200, nom: '200 à 269 km/h', c: '#2ca02c' },
-  { min: 100, nom: '100 à 199 km/h', c: '#1f77b4' },
-  { min: 1, nom: 'moins de 100 km/h', c: '#8c564b' },
+  { min: 320, nom: '320 km/h', c: '#e00000' },
+  { min: 300, nom: '300 km/h', c: '#1f4fd1' },
+  { min: 270, nom: '270 km/h', c: '#1e9e3a' },
+  { min: 200, nom: '200 à 269 km/h', c: '#8b5a2b' },
+  { min: 100, nom: '100 à 199 km/h', c: '#8c8c8c' },
+  { min: 1, nom: 'moins de 100 km/h', c: '#000000' },
 ];
-const INCONNUE = { nom: 'vitesse inconnue', c: '#9e9e9e', dash: '4 4' };
+const INCONNUE = { nom: 'vitesse inconnue', c: '#c51b8a', dash: '4 4' };
 const classe = v => v ? CLASSES.find(k => v >= k.min) || CLASSES[CLASSES.length - 1] : INCONNUE;
 const carte = L.map('carte', { preferCanvas: true }).setView([46.6, 2.4], 6);
 // fonds sans clé, utilisables depuis un fichier ouvert en local (CARTO exige une clé dans ce cas)
